@@ -4,12 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.controlschemes.SwerveDriveScheme;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.SwerveDrive;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,16 +24,25 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  SwerveDrive swerveDrive = new SwerveDrive();
+  private final CommandXboxController driverJoystick = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // // Replace with CommandPS4Controller or CommandJoystick if needed
+  // private final CommandXboxController m_driverController =
+  //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    swerveDrive.setDefaultCommand(new SwerveJoystickCmd(
+      swerveDrive,
+      () -> -driverJoystick.getLeftX(), 
+      () -> -driverJoystick.getLeftY(), 
+      () -> driverJoystick.getRightX(), driverJoystick));
+
     // Configure the trigger bindings
     configureBindings();
+    SwerveDriveScheme.configure(swerveDrive, OperatorConstants.kDriverControllerPort); 
   }
 
 
@@ -42,7 +56,9 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {}
+  private void configureBindings() {
+    driverJoystick.y().onTrue(runOnce(()->swerveDrive.zeroHeading()));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

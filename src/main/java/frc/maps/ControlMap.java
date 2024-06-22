@@ -1,5 +1,5 @@
 package frc.maps;
-
+// import edu.wpi.first.wpilibj.GenericHID;
 
 public interface ControlMap {
     // Joystick Axises
@@ -35,6 +35,6 @@ public interface ControlMap {
     public static final int DPAD_UP_LEFT = 315;
 
     // Controller Zeroes
-    public static final double ZERO = 0.05;
+    public static final double ZERO = 0.15;
 
 }
