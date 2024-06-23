@@ -31,10 +31,19 @@ public class SwerveModule extends SubsystemBase{
     private boolean absoluteEncoderReversed;
     private int absoluteEncoderPort;
 
-    public SwerveModule (CCSparkMax driveMotor, CCSparkMax turnMotor,PIDController turnPIDController, PIDController drivePIDController, SimpleMotorFeedforward driveFeedForward, AnalogEncoder absoluteEncoder,  double absoluteEncoderOffset, int absoluteEncoderPort){
+    private String name;
+
+    public SwerveModule (CCSparkMax driveMotor, CCSparkMax turnMotor,  double absoluteEncoderOffset, int absoluteEncoderPort, String name){
         this.driveMotor = driveMotor;
         this.turnMotor = turnMotor;
+
+        absoluteEncoder = new AnalogEncoder (absoluteEncoderPort);
+        absoluteEncoder.setDistancePerRotation(2*Math.pi); 
         turnPIDController = new PIDContoller (0.5,0,0);
+        turnPIDController.enableContinuousInput(0, 2*Math.pi);
+        drivePIDController = new PIDController (1,0,0);
+
+        
     }
 
 }
