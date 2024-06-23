@@ -55,40 +55,40 @@ public interface RobotMap {
         public static final double DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR = HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0;
 
         // Swerve Drive Base Motor & CAN ID Constants
-        public static final int FRONT_RIGHT_DRIVE = 6;
+        public static final int FRONT_RIGHT_DRIVE = 3;
         public static final boolean FRONT_RIGHT_DRIVE_REVERSE = false;
         public static final double FRONT_RIGHT_DRIVE_ENCODER = 1;
-        public static final int FRONT_RIGHT_TURN = 5;
+        public static final int FRONT_RIGHT_TURN = 4;
         public static final boolean FRONT_RIGHT_TURN_REVERSE = true;
         public static final double FRONT_RIGHT_TURN_ENCODER = 1;
 
-        public static final int FRONT_LEFT_DRIVE = 2;
+        public static final int FRONT_LEFT_DRIVE = 7;
         public static final boolean FRONT_LEFT_DRIVE_REVERSE = false;
         public static final double FRONT_LEFT_DRIVE_ENCODER = 1;
-        public static final int FRONT_LEFT_TURN = 1;
+        public static final int FRONT_LEFT_TURN = 6;
         public static final boolean FRONT_LEFT_TURN_REVERSE = true;
         public static final double FRONT_LEFT_TURN_ENCODER = 1;
 
-        public static final int BACK_RIGHT_DRIVE = 7;
+        public static final int BACK_RIGHT_DRIVE = 2;
         public static final boolean BACK_RIGHT_DRIVE_REVERSE = false;
         public static final double BACK_RIGHT_DRIVE_ENCODER = 1;
-        public static final int BACK_RIGHT_TURN = 8;
+        public static final int BACK_RIGHT_TURN = 1;
         public static final boolean BACK_RIGHT_TURN_REVERSE = true;
         public static final double BACK_RIGHT_TURN_ENCODER = 1;
 
-        public static final int BACK_LEFT_DRIVE = 3;
+        public static final int BACK_LEFT_DRIVE = 9;
         public static final boolean BACK_LEFT_DRIVE_REVERSE = false;
         public static final double BACK_LEFT_DRIVE_ENCODER = 1;
-        public static final int BACK_LEFT_TURN = 4;
+        public static final int BACK_LEFT_TURN = 8;
         public static final boolean BACK_LEFT_TURN_REVERSE = true;
         public static final double BACK_LEFT_TURN_ENCODER = 1;
 
     
         // Absolute Encoder Ports
-        public static final int FRONT_RIGHT_ABSOLUTE_ENCODER = 3;
-        public static final int FRONT_LEFT_ABSOLUTE_ENCODER = 0;
-        public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
-        public static final int BACK_LEFT_ABSOLUTE_ENCODER = 1;
+        public static final int FRONT_RIGHT_ABSOLUTE_ENCODER = 1;
+        public static final int FRONT_LEFT_ABSOLUTE_ENCODER = 3;
+        public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 0;
+        public static final int BACK_LEFT_ABSOLUTE_ENCODER = 2;
 
 
         // Robot Constants (change with SysId)
