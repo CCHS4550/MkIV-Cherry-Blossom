@@ -122,7 +122,16 @@ public final class Constants {
     public static final double WHEEL_BASE = Units.inchesToMeters(0);
     //Right to Left
     public static final double TRACK_WIDTH = Units.inchesToMeters(0);
+
+    SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics (
+      new Translation2d (WHEEL_BASE/2, -TRACK_WIDTH/2),
+      new Translation2d (WHEEL_BASE/2, TRACK_WIDTH/2),
+      new Translation2d (-WHEEL_BASE/2, -TRACK_WIDTH/2),
+      new Translation2d(-WHEEL_BASE/2, TRACK_WIDTH/2)
+    );
   }
+
+  
 
   public static class SwerveConversionConstants{
 
@@ -144,7 +153,12 @@ public final class Constants {
     public static final double HORIZONTAL_DISTANCE_TRAVELED_PER_MOTOR_REVOLUTION = WHEEL_CIRCUMFERENCE*DRIVE_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS;
     public static final double HORIZONTAL_DISTANCE_TRAVELED_PER_MOTOR_REVOLUTION_PER_SECOND = HORIZONTAL_DISTANCE_TRAVELED_PER_MOTOR_REVOLUTION/60.0;
 
+    
 
+  }
+
+
+  public static class FeedForwardConstants{
 
   }
 }
