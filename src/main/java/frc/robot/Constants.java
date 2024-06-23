@@ -131,6 +131,8 @@ public final class Constants {
     );
   }
 
+
+
   
 
   public static class SwerveConversionConstants{
@@ -159,6 +161,9 @@ public final class Constants {
 
 
   public static class FeedForwardConstants{
-
+    // *!*USE SYSID TO GET VALUES*!*
+    public static final double DRIVE_KS = 0;
+    public static final double DRIVE_KV = 0;
+    public static final double DRIVE_KA = 0;
   }
 }
