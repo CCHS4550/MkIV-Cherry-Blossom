@@ -10,22 +10,44 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
 import frc.maps.Constants;
 
 public class Declination extends SubsystemBase {
 
   DoubleSupplier declinationSpeedModifier = () -> 0.1;
-  Double pitchLocation;
-  Double pitchOffset1;
-  Double pitchOffset2;
+
+  double pitchLocation;
+  double pitchOffset1;
+  double pitchOffset2;
+
+  double upperBound = 0.0;
+  double lowerBound = Math.PI / 2;
+
+  // returns Math.PI/4
+  double middlePoint = Math.abs(upperBound - lowerBound) / 2;
+  // returns Math.PI/2
+  double range = Math.abs(upperBound - lowerBound);
+
+  // Should return distance from edge.
+  // Ex. pitchLocation = PI/2
+  //  1 - Abs(PI/2 - PI/4) / PI/4 
+  //  1 - PI/4 / PI/4 = 0
+  // Ex. pitchLocation = 0
+  //  1 - Abs(0-PI/4) / PI/4
+  //  1 - PI/4 / PI/4 = 0
+  double distanceFromEdge = 1 - (Math.abs(pitchLocation - middlePoint) / (range /2));
+  double maxOutwardSpeed  =  distanceFromEdge / 1;
 
 
 
+
+  private DigitalInput pitchLimitSwitch = new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
+  
   private CCSparkMax declination1 = new CCSparkMax
   (
   "pitchMotor1",
@@ -45,30 +67,32 @@ public class Declination extends SubsystemBase {
   true
   );
 
-  private DigitalInput pitchLimitSwitch = new DigitalInput(9);
-  PIDController pitchPidController;
-
+  
 
   /** Creates a new Declination. */
   public Declination() {
-    pitchPidController = new PIDController(1.2, 0, 0);
-    pitchLocation = 0.0;
+
     pitchOffset1 = 0.0;
     pitchOffset2 = 0.0;
+    declination1.setPosition(126/4);
+    declination2.setPosition(126/4);
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {
-    double declinationSpeed = MathUtil.applyDeadband(-controller.getRightY(), 0.15) * declinationSpeedModifier.getAsDouble();
+    double declinationSpeed = MathUtil.applyDeadband(-controller.getRightY(), 0.05) * declinationSpeedModifier.getAsDouble();
 
-    if (pitchLocation < Math.PI/2) {
+    if (pitchLimitSwitch.get() && pitchLocation < (Math.PI/2)) {
       declination1.set
       (
-        declinationSpeed * pitchPidController.calculate(pitchLocation, Math.PI/2)
+      
+        declinationSpeed
+        // this.normalizeSpeed(declinationSpeed, pitchLocation)
       );
     }
 
     this.checkZeroPitch();
 
+    // Calculated in radians
     pitchLocation = Math.abs(((declination1.getPosition() / 126) % 1) * (2 * Math.PI)) - pitchOffset1;
 
   }
@@ -76,7 +100,7 @@ public class Declination extends SubsystemBase {
   private void checkZeroPitch(){
     
     if (!pitchLimitSwitch.get()) {
-      
+
       // 42 ticks per motor revolution
       // 3 motor revolutions per pitch revolution (Don't push it past a quarter of its revolutions!)
       // 126 ticks per pith revolution
@@ -91,6 +115,27 @@ public class Declination extends SubsystemBase {
   public double getDeclination(){
     return pitchLocation;
   }
+
+  private boolean pastMidpoint(double location){
+    if (location > middlePoint) {
+      return true;
+    } else {
+      return false; 
+    }
+  }
+    
+  private double normalizeSpeed(double speed, double location){
+    if (speed > 0 && this.pastMidpoint(location)) {
+      return OI.normalize(speed, 0, maxOutwardSpeed);
+    } else if (speed < 0 && !this.pastMidpoint(location)) {
+      return OI.normalize(speed, -maxOutwardSpeed, 0);
+    } else {
+      return speed;
+    }
+
+  } 
+
+  
 
   @Override
   public void periodic() {

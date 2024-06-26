@@ -23,6 +23,10 @@ public class RightAscension extends SubsystemBase {
   Double turretLocation;
   Double turretOffset;
   
+  Double leftBound;
+  Double rightBound;
+  Double middlePoint = Math.abs(leftBound - rightBound) / 2;
+  Double range = Math.abs(leftBound - rightBound);
 
 
   private CCSparkMax rightAscensionMotor = new CCSparkMax
@@ -35,12 +39,11 @@ public class RightAscension extends SubsystemBase {
   false
   );
   private PWM hallEffectSensor = new PWM(1);
-  PIDController turretPidController;
+  
 
 
   /** Creates a new RightAscension. */
   public RightAscension() {
-    turretPidController = new PIDController(1.2, 0, 0);
     turretLocation = 0.0;
     turretOffset = 0.0;
   }
@@ -55,7 +58,7 @@ public class RightAscension extends SubsystemBase {
     if (turretLocation < (3*Math.PI/2)) {
     rightAscensionMotor.set
     (
-      rightAscensionSpeed * (turretPidController.calculate(turretLocation, (3*Math.PI)/2))
+      rightAscensionSpeed
     );
     }
 
@@ -68,18 +71,18 @@ public class RightAscension extends SubsystemBase {
 
   private void checkZeroYaw() {
     // returns value 0-1
-    double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
+    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
 
-    if (hallEffectInput != 0) {
+    // if (hallEffectInput != 0) {
 
-    // 42 ticks per motor revolution
-    // 50 motor revolutions per turret revolution
-    // 2100 ticks per turret revolution
-    // In radians
-      turretOffset = Math.abs(((rightAscensionMotor.getPosition() / 2100) % 1) * (2 * Math.PI));
+    // // 42 ticks per motor revolution
+    // // 50 motor revolutions per turret revolution
+    // // 2100 ticks per turret revolution
+    // // In radians
+    //   turretOffset = Math.abs(((rightAscensionMotor.getPosition() / 2100) % 1) * (2 * Math.PI));
     }
     
-  }
+  
 
   public double getRightAscension() {
     return turretLocation;
@@ -91,4 +94,5 @@ public class RightAscension extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
 }

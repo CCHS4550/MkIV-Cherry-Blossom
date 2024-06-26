@@ -42,6 +42,8 @@ public class RobotContainer {
     // Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
     // SwerveDriveScheme.configure(swerveDrive, controller1);
     MechanismScheme.configure(barrelRotation, declination, pneumatics, rightAscension, controller1);
+
+    
      // initialize controller schemes here
     //  SwerveDriveScheme.configure(swerveDrive, 0);
 

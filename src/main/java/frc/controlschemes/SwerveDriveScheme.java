@@ -63,7 +63,7 @@ public class SwerveDriveScheme implements ControlScheme {
                 -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
         SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
                 -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
-        SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
+        // SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
         PIDController orientationLockPID = new PIDController(.5, 0, 0);
 

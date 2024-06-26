@@ -141,6 +141,14 @@ public class Constants {
     public static final int LED_PORT = 0;
     public static final int LED_LENGTH = 50;
 
+    public static class SensorMiscConstants {
+      public static final int BARREL_SENSOR = 0;
+      public static final int YAW_SENSOR = 1;
+      public static final int LEDS = 2;
+      public static final int PITCH_LIMIT_SWITCH = 9;
+
+    }
+
     public class FeedForwardConstants {
 
         // TODO Do sysid to get values

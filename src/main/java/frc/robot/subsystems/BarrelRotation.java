@@ -21,7 +21,8 @@ public class BarrelRotation extends SubsystemBase {
 
   CCSparkMax barrelRotationMotor = new CCSparkMax("barrelRotationMotor","bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
 
-  private PWM hallEffectSensor = new PWM(0);
+  // Will not work because PWM is only an output!
+  // private PWM hallEffectSensor = new PWM(0);
 
   /** Creates a new BarrelRotation. */
   public BarrelRotation() {}
@@ -50,12 +51,12 @@ public class BarrelRotation extends SubsystemBase {
 
   private void checkZero(){
     // returns value 0-1
-    double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
+    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
   }
 
   private void rotateUntilReady(){
     // TODO: need to find how many rotations of motor corresponds to full barrel rotation
-    
+
 
   }
   
