@@ -19,7 +19,7 @@ import frc.maps.Constants;
 
 public class RightAscension extends SubsystemBase {
 
-  DoubleSupplier rightAscensionSpeedModifier = () -> 0.75;
+  DoubleSupplier rightAscensionSpeedModifier = () -> 0.1;
   Double turretLocation;
   Double turretOffset;
   

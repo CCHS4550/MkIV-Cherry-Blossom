@@ -19,7 +19,7 @@ import frc.maps.Constants;
 
 public class Declination extends SubsystemBase {
 
-  DoubleSupplier declinationSpeedModifier = () -> 0.75;
+  DoubleSupplier declinationSpeedModifier = () -> 0.1;
   Double pitchLocation;
   Double pitchOffset1;
   Double pitchOffset2;
@@ -75,7 +75,8 @@ public class Declination extends SubsystemBase {
 
   private void checkZeroPitch(){
     
-    if (pitchLimitSwitch.get()) {
+    if (!pitchLimitSwitch.get()) {
+      
       // 42 ticks per motor revolution
       // 3 motor revolutions per pitch revolution (Don't push it past a quarter of its revolutions!)
       // 126 ticks per pith revolution

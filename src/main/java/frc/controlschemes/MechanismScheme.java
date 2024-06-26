@@ -16,13 +16,11 @@ public class MechanismScheme {
 
 
         rightAscension.setDefaultCommand(new RunCommand(() -> {
-
-        rightAscension.rightAscensionDefaultMethod(controller);
-
+            rightAscension.rightAscensionDefaultMethod(controller);
         }, rightAscension));
 
         declination.setDefaultCommand(new RunCommand(() -> {
-
+            declination.declinationDefaultMethod(controller);
         }, declination));
 
 
@@ -33,6 +31,8 @@ public class MechanismScheme {
 
         // Toggle air compressors and fan with left trigger.
         controller.leftTrigger().onTrue(pneumatics.toggleAirCompressors());
+        // Rotate Barrels
+        controller.rightTrigger().whileTrue(barrelRotation.reload());
         // Shoot the cannon by pressing both controller bumpers.
         controller.leftBumper().and(controller.rightBumper()).onTrue(pneumatics.shoot());
     }
