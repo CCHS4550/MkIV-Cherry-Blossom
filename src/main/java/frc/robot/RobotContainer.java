@@ -4,12 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.controlschemes.MechanismScheme;
+import frc.controlschemes.SwerveDriveScheme;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.BarrelRotation;
+import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.PneumaticsSystem;
+import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,17 +23,28 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+
+  CommandXboxController controller1 = new CommandXboxController(0);
+
+  // SwerveDrive swerveDrive = new SwerveDrive();
+  RightAscension rightAscension = new RightAscension();
+  Declination declination = new Declination();
+  PneumaticsSystem pneumatics = new PneumaticsSystem();
+  BarrelRotation barrelRotation = new BarrelRotation();
+  
 
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
+
+    // Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
+    // SwerveDriveScheme.configure(swerveDrive, controller1);
+    MechanismScheme.configure(barrelRotation, declination, pneumatics, rightAscension, controller1);
+     // initialize controller schemes here
+    //  SwerveDriveScheme.configure(swerveDrive, 0);
+
   }
 
 
@@ -42,7 +58,6 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
