@@ -20,7 +20,7 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  SwerveDrive swerveDriveTest = new SwerveDrive();
+  // SwerveDrive swerveDriveTest = new SwerveDrive();
 
   private RobotContainer m_robotContainer;
 
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    swerveDriveTest.getAbsoluteEncoderoffsets();
+    // swerveDriveTest.getAbsoluteEncoderoffsets();
 
   }
 

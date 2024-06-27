@@ -21,10 +21,10 @@ public class RightAscension extends SubsystemBase {
   double turretLocation;
   double turretOffset;
   
-  double leftBound = 0;
-  double rightBound = 0;
+  double leftBound = -10;
+  double rightBound = 10;
   double middlePoint = leftBound + rightBound / 2;
-  double range = Math.abs(leftBound - rightBound);
+  double range = Math.abs(leftBound - middlePoint);
 
 
   private CCSparkMax rightAscensionMotor = new CCSparkMax
@@ -33,7 +33,7 @@ public class RightAscension extends SubsystemBase {
     "yM",
     Constants.MotorConstants.RIGHT_ASCENSION,
     MotorType.kBrushless,
-    IdleMode.kCoast,
+    IdleMode.kBrake,
     false
   );
   private PWM hallEffectSensor = new PWM(1);
@@ -44,6 +44,8 @@ public class RightAscension extends SubsystemBase {
   public RightAscension() {
     turretLocation = 0.0;
     turretOffset = 0.0;
+    rightAscensionMotor.set(0.01);
+    
   }
 
 
@@ -53,9 +55,10 @@ public class RightAscension extends SubsystemBase {
     
     double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.15) * rightAscensionSpeedModifier;
 
-    if (turretLocation < (3*Math.PI/2)) {
-      rightAscensionMotor.set(rightAscensionSpeed);
-    }
+    // if (turretLocation < (3*Math.PI/2)) {
+      // rightAscensionMotor.set(rightAscensionSpeed);
+    // }
+
 
     this.checkZeroYaw();
 

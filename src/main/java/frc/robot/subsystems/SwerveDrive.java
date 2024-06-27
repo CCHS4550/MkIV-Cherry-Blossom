@@ -337,7 +337,7 @@ public class SwerveDrive extends SubsystemBase {
          * @return The facing direction of the gyro, between -360 and 360 degrees.
          */
         public double getHeading() {
-                return Math.IEEEremainder(gyro.getYaw(), 360);
+                return Math.IEEEremainder(gyro.getYaw()+180, 360);
         }
 
         /**
