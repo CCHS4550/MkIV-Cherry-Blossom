@@ -19,7 +19,7 @@ import frc.maps.Constants;
 
 public class Declination extends SubsystemBase {
 
-  DoubleSupplier declinationSpeedModifier = () -> 0.1;
+  double declinationSpeedModifier = 0.1;
 
   double pitchLocation;
   double pitchOffset1;
@@ -29,7 +29,7 @@ public class Declination extends SubsystemBase {
   double lowerBound = Math.PI / 2;
 
   // returns Math.PI/4
-  double middlePoint = Math.abs(upperBound - lowerBound) / 2;
+  double middlePoint = upperBound + lowerBound / 2;
   // returns Math.PI/2
   double range = Math.abs(upperBound - lowerBound);
 
@@ -50,21 +50,22 @@ public class Declination extends SubsystemBase {
   
   private CCSparkMax declination1 = new CCSparkMax
   (
-  "pitchMotor1",
-  "pM1",
-  Constants.MotorConstants.DECLINATION[0],
-  MotorType.kBrushless,
-  IdleMode.kCoast,
-  false
+    "pitchMotor1",
+    "pM1",
+    Constants.MotorConstants.DECLINATION[0],
+    MotorType.kBrushless,
+    IdleMode.kCoast,
+    false
   );
+
   private CCSparkMax declination2 = new CCSparkMax
   (
-  "pitchMotor2",
-  "pM2",
-  Constants.MotorConstants.DECLINATION[1],
-  MotorType.kBrushless,
-  IdleMode.kCoast,
-  true
+    "pitchMotor2",
+    "pM2",
+    Constants.MotorConstants.DECLINATION[1],
+    MotorType.kBrushless,
+    IdleMode.kCoast,
+    true
   );
 
   
@@ -79,16 +80,16 @@ public class Declination extends SubsystemBase {
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {
-    double declinationSpeed = MathUtil.applyDeadband(-controller.getRightY(), 0.05) * declinationSpeedModifier.getAsDouble();
+    double declinationSpeed = MathUtil.applyDeadband(-controller.getRightY(), 0.05) * declinationSpeedModifier;
 
-    if (pitchLimitSwitch.get() && pitchLocation < (Math.PI/2)) {
+    // if (pitchLimitSwitch.get() && pitchLocation < (Math.PI/2)) {
       declination1.set
       (
       
         declinationSpeed
         // this.normalizeSpeed(declinationSpeed, pitchLocation)
       );
-    }
+    // }
 
     this.checkZeroPitch();
 
@@ -132,13 +133,17 @@ public class Declination extends SubsystemBase {
     } else {
       return speed;
     }
-
   } 
 
-  
+  public void printEncoders() {
+    System.out.println("Declination:" + declination1.getPosition());
+  }
 
+
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // printEncoders();
   }
 }

@@ -78,20 +78,25 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.0)
+            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.07)
                     * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier.getAsDouble();
 
-            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.0)
+            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.07)
                     * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier.getAsDouble();
 
             double turnSpeed = 0;
             // || Math.abs(controller.getRightX()) > 0.15
             if (!orientationLocked) {
-                orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+<<<<<<< HEAD
+                orientationLockAngle = swerveDrive.getRotation2d().getRadians() + Math.PI;
                 turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.05);
+=======
+                orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
+>>>>>>> e7fc96ec66211c09170706e8556dcf3b7bf6243d
 
             } else {
-                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
+                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle)
                         * 2;
             }
             turnSpeed *= 2.0 * Math.PI * turnSpeedModifier;

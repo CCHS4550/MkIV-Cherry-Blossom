@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -19,24 +17,24 @@ import frc.maps.Constants;
 
 public class RightAscension extends SubsystemBase {
 
-  DoubleSupplier rightAscensionSpeedModifier = () -> 0.1;
-  Double turretLocation;
-  Double turretOffset;
+  double rightAscensionSpeedModifier = 0.1;
+  double turretLocation;
+  double turretOffset;
   
-  Double leftBound;
-  Double rightBound;
-  Double middlePoint = Math.abs(leftBound - rightBound) / 2;
-  Double range = Math.abs(leftBound - rightBound);
+  double leftBound = -10;
+  double rightBound = 10;
+  double middlePoint = leftBound + rightBound / 2;
+  double range = Math.abs(leftBound - middlePoint);
 
 
   private CCSparkMax rightAscensionMotor = new CCSparkMax
   (
-  "yawMotor",
-  "yM",
-  Constants.MotorConstants.RIGHT_ASCENSION,
-  MotorType.kBrushless,
-  IdleMode.kCoast,
-  false
+    "yawMotor",
+    "yM",
+    Constants.MotorConstants.RIGHT_ASCENSION,
+    MotorType.kBrushless,
+    IdleMode.kBrake,
+    false
   );
   private PWM hallEffectSensor = new PWM(1);
   
@@ -46,6 +44,8 @@ public class RightAscension extends SubsystemBase {
   public RightAscension() {
     turretLocation = 0.0;
     turretOffset = 0.0;
+    rightAscensionMotor.set(0.01);
+    
   }
 
 
@@ -53,14 +53,12 @@ public class RightAscension extends SubsystemBase {
 
 
     
-    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.15) * rightAscensionSpeedModifier.getAsDouble();
+    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.15) * rightAscensionSpeedModifier;
 
-    if (turretLocation < (3*Math.PI/2)) {
-    rightAscensionMotor.set
-    (
-      rightAscensionSpeed
-    );
-    }
+    // if (turretLocation < (3*Math.PI/2)) {
+      // rightAscensionMotor.set(rightAscensionSpeed);
+    // }
+
 
     this.checkZeroYaw();
 
@@ -88,11 +86,18 @@ public class RightAscension extends SubsystemBase {
     return turretLocation;
   }
 
+  public void printEncoders() {
+    System.out.println("Right Ascension:" + rightAscensionMotor.getPosition());
+  }
 
+  public void zeroEncoders() {
+    rightAscensionMotor.setPosition(0);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    printEncoders();
   }
 
 }

@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,13 +10,8 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Unit;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -24,8 +19,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -36,15 +29,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -54,13 +45,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.controlschemes.MechanismScheme;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-
-// import frc.maps.Constants.BlueFieldPositionConstants;
-// import frc.maps.Constants.RedFieldPositionConstants;
-import frc.robot.Robot;
 
 /**
  * Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and
@@ -337,7 +323,11 @@ public class SwerveDrive extends SubsystemBase {
          * @return The facing direction of the gyro, between -360 and 360 degrees.
          */
         public double getHeading() {
-                return Math.IEEEremainder(gyro.getYaw(), 360);
+<<<<<<< HEAD
+                return Math.IEEEremainder(gyro.getYaw() + 180, 360);
+=======
+                return Math.IEEEremainder(gyro.getYaw()+180, 360);
+>>>>>>> e7fc96ec66211c09170706e8556dcf3b7bf6243d
         }
 
         /**
@@ -346,7 +336,7 @@ public class SwerveDrive extends SubsystemBase {
          * @return The facing direction of the robot in Rotation2d format.
          */
         public Rotation2d getRotation2d() {
-                return gyro.getRotation2d();
+                return gyro.getRotation2d().plus(Rotation2d.fromRadians(Math.PI));
         }
 
         /**

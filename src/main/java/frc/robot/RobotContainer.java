@@ -26,7 +26,7 @@ public class RobotContainer {
 
   CommandXboxController controller1 = new CommandXboxController(0);
 
-  // SwerveDrive swerveDrive = new SwerveDrive();
+  SwerveDrive swerveDrive = new SwerveDrive();
   RightAscension rightAscension = new RightAscension();
   Declination declination = new Declination();
   PneumaticsSystem pneumatics = new PneumaticsSystem();
@@ -40,7 +40,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
-    // SwerveDriveScheme.configure(swerveDrive, controller1);
+    SwerveDriveScheme.configure(swerveDrive, controller1);
     MechanismScheme.configure(barrelRotation, declination, pneumatics, rightAscension, controller1);
 
     

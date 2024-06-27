@@ -43,7 +43,6 @@ public class CCSparkMax extends CANSparkMax{
         super(deviceID, motorType);
         this.name = name;
         this.shortName = shortName;
-        
         super.setInverted(reverse);
         
 
@@ -67,7 +66,15 @@ public class CCSparkMax extends CANSparkMax{
         voltageConversionFactor = 12;
     }
 
-   
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
+     boolean reverse, boolean encoder) {
+       super(deviceID, motorType);
+        this.name = name;
+        this.shortName = shortName;
+        
+        super.setInverted(reverse);
+        voltageConversionFactor = 12;
+    }
 
     public void reset(){
         encoder.setPosition(0);

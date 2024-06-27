@@ -74,7 +74,7 @@ public class Constants {
         public static final double BACK_LEFT_TURN_ENCODER = 1;
 
         public static final int RIGHT_ASCENSION = 10;
-        public static final int[] DECLINATION = {10, 12};
+        public static final int[] DECLINATION = {11, 12};
         public static final int BARREL_ROTATION = 13; 
 
   }
@@ -87,10 +87,10 @@ public class Constants {
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 0;
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 2;
 
-        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = Math.PI;
-        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = Math.PI;
-        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = Math.PI;
-        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = Math.PI;
+        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.488;
+        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.508;
+        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 4.973;
+        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.780;
 
         // Robot Constants (change with SysId)
         // max speed in free sprint: used in getting velocities of swerve modules
@@ -133,7 +133,7 @@ public class Constants {
     }
 
     public static class PneumaticsConstants {
-      public static final int COMPRESSOR_FAN = 0;
+      public static final int COMPRESSOR_FAN = 4;
       public static final int[] PRESSURE_SEAL = {1, 2};
       public static final int SOLENOID_VALVE = 3;
     }
