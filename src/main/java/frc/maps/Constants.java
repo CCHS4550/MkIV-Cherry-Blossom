@@ -74,7 +74,7 @@ public class Constants {
         public static final double BACK_LEFT_TURN_ENCODER = 1;
 
         public static final int RIGHT_ASCENSION = 10;
-        public static final int[] DECLINATION = {10, 12};
+        public static final int[] DECLINATION = {11, 12};
         public static final int BARREL_ROTATION = 13; 
 
   }
@@ -133,7 +133,7 @@ public class Constants {
     }
 
     public static class PneumaticsConstants {
-      public static final int COMPRESSOR_FAN = 0;
+      public static final int COMPRESSOR_FAN = 4;
       public static final int[] PRESSURE_SEAL = {1, 2};
       public static final int SOLENOID_VALVE = 3;
     }

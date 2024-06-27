@@ -1,5 +1,6 @@
 package frc.controlschemes;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.BarrelRotation;
@@ -19,9 +20,9 @@ public class MechanismScheme {
             rightAscension.rightAscensionDefaultMethod(controller);
         }, rightAscension));
 
-        declination.setDefaultCommand(new RunCommand(() -> {
-            declination.declinationDefaultMethod(controller);
-        }, declination));
+        // declination.setDefaultCommand(new RunCommand(() -> {
+        //     declination.declinationDefaultMethod(controller);
+        // }, declination));
 
 
         configureButtons(barrelRotation, declination, pneumatics, rightAscension, controller);
@@ -35,6 +36,7 @@ public class MechanismScheme {
         controller.rightTrigger().whileTrue(barrelRotation.reload());
         // Shoot the cannon by pressing both controller bumpers.
         controller.leftBumper().and(controller.rightBumper()).onTrue(pneumatics.shoot());
+        controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
     }
     
 }

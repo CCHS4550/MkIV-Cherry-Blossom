@@ -21,7 +21,7 @@ public class PneumaticsSystem extends SubsystemBase {
   private boolean airCompressorStatus;
   private DoubleSolenoid.Value pressureSealStatus;
 
-  private CCSparkMax airCompressors = new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false);
+  private CCSparkMax airCompressors = new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false, false);
   private Compressor compressorFan = new Compressor(Constants.PneumaticsConstants.COMPRESSOR_FAN, PneumaticsModuleType.REVPH);
 
   private DoubleSolenoid pressureSeal = new DoubleSolenoid
