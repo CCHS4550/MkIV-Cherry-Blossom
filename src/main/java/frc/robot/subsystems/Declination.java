@@ -94,7 +94,7 @@ public class Declination extends SubsystemBase {
     this.checkZeroPitch();
 
     // Calculated in radians
-    pitchLocation = Math.abs(((declination1.getPosition() / 126) % 1) * (2 * Math.PI)) - pitchOffset1;
+    pitchLocation = Math.abs(declination1.getPosition()) - pitchOffset1;
 
   }
 
@@ -102,10 +102,8 @@ public class Declination extends SubsystemBase {
     
     if (!pitchLimitSwitch.get()) {
 
-      // 42 ticks per motor revolution
-      // 3 motor revolutions per pitch revolution (Don't push it past a quarter of its revolutions!)
-      // 126 ticks per pith revolution
-      // In radians
+
+      // CCSparkMax.java makes it so that .getPosition() returns a value in Radians
       pitchOffset1 = Math.abs(((declination1.getPosition() / 126) % 1) * (2 * Math.PI));
       pitchOffset2 = Math.abs(((declination2.getPosition() / 126) % 1) * (2 * Math.PI));
       

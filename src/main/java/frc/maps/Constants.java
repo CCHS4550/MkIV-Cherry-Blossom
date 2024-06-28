@@ -295,4 +295,12 @@ public class Constants {
         public static double ELEVATOR_HEIGHT = 19.345;
         public static double ELEVATOR_ANGLE = 0.611;
     }
+
+        // safely divide
+    public double safeDivision(double numerator, double denominator) {
+        if(Math.abs(denominator) < 0.00001) {
+            return 0.0;            }
+            double dividend = numerator/denominator;
+            return dividend;
+        }
 }

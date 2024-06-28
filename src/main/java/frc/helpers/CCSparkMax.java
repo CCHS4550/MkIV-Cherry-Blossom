@@ -47,8 +47,10 @@ public class CCSparkMax extends CANSparkMax{
         
 
         this.encoder = super.getEncoder();
-        this.setPositionConversionFactor(1);
-        this.setVelocityConversionFactor(1);
+        // Will return a value in Radians 
+        this.setPositionConversionFactor(2 * Math.PI);
+        // Will return a value in Radians per Second
+        this.setVelocityConversionFactor(2 * Math.PI / 60);
         voltageConversionFactor = 12;
     }
     public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
@@ -61,8 +63,11 @@ public class CCSparkMax extends CANSparkMax{
         
         if(encoder < 0) return;
         this.encoder = super.getEncoder();
-        this.setPositionConversionFactor(1);
-        this.setVelocityConversionFactor(1);
+
+        // Will return a value in Radians
+        this.setPositionConversionFactor(2 * Math.PI);
+        // Will return a value in Radians per Second
+        this.setVelocityConversionFactor(2 * Math.PI / 60);
         voltageConversionFactor = 12;
     }
 

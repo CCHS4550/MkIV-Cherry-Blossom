@@ -63,7 +63,7 @@ public class RightAscension extends SubsystemBase {
     this.checkZeroYaw();
 
     // in Radians
-    turretLocation = Math.abs(((rightAscensionMotor.getPosition() / 2100) % 1) * (2 * Math.PI)) - turretOffset;
+    turretLocation = Math.abs(rightAscensionMotor.getPosition()/50) - turretOffset;
 
   }
 
