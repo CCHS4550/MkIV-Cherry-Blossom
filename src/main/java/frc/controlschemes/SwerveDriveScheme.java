@@ -87,13 +87,8 @@ public class SwerveDriveScheme implements ControlScheme {
             double turnSpeed = 0;
             // || Math.abs(controller.getRightX()) > 0.15
             if (!orientationLocked) {
-<<<<<<< HEAD
-                orientationLockAngle = swerveDrive.getRotation2d().getRadians() + Math.PI;
-                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.05);
-=======
                 orientationLockAngle = swerveDrive.getRotation2d().getRadians();
                 turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
->>>>>>> e7fc96ec66211c09170706e8556dcf3b7bf6243d
 
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle)
