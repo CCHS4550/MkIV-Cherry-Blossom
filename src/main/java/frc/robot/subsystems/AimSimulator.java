@@ -44,6 +44,6 @@ public class AimSimulator extends SubsystemBase{
 
     @Override
     public void periodic() {
-        printXY();
+        // printXY();
     }
 }

@@ -42,11 +42,11 @@ public class MechanismScheme {
     public static void configureButtons(BarrelRotation barrelRotation, Declination declination, PneumaticsSystem pneumatics, RightAscension rightAscension, CommandXboxController controller, CommandXboxController controller2, AimSimulator aimer){
 
         // Toggle air compressors and fan with left trigger.
-        controller.leftTrigger().onTrue(pneumatics.toggleAirCompressors());
+        controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()) );
         // Rotate Barrels
         controller.rightTrigger().whileTrue(barrelRotation.reload());
         // Shoot the cannon by pressing both controller bumpers.
-        controller.leftBumper().and(controller.rightBumper()).onTrue(pneumatics.shoot());
+        controller.leftBumper().onTrue(pneumatics.shoot());
         controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
 
         controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXY()));

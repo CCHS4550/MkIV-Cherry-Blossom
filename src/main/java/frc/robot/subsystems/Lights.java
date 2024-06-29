@@ -23,7 +23,7 @@ public class Lights extends SubsystemBase {
     
   }
 
-  public void lightsDefaultMethod(CommandXboxController controller){
+  public void lightsDefaultMethod(){
       this.rainbow();
       leds.setData(ledBuffer);
   }
@@ -45,8 +45,8 @@ public class Lights extends SubsystemBase {
 
 
           // Increase by to make the rainbow "move"
-    rainbowFirstPixelHue += 3;
-    System.out.println(rainbowFirstPixelHue);
+    rainbowFirstPixelHue += 1;
+    // System.out.println(rainbowFirstPixelHue);
     // Check bounds
     rainbowFirstPixelHue %= 180;
     

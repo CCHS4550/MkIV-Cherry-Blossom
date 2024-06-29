@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
@@ -39,6 +40,7 @@ public class PneumaticsSystem extends SubsystemBase {
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
     airCompressorStatus = false;
+    compressorFan.disable();
     pressureSealStatus = pressureSeal.get();
   }
 
@@ -58,35 +60,37 @@ public class PneumaticsSystem extends SubsystemBase {
   }
   
 // returns a Command to turn on/off both the air compressors and the fan.
-  public Command toggleAirCompressors(){
+  public void toggleAirCompressors(){
     
     if (airCompressorStatus)  
     {
       airCompressorStatus = !airCompressorStatus;
-      return runOnce(() -> setPercentage(0));
+      this.setPercentage(0);
     } 
     else 
     {  
       airCompressorStatus = !airCompressorStatus;
-      return runOnce(() -> setPercentage(1.0));
+      System.out.println(airCompressorStatus);    
+      this.setPercentage(1.0);
     }
     
   }
 
   public Command disablePressureSeal(){
-    return runOnce(() -> pressureSeal.set(Value.kReverse));
+    return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
   }
 
   public Command enablePressureSeal(){
-    return runOnce(() -> pressureSeal.set(Value.kForward));
+    return new InstantCommand(() -> pressureSeal.set(Value.kForward));
   }
 
   public Command togglePressureSeal(){
-    return runOnce(() -> pressureSeal.toggle());
+    return new InstantCommand(() -> pressureSeal.toggle());
 
   }
 
   public Command shoot(){
+    System.out.println("Test");
     return runEnd(() -> solenoidValve.set(true),() -> solenoidValve.set(false)).withTimeout(3);
   }
 
