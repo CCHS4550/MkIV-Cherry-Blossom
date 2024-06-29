@@ -38,6 +38,7 @@ public class SwerveModule extends SubsystemBase{
         this.turnMotor = turnMotor;
 
         absoluteEncoder = new AnalogEncoder (absoluteEncoderPort);
+        this.absoluteEncoderOffset = absoluteEncoderOffset;
         absoluteEncoder.setDistancePerRotation(2*Math.pi); 
         turnPIDController = new PIDContoller (0.5,0,0);
         turnPIDController.enableContinuousInput(0, 2*Math.pi);
