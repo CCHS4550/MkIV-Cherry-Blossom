@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.BarrelRotation;
 import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscension;
 import frc.robot.subsystems.SwerveDrive;
@@ -25,12 +27,14 @@ import frc.robot.subsystems.SwerveDrive;
 public class RobotContainer {
 
   CommandXboxController controller1 = new CommandXboxController(0);
+  AimSimulator aimer = new AimSimulator();
 
   SwerveDrive swerveDrive = new SwerveDrive();
   RightAscension rightAscension = new RightAscension();
   Declination declination = new Declination();
   PneumaticsSystem pneumatics = new PneumaticsSystem();
   BarrelRotation barrelRotation = new BarrelRotation();
+  // Lights lights = new Lights();
   
 
 
@@ -41,7 +45,7 @@ public class RobotContainer {
 
     // Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(barrelRotation, declination, pneumatics, rightAscension, controller1);
+    MechanismScheme.configure(barrelRotation, declination, pneumatics, rightAscension, controller1, aimer);
 
     
      // initialize controller schemes here

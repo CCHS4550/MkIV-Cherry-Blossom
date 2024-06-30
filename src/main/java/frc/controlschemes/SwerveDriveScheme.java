@@ -59,9 +59,9 @@ public class SwerveDriveScheme implements ControlScheme {
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
                 .withWidget(BuiltInWidgets.kToggleSwitch);
 
-        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
+        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
                 -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
-        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
+        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
                 -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
         // SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
@@ -77,6 +77,7 @@ public class SwerveDriveScheme implements ControlScheme {
         // Sends this command into the command scheduler on repeat! Very important!
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
+            setSlowMode();
             // Set x, y, and turn speed based on joystick inputs
             double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.07)
                     * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier.getAsDouble();
@@ -87,13 +88,8 @@ public class SwerveDriveScheme implements ControlScheme {
             double turnSpeed = 0;
             // || Math.abs(controller.getRightX()) > 0.15
             if (!orientationLocked) {
-<<<<<<< HEAD
-                orientationLockAngle = swerveDrive.getRotation2d().getRadians() + Math.PI;
-                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.05);
-=======
                 orientationLockAngle = swerveDrive.getRotation2d().getRadians();
                 turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
->>>>>>> e7fc96ec66211c09170706e8556dcf3b7bf6243d
 
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle)
