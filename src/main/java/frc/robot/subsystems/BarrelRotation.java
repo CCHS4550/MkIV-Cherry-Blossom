@@ -10,19 +10,25 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.maps.Constants;
 
 public class BarrelRotation extends SubsystemBase {
   DoubleSupplier barrelRotationSpeedModifier = () -> 0.5;
   Double barrelAngle;
 
-  CCSparkMax barrelRotationMotor = new CCSparkMax("barrelRotationMotor","bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
+  private DigitalInput hallEffectSensor = new DigitalInput(Constants.SensorMiscConstants.BARREL_SENSOR);
+
+  // CCSparkMax barrelRotationMotor = new CCSparkMax("barrelRotationMotor","bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
 
   // Will not work because PWM is only an output!
   // private PWM hallEffectSensor = new PWM(0);
+
+  
 
   /** Creates a new BarrelRotation. */
   public BarrelRotation() {}
@@ -44,7 +50,7 @@ public class BarrelRotation extends SubsystemBase {
   } 
 
   private void spinBarrels(){
-    barrelRotationMotor.set(1 * barrelRotationSpeedModifier.getAsDouble());
+    // barrelRotationMotor.set(1 * barrelRotationSpeedModifier.getAsDouble());
   }
 
 

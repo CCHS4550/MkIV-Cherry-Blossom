@@ -8,8 +8,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.CCSparkMax;
@@ -17,7 +16,7 @@ import frc.maps.Constants;
 
 public class RightAscension extends SubsystemBase {
 
-  double rightAscensionSpeedModifier = 0.1;
+  double rightAscensionSpeedModifier = 1;
   double turretLocation;
   double turretOffset;
   
@@ -36,7 +35,7 @@ public class RightAscension extends SubsystemBase {
     IdleMode.kBrake,
     false
   );
-  private PWM hallEffectSensor = new PWM(1);
+  private DigitalInput hallEffectSensor = new DigitalInput(1);
   
 
 
@@ -44,7 +43,9 @@ public class RightAscension extends SubsystemBase {
   public RightAscension() {
     turretLocation = 0.0;
     turretOffset = 0.0;
-    rightAscensionMotor.set(0.01);
+    rightAscensionMotor.setVoltage(6);
+    rightAscensionMotor.set(0.1);
+    rightAscensionMotor.setPosition((3*Math.PI)/4);
     
   }
 
@@ -53,32 +54,32 @@ public class RightAscension extends SubsystemBase {
 
 
     
-    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.15) * rightAscensionSpeedModifier;
+    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07) * rightAscensionSpeedModifier;
 
-    // if (turretLocation < (3*Math.PI/2)) {
-      // rightAscensionMotor.set(rightAscensionSpeed);
-    // }
+    if (rightAscensionMotor.getPosition() < ((3*Math.PI)/2) && rightAscensionMotor.getPosition() > 0) {
+      rightAscensionMotor.set(rightAscensionSpeed);
+    }
 
 
     this.checkZeroYaw();
 
     // in Radians
-    turretLocation = Math.abs(rightAscensionMotor.getPosition()/50) - turretOffset;
+    turretLocation = Math.abs(rightAscensionMotor.getPosition()) - turretOffset;
 
   }
 
   private void checkZeroYaw() {
     // returns value 0-1
-    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
+    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.get(), 0.1);
 
-    // if (hallEffectInput != 0) {
-
-    // // 42 ticks per motor revolution
-    // // 50 motor revolutions per turret revolution
-    // // 2100 ticks per turret revolution
-    // // In radians
-    //   turretOffset = Math.abs(((rightAscensionMotor.getPosition() / 2100) % 1) * (2 * Math.PI));
+    if (hallEffectSensor.get()) {
+      System.out.println(rightAscensionMotor.getPosition());
+      rightAscensionMotor.setPosition((3*Math.PI)/4);
+    // In radians
+      // turretOffset = Math.abs(((rightAscensionMotor.getPosition())) * (2 * Math.PI));
     }
+
+  }
     
   
 
