@@ -78,7 +78,7 @@ public class PneumaticsSystem extends SubsystemBase {
 
   public Command disablePressureSeal(){
     return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
-  }
+  }  
 
   public Command enablePressureSeal(){
     return new InstantCommand(() -> pressureSeal.set(Value.kForward));

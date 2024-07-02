@@ -38,6 +38,7 @@ public class CCSparkMax extends CANSparkMax{
         this.setVelocityConversionFactor(velocityConversionFactor);
         voltageConversionFactor = 12;
     }
+    
     public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
      boolean reverse){
         super(deviceID, motorType);

@@ -54,6 +54,9 @@ public class SwerveDriveScheme implements ControlScheme {
            ) 
            
            {
+
+            setSlowMode();
+
         Shuffleboard.getTab("Diagnostics").getLayout("Swerve", "List").add("isCentric", fieldCentric)
                 .withWidget(BuiltInWidgets.kBooleanBox);
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
@@ -87,15 +90,17 @@ public class SwerveDriveScheme implements ControlScheme {
 
             double turnSpeed = 0;
             // || Math.abs(controller.getRightX()) > 0.15
-            if (!orientationLocked) {
-                orientationLockAngle = swerveDrive.getRotation2d().getRadians();
-                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
 
-            } else {
-                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle)
-                        * 2;
-            }
-            turnSpeed *= 2.0 * Math.PI * turnSpeedModifier;
+            // Commented Out
+            // if (!orientationLocked) {
+            //     orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+            //     turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
+
+            // } else {
+            //     turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle)
+            //             * 2;
+            // }
+            // turnSpeed *= 2.0 * Math.PI * turnSpeedModifier;
 
             // Limits acceleration and speed
             // Possibly change the speed limiting to somewhere else (maybe a normalize

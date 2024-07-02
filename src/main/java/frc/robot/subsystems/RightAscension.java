@@ -16,7 +16,7 @@ import frc.maps.Constants;
 
 public class RightAscension extends SubsystemBase {
 
-  double rightAscensionSpeedModifier = 1;
+  double rightAscensionSpeedModifier = .25;
   double turretLocation;
   double turretOffset;
   
@@ -33,7 +33,9 @@ public class RightAscension extends SubsystemBase {
     Constants.MotorConstants.RIGHT_ASCENSION,
     MotorType.kBrushless,
     IdleMode.kBrake,
-    false
+    false,
+    ((2 * Math.PI) / 50),
+    ((2 * Math.PI) / 50) / 60 
   );
   private DigitalInput hallEffectSensor = new DigitalInput(1);
   
@@ -44,7 +46,7 @@ public class RightAscension extends SubsystemBase {
     turretLocation = 0.0;
     turretOffset = 0.0;
     rightAscensionMotor.setVoltage(6);
-    rightAscensionMotor.set(0.1);
+    rightAscensionMotor.set(0.05);
     rightAscensionMotor.setPosition((3*Math.PI)/4);
     
   }
@@ -53,15 +55,26 @@ public class RightAscension extends SubsystemBase {
   public void rightAscensionDefaultMethod(CommandXboxController controller){
 
 
-    
-    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07) * rightAscensionSpeedModifier;
+    // System.out.println("controller input" + controller.getRightX());
+    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.05) * rightAscensionSpeedModifier;
 
+    // System.out.println("rightascensionspeed:" + rightAscensionSpeed);
     if (rightAscensionMotor.getPosition() < ((3*Math.PI)/2) && rightAscensionMotor.getPosition() > 0) {
       rightAscensionMotor.set(rightAscensionSpeed);
+    } else if(rightAscensionMotor.getPosition() > (3*Math.PI/2)) {
+      rightAscensionMotor.set(-.25);
+    } else {
+      rightAscensionMotor.set(.25);
     }
 
+    
 
-    this.checkZeroYaw();
+    // System.out.println("speed" + rightAscensionMotor.get());
+
+    // System.out.println("position" + rightAscensionMotor.getPosition());
+
+
+    // this.checkZeroYaw();
 
     // in Radians
     turretLocation = Math.abs(rightAscensionMotor.getPosition()) - turretOffset;

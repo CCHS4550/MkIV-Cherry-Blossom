@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.CCSparkMax;
@@ -55,7 +56,9 @@ public class Declination extends SubsystemBase {
     Constants.MotorConstants.DECLINATION[0],
     MotorType.kBrushless,
     IdleMode.kCoast,
-    false
+    false,
+    (2 * Math.PI) / 7,
+    ((2 * Math.PI) / 7) / 60
   );
 
   private CCSparkMax declination2 = new CCSparkMax
@@ -65,8 +68,12 @@ public class Declination extends SubsystemBase {
     Constants.MotorConstants.DECLINATION[1],
     MotorType.kBrushless,
     IdleMode.kCoast,
-    true
+    true,
+    (2 * Math.PI) / 7,
+    ((2 * Math.PI) / 7) / 60
   );
+
+  
 
   
 
@@ -75,15 +82,16 @@ public class Declination extends SubsystemBase {
 
     pitchOffset1 = 0.0;
     pitchOffset2 = 0.0;
-    declination1.setPosition(126/4);
-    declination2.setPosition(126/4);
+    declination1.setPosition(0);
+    declination2.setPosition(0);
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {
     double declinationSpeed = MathUtil.applyDeadband(-controller.getRightY(), 0.05) * declinationSpeedModifier;
 
+    System.out.println(pitchLimitSwitch.get());
     // if (pitchLimitSwitch.get() && pitchLocation < (Math.PI/2)) {
-      declination1.set
+      declination2.set
       (
       
         declinationSpeed
