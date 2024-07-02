@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.helpers.OI;
 
 public class Lights extends SubsystemBase {
@@ -18,20 +17,16 @@ public class Lights extends SubsystemBase {
   /** Creates a new Lights. */
   public Lights() {
     leds.setLength(ledBuffer.getLength());
-    
+
     leds.start();
-    
   }
 
-  public void lightsDefaultMethod(){
-      this.rainbow();
-      leds.setData(ledBuffer);
+  public void lightsDefaultMethod() {
+    this.rainbow();
+    leds.setData(ledBuffer);
   }
 
-    
-  
-
-    private void rainbow() {
+  private void rainbow() {
 
     // For every pixel
     for (var i = 0; i < ledBuffer.getLength(); i++) {
@@ -40,17 +35,13 @@ public class Lights extends SubsystemBase {
       final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
       // Set the value
       ledBuffer.setHSV(i, hue, 255, 128);
-      
     }
 
-
-          // Increase by to make the rainbow "move"
+    // Increase by to make the rainbow "move"
     rainbowFirstPixelHue += 1;
     // System.out.println(rainbowFirstPixelHue);
     // Check bounds
     rainbowFirstPixelHue %= 180;
-    
-
   }
 
   @Override

@@ -6,12 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,20 +21,18 @@ public class PneumaticsSystem extends SubsystemBase {
   private boolean airCompressorStatus;
   private DoubleSolenoid.Value pressureSealStatus;
 
-  private CCSparkMax airCompressors = new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false, false);
-  private Compressor compressorFan = new Compressor(Constants.PneumaticsConstants.COMPRESSOR_FAN, PneumaticsModuleType.REVPH);
+  private CCSparkMax airCompressors =
+      new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false, false);
+  private Compressor compressorFan =
+      new Compressor(Constants.PneumaticsConstants.COMPRESSOR_FAN, PneumaticsModuleType.REVPH);
 
-  private DoubleSolenoid pressureSeal = new DoubleSolenoid
-  (
-    PneumaticsModuleType.REVPH,
-    Constants.PneumaticsConstants.PRESSURE_SEAL[0],
-    Constants.PneumaticsConstants.PRESSURE_SEAL[1]
-  );
-  private Solenoid solenoidValve = new Solenoid
-  (
-    PneumaticsModuleType.REVPH,
-    Constants.PneumaticsConstants.SOLENOID_VALVE
-  );
+  private DoubleSolenoid pressureSeal =
+      new DoubleSolenoid(
+          PneumaticsModuleType.REVPH,
+          Constants.PneumaticsConstants.PRESSURE_SEAL[0],
+          Constants.PneumaticsConstants.PRESSURE_SEAL[1]);
+  private Solenoid solenoidValve =
+      new Solenoid(PneumaticsModuleType.REVPH, Constants.PneumaticsConstants.SOLENOID_VALVE);
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
@@ -44,56 +41,48 @@ public class PneumaticsSystem extends SubsystemBase {
     pressureSealStatus = pressureSeal.get();
   }
 
-  // Takes a percentage of 1.0 and sets the air compressors to that percentage along with turning on the accompanying fan if the value is greater than 0. 
+  // Takes a percentage of 1.0 and sets the air compressors to that percentage along with turning on
+  // the accompanying fan if the value is greater than 0.
   private void setPercentage(double percentage) {
 
     airCompressors.setVoltage(percentage * 12);
 
-    if (percentage > 0) 
-    {
+    if (percentage > 0) {
       compressorFan.enableDigital();
-    } 
-    else 
-    {
+    } else {
       compressorFan.disable();
     }
   }
-  
-// returns a Command to turn on/off both the air compressors and the fan.
-  public void toggleAirCompressors(){
-    
-    if (airCompressorStatus)  
-    {
+
+  // returns a Command to turn on/off both the air compressors and the fan.
+  public void toggleAirCompressors() {
+
+    if (airCompressorStatus) {
       airCompressorStatus = !airCompressorStatus;
       this.setPercentage(0);
-    } 
-    else 
-    {  
+    } else {
       airCompressorStatus = !airCompressorStatus;
-      System.out.println(airCompressorStatus);    
+      System.out.println(airCompressorStatus);
       this.setPercentage(1.0);
     }
-    
   }
 
-  public Command disablePressureSeal(){
+  public Command disablePressureSeal() {
     return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
-  }  
+  }
 
-  public Command enablePressureSeal(){
+  public Command enablePressureSeal() {
     return new InstantCommand(() -> pressureSeal.set(Value.kForward));
   }
 
-  public Command togglePressureSeal(){
+  public Command togglePressureSeal() {
     return new InstantCommand(() -> pressureSeal.toggle());
-
   }
 
-  public Command shoot(){
+  public Command shoot() {
     System.out.println("Test");
-    return runEnd(() -> solenoidValve.set(true),() -> solenoidValve.set(false)).withTimeout(3);
+    return runEnd(() -> solenoidValve.set(true), () -> solenoidValve.set(false)).withTimeout(3);
   }
-
 
   @Override
   public void periodic() {
