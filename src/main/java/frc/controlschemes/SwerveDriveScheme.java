@@ -69,8 +69,8 @@ public class SwerveDriveScheme implements ControlScheme {
             Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
             -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             0);
-    // SlewRateLimiter turnRateLimiter = new
-    // SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
+    SlewRateLimiter turnRateLimiter = new
+    SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
     PIDController orientationLockPID = new PIDController(.5, 0, 0);
 
@@ -81,7 +81,11 @@ public class SwerveDriveScheme implements ControlScheme {
     swerveDrive.setDefaultCommand(
         new RunCommand(
                 () -> {
+
+
+                  // Set to slow mode for recreation
                   setSlowMode();
+
                   // Set x, y, and turn speed based on joystick inputs
                   double xSpeed =
                       MathUtil.applyDeadband(-controller.getLeftY(), 0.07)
@@ -96,18 +100,16 @@ public class SwerveDriveScheme implements ControlScheme {
                   double turnSpeed = 0;
                   // || Math.abs(controller.getRightX()) > 0.15
 
-                  // Commented Out
+                  
                   if (!orientationLocked) {
                     orientationLockAngle = swerveDrive.getRotation2d().getRadians();
                     turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
 
                   } else {
                     turnSpeed =
-                        orientationLockPID.calculate(
-                                swerveDrive.getRotation2d().getRadians() + Math.PI,
-                                orientationLockAngle)
-                            * 2;
+                        orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians() + Math.PI, orientationLockAngle) * 2;
                   }
+
                   turnSpeed *= 2.0 * Math.PI * turnSpeedModifier;
 
                   // Limits acceleration and speed
@@ -115,7 +117,7 @@ public class SwerveDriveScheme implements ControlScheme {
                   // function)
                   xSpeed = xRateLimiter.calculate(xSpeed);
                   ySpeed = yRateLimiter.calculate(ySpeed);
-                  // turnSpeed = turnRateLimiter.calculate(turnSpeed);
+                  turnSpeed = turnRateLimiter.calculate(turnSpeed);
 
                   // Constructs desired chassis speeds
                   ChassisSpeeds chassisSpeeds;
@@ -148,6 +150,9 @@ public class SwerveDriveScheme implements ControlScheme {
         //    port
         controller);
   }
+
+
+
 
   /**
    * Configures buttons and their respective commands.

@@ -12,6 +12,7 @@
 // GNU General Public License for more details.
 
 package frc.robot;
+import frc.maps.Constants;
 
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -20,6 +21,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.urcl.URCL;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -83,8 +87,15 @@ public class Robot extends LoggedRobot {
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.disableDeterministicTimestamps()
 
+
+    // Unofficial REV-Compatible Logger
+    // Used by SysID to log REV devices
+    Logger.registerURCL(URCL.startExternal());
     // Start AdvantageKit logger
     Logger.start();
+    
+
+
 
     // Initialize auto chooser
     chooser.addDefaultOption("Default Auto", defaultAuto);

@@ -4,12 +4,23 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
@@ -24,6 +35,9 @@ public class RightAscension extends SubsystemBase {
   double middlePoint = leftBound + rightBound / 2;
   double range = Math.abs(leftBound - middlePoint);
 
+
+
+
   private CCSparkMax rightAscensionMotor =
       new CCSparkMax(
           "yawMotor",
@@ -34,7 +48,22 @@ public class RightAscension extends SubsystemBase {
           false,
           ((2 * Math.PI) / 50),
           ((2 * Math.PI) / 50) / 60);
+
   private DigitalInput hallEffectSensor = new DigitalInput(1);
+
+  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
+
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                  new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
+                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
+                  new SysIdRoutine.Mechanism(
+                                  (voltage) -> setTurretVoltage(voltage),
+                                  null, // No log consumer, since data is recorded by URCL
+                                  this));
+
+
+
+
 
   /** Creates a new RightAscension. */
   public RightAscension() {
@@ -49,6 +78,8 @@ public class RightAscension extends SubsystemBase {
 
     double controllerInput = MathUtil.applyDeadband(controller.getRightX(), 0.05);
   }
+
+
 
   public void rightAscensionDefaultMethodOutDated(CommandXboxController controller) {
 
@@ -80,6 +111,9 @@ public class RightAscension extends SubsystemBase {
     turretLocation = Math.abs(rightAscensionMotor.getPosition()) - turretOffset;
   }
 
+
+
+
   private void checkZeroYaw() {
     // returns value 0-1
 
@@ -108,6 +142,35 @@ public class RightAscension extends SubsystemBase {
       return false;
     }
   }
+
+
+  public void setTurretVoltage(Measure<Voltage> volts) {
+    rightAscensionMotor.setVoltage(volts.magnitude());
+
+  }
+
+
+  /**
+   * Used only in characterizing. Don't touch this.
+   *
+   * @param direction
+   * @return the quasistatic characterization test
+   */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.quasistatic(direction);
+  }
+
+  /**
+   * Used only in characterizing. Don't touch this.
+   *
+   * @param direction
+   * @return the dynamic characterization test
+   */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.dynamic(direction);
+  }
+
+
 
   @Override
   public void periodic() {

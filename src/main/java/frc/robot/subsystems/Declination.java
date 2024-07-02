@@ -7,12 +7,20 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
 import frc.maps.Constants;
+
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
 public class Declination extends SubsystemBase {
 
@@ -64,6 +72,16 @@ public class Declination extends SubsystemBase {
           true,
           (2 * Math.PI) / 7,
           ((2 * Math.PI) / 7) / 60);
+
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                  new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
+                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
+                  new SysIdRoutine.Mechanism(
+                                  (voltage) -> setPitchVoltage(voltage),
+                                  null, // No log consumer, since data is recorded by URCL
+                                  this));
+
+  
 
   /** Creates a new Declination. */
   public Declination() {
@@ -127,6 +145,35 @@ public class Declination extends SubsystemBase {
   public void printEncoders() {
     System.out.println("Declination:" + declination1.getPosition());
   }
+
+
+  public void setPitchVoltage(Measure<Voltage> volts) {
+    declination1.setVoltage(volts.magnitude());
+    declination2.setVoltage(volts.magnitude());
+
+  }
+
+
+  /**
+   * Used only in characterizing. Don't touch this.
+   *
+   * @param direction
+   * @return the quasistatic characterization test
+   */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.quasistatic(direction);
+  }
+
+  /**
+   * Used only in characterizing. Don't touch this.
+   *
+   * @param direction
+   * @return the dynamic characterization test
+   */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.dynamic(direction);
+  }
+
 
   @Override
   public void periodic() {
