@@ -51,26 +51,36 @@ public class RightAscension extends SubsystemBase {
     
   }
 
+  public void rightAscensionDefaultMethod(CommandXboxController controller, AimSimulator aimer) {
+    
+    double controllerInput = MathUtil.applyDeadband(controller.getRightX(), 0.05);
 
-  public void rightAscensionDefaultMethod(CommandXboxController controller){
-
-
-    // System.out.println("controller input" + controller.getRightX());
-    double rightAscensionSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.05) * rightAscensionSpeedModifier;
-
-    // System.out.println("rightascensionspeed:" + rightAscensionSpeed);
-    if (rightAscensionMotor.getPosition() < ((3*Math.PI)/2) && rightAscensionMotor.getPosition() > 0) {
-      rightAscensionMotor.set(rightAscensionSpeed);
-    } else if(rightAscensionMotor.getPosition() > (3*Math.PI/2)) {
-      rightAscensionMotor.set(-.25);
-    } else {
-      rightAscensionMotor.set(.25);
-    }
+    double 
 
     
 
-    // System.out.println("speed" + rightAscensionMotor.get());
+  }
 
+  public void rightAscensionDefaultMethodOutDated(CommandXboxController controller){
+
+    // System.out.println("controller input" + controller.getRightX());
+    double rightAscensionSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05) * rightAscensionSpeedModifier;
+
+    // System.out.println("rightascensionspeed:" + rightAscensionSpeed);
+    if (rightAscensionMotor.getPosition() < ((3*Math.PI)/2) && rightAscensionMotor.getPosition() > 0) {
+
+      rightAscensionMotor.set(rightAscensionSpeed);
+
+    } else if(rightAscensionMotor.getPosition() > (3*Math.PI/2)) {
+
+      rightAscensionMotor.set(-.25);
+
+    } else {
+
+      rightAscensionMotor.set(.25);
+    }
+
+    // System.out.println("speed" + rightAscensionMotor.get());
     // System.out.println("position" + rightAscensionMotor.getPosition());
 
 
@@ -83,13 +93,10 @@ public class RightAscension extends SubsystemBase {
 
   private void checkZeroYaw() {
     // returns value 0-1
-    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.get(), 0.1);
 
     if (hallEffectSensor.get()) {
-      System.out.println(rightAscensionMotor.getPosition());
+      // System.out.println(rightAscensionMotor.getPosition());
       rightAscensionMotor.setPosition((3*Math.PI)/4);
-    // In radians
-      // turretOffset = Math.abs(((rightAscensionMotor.getPosition())) * (2 * Math.PI));
     }
 
   }
@@ -106,6 +113,14 @@ public class RightAscension extends SubsystemBase {
 
   public void zeroEncoders() {
     rightAscensionMotor.setPosition(0);
+  }
+
+  public boolean checkBounds(double x){
+    if (x < ((Math.PI * 3) / 2) && x > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override

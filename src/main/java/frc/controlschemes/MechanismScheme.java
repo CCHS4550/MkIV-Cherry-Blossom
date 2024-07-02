@@ -19,13 +19,13 @@ public class MechanismScheme {
 
 
 
-        rightAscension.setDefaultCommand(new RunCommand(() -> {
-            rightAscension.rightAscensionDefaultMethod(controller);
-        }, rightAscension));
+        // rightAscension.setDefaultCommand(new RunCommand(() -> {
+        //     rightAscension.rightAscensionDefaultMethod(controller);
+        // }, rightAscension));
 
-        declination.setDefaultCommand(new RunCommand(() -> {
-            declination.declinationDefaultMethod(controller);
-        }, declination));
+        // declination.setDefaultCommand(new RunCommand(() -> {
+        //     declination.declinationDefaultMethod(controller);
+        // }, declination));
 
         // lights.setDefaultCommand(new RunCommand(() -> {
         //     lights.lightsDefaultMethod(controller);
