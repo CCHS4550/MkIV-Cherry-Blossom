@@ -54,9 +54,6 @@ public class RightAscension extends SubsystemBase {
   public void rightAscensionDefaultMethod(CommandXboxController controller, AimSimulator aimer) {
     
     double controllerInput = MathUtil.applyDeadband(controller.getRightX(), 0.05);
-
-    double 
-
     
 
   }

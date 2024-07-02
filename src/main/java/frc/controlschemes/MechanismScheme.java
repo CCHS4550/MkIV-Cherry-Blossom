@@ -17,11 +17,9 @@ public class MechanismScheme {
 
         CommandXboxController controller2 = new CommandXboxController(1);
 
-
-
-        // rightAscension.setDefaultCommand(new RunCommand(() -> {
-        //     rightAscension.rightAscensionDefaultMethod(controller);
-        // }, rightAscension));
+        rightAscension.setDefaultCommand(new RunCommand(() -> {
+            rightAscension.rightAscensionDefaultMethod(controller, aimer);
+        }, rightAscension));
 
         // declination.setDefaultCommand(new RunCommand(() -> {
         //     declination.declinationDefaultMethod(controller);
