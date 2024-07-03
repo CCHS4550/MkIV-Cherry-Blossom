@@ -5,9 +5,7 @@
 package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.maps.ControlMap;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.BarrelRotation;
 import frc.robot.subsystems.Declination;
