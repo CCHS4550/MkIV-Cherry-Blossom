@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.commands.defaultcommands.DeclinationDefault;
 import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
 import frc.maps.Constants;
@@ -23,6 +24,9 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 public class Declination extends SubsystemBase {
+
+  AimSimulator aimer;
+  CommandXboxController controller;
 
   double declinationSpeedModifier = 0.1;
 
@@ -80,16 +84,22 @@ public class Declination extends SubsystemBase {
                                   (voltage) -> setPitchVoltage(voltage),
                                   null, // No log consumer, since data is recorded by URCL
                                   this));
+                                  
 
   
 
   /** Creates a new Declination. */
-  public Declination() {
+  public Declination(AimSimulator aimer, CommandXboxController controller) {
+
+    this.aimer = aimer;
+    this.controller = controller;
 
     pitchOffset1 = 0.0;
     pitchOffset2 = 0.0;
     declination1.setPosition(0);
     declination2.setPosition(0);
+
+    setDefaultCommand(new DeclinationDefault(this, controller));
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {

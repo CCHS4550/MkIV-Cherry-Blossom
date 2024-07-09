@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import java.util.List;
@@ -154,6 +156,7 @@ public class SwerveDrive extends SubsystemBase {
   // Initialize gyro
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+
   // SwerveDriveOdometry odometer;
   SwerveDrivePoseEstimator poseEstimator;
   PhotonPoseEstimator photonPoseEstimator;
@@ -195,14 +198,13 @@ public class SwerveDrive extends SubsystemBase {
           .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
           .withSize(2, 2);
 
-  // SysIdRoutine sysIdRoutine = new SysIdRoutine(
-  //                 new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5),
-  //                                 (state) -> Logger.recordOutput("SysIdTestState",
-  // state.toString())),
-  //                 new SysIdRoutine.Mechanism(
-  //                                 (voltage) -> setDriveVoltages(voltage),
-  //                                 null, // No log consumer, since data is recorded by URCL
-  //                                 this));
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                  new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5),
+                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
+                  new SysIdRoutine.Mechanism(
+                                  (voltage) -> setDriveVoltages(voltage),
+                                  null, // No log consumer, since data is recorded by URCL
+                                  this));
 
   public Rotation2d initialAngle = new Rotation2d(0);
 
@@ -365,7 +367,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
 
     // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
-    // Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
+    org.littletonrobotics.junction.Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
     poseEstimator.update(getRotation2d(), swerveModulePositions);
 
@@ -731,9 +733,9 @@ public class SwerveDrive extends SubsystemBase {
    * @param direction
    * @return the quasistatic characterization test
    */
-  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //         return sysIdRoutine.quasistatic(direction);
-  // }
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.quasistatic(direction);
+  }
 
   /**
    * Used only in characterizing. Don't touch this.
@@ -741,9 +743,9 @@ public class SwerveDrive extends SubsystemBase {
    * @param direction
    * @return the dynamic characterization test
    */
-  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //         return sysIdRoutine.dynamic(direction);
-  // }
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+          return sysIdRoutine.dynamic(direction);
+  }
 
   /**
    * Used only in Characterizing. Don't touch this. Sets the provided voltages and locks the wheels
