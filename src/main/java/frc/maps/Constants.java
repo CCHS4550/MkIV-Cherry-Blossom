@@ -32,7 +32,6 @@ public class Constants {
     REPLAY
   }
 
-
   public static class ConversionConstants {
 
     // 150/7 rotations of the turn motor to one rotation of the wheel
@@ -63,8 +62,6 @@ public class Constants {
     public static final int FRONT_RIGHT_TURN = 4;
     public static final boolean FRONT_RIGHT_TURN_REVERSE = true;
     public static final double FRONT_RIGHT_TURN_ENCODER = 1;
-
-    
 
     public static final int FRONT_LEFT_DRIVE = 7;
     public static final boolean FRONT_LEFT_DRIVE_REVERSE = false;
