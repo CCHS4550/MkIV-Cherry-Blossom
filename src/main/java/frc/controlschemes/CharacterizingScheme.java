@@ -7,16 +7,17 @@ package frc.controlschemes;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.AimSimulator;
-import frc.robot.subsystems.BarrelRotation;
+// import frc.robot.subsystems.BarrelRotation;
 import frc.robot.subsystems.Declination;
 import frc.robot.subsystems.PneumaticsSystem;
+import frc.robot.subsystems.Reloading;
 import frc.robot.subsystems.RightAscension;
 
 /** Add your docs here. */
 public class CharacterizingScheme {
 
   public static void configure(
-      BarrelRotation barrelRotation,
+      Reloading reloading,
       Declination declination,
       PneumaticsSystem pneumatics,
       RightAscension rightAscension,
@@ -24,11 +25,11 @@ public class CharacterizingScheme {
       AimSimulator aimer) {
 
     configureButtons(
-        barrelRotation, declination, pneumatics, rightAscension, controller, controller, aimer);
+        reloading, declination, pneumatics, rightAscension, controller, controller, aimer);
   }
 
   public static void configureButtons(
-      BarrelRotation barrelRotation,
+      Reloading reloading,
       Declination declination,
       PneumaticsSystem pneumatics,
       RightAscension rightAscension,

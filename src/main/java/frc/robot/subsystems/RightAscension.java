@@ -20,10 +20,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.commands.defaultcommands.RightAscensionDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
 public class RightAscension extends SubsystemBase {
+
+  AimSimulator aimer;
+  CommandXboxController controller;
 
   double rightAscensionSpeedModifier = .25;
   double turretLocation;
@@ -68,12 +72,24 @@ public class RightAscension extends SubsystemBase {
               this));
 
   /** Creates a new RightAscension. */
-  public RightAscension() {
+  public RightAscension(AimSimulator aimer, CommandXboxController controller) {
+
+    this.aimer = aimer;
+    this.controller = controller;
+
     turretLocation = 0.0;
     turretOffset = 0.0;
     rightAscensionMotor.setVoltage(6);
+<<<<<<< HEAD
     rightAscensionMotor.set(0);
     rightAscensionMotor.setPosition((3 * Math.PI) / 4);
+=======
+    rightAscensionMotor.set(0.02);
+    rightAscensionMotor.setIdleMode(IdleMode.kBrake);
+    rightAscensionMotor.setPosition(0);
+
+    setDefaultCommand(new RightAscensionDefault(this));
+>>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
   }
 
   public void rightAscensionDefaultMethod(CommandXboxController controller, AimSimulator aimer) {
@@ -88,12 +104,11 @@ public class RightAscension extends SubsystemBase {
         MathUtil.applyDeadband(controller.getRightX(), 0.05) * rightAscensionSpeedModifier;
 
     // System.out.println("rightascensionspeed:" + rightAscensionSpeed);
-    if (rightAscensionMotor.getPosition() < ((3 * Math.PI) / 2)
-        && rightAscensionMotor.getPosition() > 0) {
+    if (Math.abs(rightAscensionMotor.getPosition()) < (Math.PI)) {
 
       rightAscensionMotor.set(rightAscensionSpeed);
 
-    } else if (rightAscensionMotor.getPosition() > (3 * Math.PI / 2)) {
+    } else if (rightAscensionMotor.getPosition() > (Math.PI)) {
 
       rightAscensionMotor.set(-.25);
 
@@ -107,10 +122,12 @@ public class RightAscension extends SubsystemBase {
 
     // this.checkZeroYaw();
 
-    // in Radians
-    turretLocation = Math.abs(rightAscensionMotor.getPosition()) - turretOffset;
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
   private void checkZeroYaw() {
     // returns value 0-1
 
@@ -121,10 +138,10 @@ public class RightAscension extends SubsystemBase {
   }
 
   public double getRightAscension() {
-    return turretLocation;
+    return rightAscensionMotor.getPosition();
   }
 
-  public void printEncoders() {
+  public void printRightAscension() {
     System.out.println("Right Ascension:" + rightAscensionMotor.getPosition());
   }
 
@@ -133,7 +150,7 @@ public class RightAscension extends SubsystemBase {
   }
 
   public boolean checkBounds(double x) {
-    if (x < ((Math.PI * 3) / 2) && x > 0) {
+    if (Math.abs(x) < Math.PI) {
       return true;
     } else {
       return false;

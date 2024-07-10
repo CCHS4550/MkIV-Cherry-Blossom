@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
+import frc.commands.defaultcommands.ReloadingDefault;
 
-public class BarrelRotation extends SubsystemBase {
+public class Reloading extends SubsystemBase {
+  PneumaticsSystem pneumatics;
   DoubleSupplier barrelRotationSpeedModifier = () -> 0.5;
   Double barrelAngle;
 
@@ -24,7 +26,12 @@ public class BarrelRotation extends SubsystemBase {
   // private PWM hallEffectSensor = new PWM(0);
 
   /** Creates a new BarrelRotation. */
-  public BarrelRotation() {}
+  public Reloading(PneumaticsSystem pneumatics) {
+    this.pneumatics = pneumatics;
+
+    setDefaultCommand(new ReloadingDefault(this));
+
+  }
 
   public Command reload() {
 

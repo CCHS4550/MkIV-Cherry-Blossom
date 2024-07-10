@@ -18,10 +18,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.commands.defaultcommands.DeclinationDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
 public class Declination extends SubsystemBase {
+
+  AimSimulator aimer;
+  CommandXboxController controller;
 
   double declinationSpeedModifier = 0.1;
 
@@ -70,6 +74,7 @@ public class Declination extends SubsystemBase {
           1 / 500,
           (1 / 500) / 60);
 
+<<<<<<< HEAD
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -83,12 +88,29 @@ public class Declination extends SubsystemBase {
               (voltage) -> setPitchVoltage(voltage),
               null, // No log consumer, since data is recorded by URCL
               this));
+=======
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                  new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
+                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
+                  new SysIdRoutine.Mechanism(
+                                  (voltage) -> setPitchVoltage(voltage),
+                                  null, // No log consumer, since data is recorded by URCL
+                                  this));
+                                  
+
+  
+>>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
 
   /** Creates a new Declination. */
-  public Declination() {
+  public Declination(AimSimulator aimer, CommandXboxController controller) {
+
+    this.aimer = aimer;
+    this.controller = controller;
 
     declination1.setPosition(0);
     declination2.setPosition(0);
+
+    setDefaultCommand(new DeclinationDefault(this, controller));
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {
