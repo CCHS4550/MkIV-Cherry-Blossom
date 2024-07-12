@@ -4,18 +4,17 @@
 
 package frc.commands.defaultcommands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Declination;
 
 public class DeclinationDefault extends Command {
-  CommandXboxController controller;
+
   Declination declination;
   /** Creates a new DeclinationDefault. */
-  public DeclinationDefault(Declination declination, CommandXboxController controller) {
-    this.controller = controller;
+  public DeclinationDefault(Declination declination) {
+
     this.declination = declination;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(declination);
   }
@@ -28,11 +27,8 @@ public class DeclinationDefault extends Command {
   @Override
   public void execute() {
 
-    declination.declinationDefaultMethod(controller);
-
+    // declination.declinationDefaultMethod(controller);
   }
-
-
 
   // Called once the command ends or is interrupted.
   @Override

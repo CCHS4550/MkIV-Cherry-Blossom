@@ -4,23 +4,27 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.commands.defaultcommands.ReloadingDefault;
+import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
-import frc.commands.defaultcommands.ReloadingDefault;
 
 public class Reloading extends SubsystemBase {
   PneumaticsSystem pneumatics;
-  DoubleSupplier barrelRotationSpeedModifier = () -> 0.5;
+  DoubleSupplier barrelRotationSpeedModifier = () -> 1;
   Double barrelAngle;
 
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.BARREL_SENSOR);
 
-  // CCSparkMax barrelRotationMotor = new CCSparkMax("barrelRotationMotor","bRM", 13,
-  // MotorType.kBrushless, IdleMode.kBrake, false);
+  CCSparkMax barrelRotationMotor =
+      new CCSparkMax(
+          "barrelRotationMotor", "bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
 
   // Will not work because PWM is only an output!
   // private PWM hallEffectSensor = new PWM(0);
@@ -30,10 +34,10 @@ public class Reloading extends SubsystemBase {
     this.pneumatics = pneumatics;
 
     setDefaultCommand(new ReloadingDefault(this));
-
   }
 
   public Command reload() {
+    System.out.println("asjdlgkfhgj");
 
     return this.runEnd(
         () -> {
@@ -43,7 +47,8 @@ public class Reloading extends SubsystemBase {
   }
 
   private void spinBarrels() {
-    // barrelRotationMotor.set(1 * barrelRotationSpeedModifier.getAsDouble());
+
+    barrelRotationMotor.set(-1 * barrelRotationSpeedModifier.getAsDouble());
   }
 
   private void checkZero() {

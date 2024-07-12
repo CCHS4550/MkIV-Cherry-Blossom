@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
@@ -126,7 +127,7 @@ public class SwerveDrive extends SubsystemBase {
           Constants.SwerveConstants.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET,
           "Back Right");
 
-  public final SwerveModule backLeft =
+  public final static SwerveModule backLeft =
       new SwerveModule(
           new CCSparkMax(
               "Back Left Drive",
@@ -155,7 +156,6 @@ public class SwerveDrive extends SubsystemBase {
       new SwerveModule[] {frontRight, frontLeft, backRight, backLeft};
   // Initialize gyro
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
-
 
   // SwerveDriveOdometry odometer;
   SwerveDrivePoseEstimator poseEstimator;
@@ -198,13 +198,19 @@ public class SwerveDrive extends SubsystemBase {
           .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
           .withSize(2, 2);
 
-  SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                  new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5),
-                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
-                  new SysIdRoutine.Mechanism(
-                                  (voltage) -> setDriveVoltages(voltage),
-                                  null, // No log consumer, since data is recorded by URCL
-                                  this));
+  SysIdRoutine sysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              VoltsPerSecond.of(1),
+              Volts.of(5),
+              Seconds.of(5),
+              (state) ->
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "SysIdTestState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (voltage) -> setDriveVoltages(voltage),
+              null, // No log consumer, since data is recorded by URCL
+              this));
 
   public Rotation2d initialAngle = new Rotation2d(0);
 
@@ -367,7 +373,8 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
 
     // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
-    org.littletonrobotics.junction.Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
     poseEstimator.update(getRotation2d(), swerveModulePositions);
 
@@ -734,7 +741,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return the quasistatic characterization test
    */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-          return sysIdRoutine.quasistatic(direction);
+    return sysIdRoutine.quasistatic(direction);
   }
 
   /**
@@ -744,7 +751,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return the dynamic characterization test
    */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-          return sysIdRoutine.dynamic(direction);
+    return sysIdRoutine.dynamic(direction);
   }
 
   /**
@@ -785,6 +792,10 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void setInitialAngle() {}
+
+  public SparkAnalogSensor getTransducer(){
+    return backLeft.getDriveAnalog();
+  }
 }
 
 // // Mutable holder for unit-safe voltage values, persisted to avoid

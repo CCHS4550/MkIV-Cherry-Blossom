@@ -5,11 +5,19 @@
 package frc.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+// import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Reloading;
 
-public class BarrelRotationDefault extends Command {
+public class ReloadingDefault extends Command {
+
+  Reloading reloading;
   /** Creates a new BarrelRotationDefault. */
-  public BarrelRotationDefault() {
+  public ReloadingDefault(Reloading reloading) {
+
+    this.reloading = reloading;
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(reloading);
   }
 
   // Called when the command is initially scheduled.

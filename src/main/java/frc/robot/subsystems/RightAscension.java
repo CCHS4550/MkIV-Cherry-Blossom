@@ -27,7 +27,6 @@ import frc.maps.Constants;
 public class RightAscension extends SubsystemBase {
 
   AimSimulator aimer;
-  CommandXboxController controller;
 
   double rightAscensionSpeedModifier = .25;
   double turretLocation;
@@ -72,27 +71,21 @@ public class RightAscension extends SubsystemBase {
               this));
 
   /** Creates a new RightAscension. */
-  public RightAscension(AimSimulator aimer, CommandXboxController controller) {
+  public RightAscension(AimSimulator aimer) {
 
     this.aimer = aimer;
-    this.controller = controller;
+    
 
     turretLocation = 0.0;
     turretOffset = 0.0;
     rightAscensionMotor.setVoltage(6);
-<<<<<<< HEAD
     rightAscensionMotor.set(0);
     rightAscensionMotor.setPosition((3 * Math.PI) / 4);
-=======
-    rightAscensionMotor.set(0.02);
-    rightAscensionMotor.setIdleMode(IdleMode.kBrake);
-    rightAscensionMotor.setPosition(0);
 
     setDefaultCommand(new RightAscensionDefault(this));
->>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
   }
 
-  public void rightAscensionDefaultMethod(CommandXboxController controller, AimSimulator aimer) {
+  public void rightAscensionDefaultMethod(AimSimulator aimer) {
 
     double controllerInput = MathUtil.applyDeadband(controller.getRightX(), 0.05);
   }
@@ -124,10 +117,6 @@ public class RightAscension extends SubsystemBase {
 
   }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
   private void checkZeroYaw() {
     // returns value 0-1
 

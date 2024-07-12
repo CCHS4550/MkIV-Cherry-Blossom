@@ -25,7 +25,6 @@ import frc.maps.Constants;
 public class Declination extends SubsystemBase {
 
   AimSimulator aimer;
-  CommandXboxController controller;
 
   double declinationSpeedModifier = 0.1;
 
@@ -74,7 +73,6 @@ public class Declination extends SubsystemBase {
           1 / 500,
           (1 / 500) / 60);
 
-<<<<<<< HEAD
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -88,29 +86,16 @@ public class Declination extends SubsystemBase {
               (voltage) -> setPitchVoltage(voltage),
               null, // No log consumer, since data is recorded by URCL
               this));
-=======
-  SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                  new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
-                                  (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
-                  new SysIdRoutine.Mechanism(
-                                  (voltage) -> setPitchVoltage(voltage),
-                                  null, // No log consumer, since data is recorded by URCL
-                                  this));
-                                  
-
-  
->>>>>>> 76be97e9bda9e22112632a3041041561e3db6d15
 
   /** Creates a new Declination. */
-  public Declination(AimSimulator aimer, CommandXboxController controller) {
+  public Declination(AimSimulator aimer) {
 
     this.aimer = aimer;
-    this.controller = controller;
 
     declination1.setPosition(0);
     declination2.setPosition(0);
 
-    setDefaultCommand(new DeclinationDefault(this, controller));
+    setDefaultCommand(new DeclinationDefault(this));
   }
 
   public void declinationDefaultMethod(CommandXboxController controller) {
@@ -194,7 +179,7 @@ public class Declination extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // printEncoders();
-    System.out.println("1:" + declination1.getPosition());
-    System.out.println("2:" + declination2.getPosition());
+    // System.out.println("1:" + declination1.getPosition());
+    // System.out.println("2:" + declination2.getPosition());
   }
 }

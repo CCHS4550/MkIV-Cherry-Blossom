@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.commands.defaultcommands.AimerDefault;
 import frc.helpers.OI;
 import java.text.DecimalFormat;
 
@@ -15,6 +16,8 @@ public class AimSimulator extends SubsystemBase {
     yPos = 0;
     xAngle = 0;
     yAngle = 0;
+
+    setDefaultCommand(new AimerDefault(this));
   }
 
   public double changeXPos(double val) {
@@ -35,9 +38,9 @@ public class AimSimulator extends SubsystemBase {
     return xAngle;
   }
 
-    public double changeYAngle(double rad) {
+  public double changeYAngle(double rad) {
     yAngle += rad;
-    yAngle = OI.normalize(yAngle, 0, Math.PI/2);
+    yAngle = OI.normalize(yAngle, 0, Math.PI / 2);
     return yAngle;
   }
 

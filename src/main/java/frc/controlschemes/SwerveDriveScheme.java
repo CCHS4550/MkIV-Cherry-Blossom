@@ -11,12 +11,11 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.commands.defaultcommands.SwerveDriveDefault;
+// import frc.commands.defaultcommands.SwerveDriveDefault;
 import frc.helpers.ControlScheme;
 // import frc.helpers.OI;
 import frc.maps.Constants;
-import frc.commands.defaultcommands.SwerveDriveDefault;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.swervedrive.SwerveDrive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -80,7 +79,9 @@ public class SwerveDriveScheme implements ControlScheme {
     // controller = new CommandXboxController(port);
 
     // Sends this command into the command scheduler on repeat! Very important!
-    swerveDrive.setDefaultCommand(new RunCommand(() -> {
+    swerveDrive.setDefaultCommand(
+        new RunCommand(
+                () -> {
 
                   // Set to slow mode for recreation
                   setSlowMode();
@@ -144,7 +145,6 @@ public class SwerveDriveScheme implements ControlScheme {
                 },
                 swerveDrive)
             .withName("Swerve Controller Command"));
-
 
     configureButtons(
         swerveDrive,

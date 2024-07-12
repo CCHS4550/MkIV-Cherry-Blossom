@@ -2,22 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.commands.defaultcommands;
+package frc.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.Reloading;
 
-public class RightAscensionDefault extends Command {
+public class AutoReload extends Command {
 
-  RightAscension rightAscension;
+  Reloading reloading;
 
-  /** Creates a new RightAscensionDefault. */
-  public RightAscensionDefault(RightAscension rightAscension) {
-
-    this.rightAscension = rightAscension;
-
+  /** Creates a new AutoReload. */
+  public AutoReload(Reloading reloading) {
+    this.reloading = reloading;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(rightAscension);
+    addRequirements(reloading);
   }
 
   // Called when the command is initially scheduled.

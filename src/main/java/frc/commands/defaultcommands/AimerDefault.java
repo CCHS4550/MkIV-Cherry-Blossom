@@ -5,19 +5,16 @@
 package frc.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.AimSimulator;
 
-public class RightAscensionDefault extends Command {
+public class AimerDefault extends Command {
+  AimSimulator aimer;
+  /** Creates a new AimerDefault. */
+  public AimerDefault(AimSimulator aimer) {
 
-  RightAscension rightAscension;
-
-  /** Creates a new RightAscensionDefault. */
-  public RightAscensionDefault(RightAscension rightAscension) {
-
-    this.rightAscension = rightAscension;
-
+    this.aimer = aimer;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(rightAscension);
+    addRequirements(aimer);
   }
 
   // Called when the command is initially scheduled.

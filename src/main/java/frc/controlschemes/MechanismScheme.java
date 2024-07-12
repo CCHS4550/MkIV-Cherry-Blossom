@@ -1,8 +1,8 @@
 package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.commands.DeclinationManualUp;
 import frc.robot.subsystems.AimSimulator;
 // import frc.robot.subsystems.BarrelRotation;
 import frc.robot.subsystems.Declination;
@@ -19,35 +19,11 @@ public class MechanismScheme {
       PneumaticsSystem pneumatics,
       RightAscension rightAscension,
       CommandXboxController controller,
+      CommandXboxController controller2,
       AimSimulator aimer) {
 
-    CommandXboxController controller2 = new CommandXboxController(1);
-
-    rightAscension.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              rightAscension.rightAscensionDefaultMethod(controller, aimer);
-            },
-            rightAscension));
-
-    // declination.setDefaultCommand(new RunCommand(() -> {
-    //     declination.declinationDefaultMethod(controller);
-    // }, declination));
-
-    // lights.setDefaultCommand(new RunCommand(() -> {
-    //     lights.lightsDefaultMethod(controller);
-    // }, lights));
-
-    aimer.setDefaultCommand(
-        new RunCommand(
-            () -> {
-              aimer.changeXPos(controller2.getRightX() / 100);
-              aimer.changeYPos(controller2.getRightY() / 100);
-            },
-            aimer));
-
     configureButtons(
-        barrelRotation, declination, pneumatics, rightAscension, controller, controller2, aimer);
+        reloading, declination, pneumatics, rightAscension, controller, controller, aimer);
   }
 
   public static void configureButtons(
@@ -59,10 +35,11 @@ public class MechanismScheme {
       CommandXboxController controller2,
       AimSimulator aimer) {
 
+    controller.povUp().whileTrue(new DeclinationManualUp(declination));
     // Toggle air compressors and fan with left trigger.
     controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()));
     // Rotate Barrels
-    controller.rightTrigger().whileTrue(reloading.reload());
+    // controller.rightTrigger().whileTrue(reloading.reload());
     // Shoot the cannon by pressing both controller bumpers.
     controller.leftBumper().onTrue(pneumatics.shoot());
     controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));

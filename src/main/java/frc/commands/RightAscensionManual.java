@@ -2,17 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.commands.defaultcommands;
+package frc.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RightAscension;
 
-public class RightAscensionDefault extends Command {
-
+public class RightAscensionManual extends Command {
   RightAscension rightAscension;
 
-  /** Creates a new RightAscensionDefault. */
-  public RightAscensionDefault(RightAscension rightAscension) {
+  /** Creates a new RightAscensionManual. */
+  public RightAscensionManual(RightAscension rightAscension) {
 
     this.rightAscension = rightAscension;
 

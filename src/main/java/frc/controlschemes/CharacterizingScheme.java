@@ -7,7 +7,6 @@ package frc.controlschemes;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.AimSimulator;
-// import frc.robot.subsystems.BarrelRotation;
 import frc.robot.subsystems.Declination;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.Reloading;
