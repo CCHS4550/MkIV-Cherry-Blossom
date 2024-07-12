@@ -2,6 +2,7 @@ package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.commands.DeclinationManualDown;
 import frc.commands.DeclinationManualUp;
 import frc.robot.subsystems.AimSimulator;
 // import frc.robot.subsystems.BarrelRotation;
@@ -36,6 +37,7 @@ public class MechanismScheme {
       AimSimulator aimer) {
 
     controller.povUp().whileTrue(new DeclinationManualUp(declination));
+    controller.povDown().whileTrue(new DeclinationManualDown(declination));
     // Toggle air compressors and fan with left trigger.
     controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()));
     // Rotate Barrels

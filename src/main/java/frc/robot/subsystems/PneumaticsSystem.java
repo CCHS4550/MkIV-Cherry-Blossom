@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Compressor;
@@ -17,11 +16,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.robot.subsystems.SwerveDrive;
+// import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 public class PneumaticsSystem extends SubsystemBase {
 
-  SparkAnalogSensor transducer = backLeft.getDriveAnalog();
+  // SparkAnalogSensor transducer = getDriveAnalog();
+
   private boolean airCompressorStatus;
   private DoubleSolenoid.Value pressureSealStatus;
 

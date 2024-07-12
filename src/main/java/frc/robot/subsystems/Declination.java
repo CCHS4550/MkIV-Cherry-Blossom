@@ -10,13 +10,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.commands.defaultcommands.DeclinationDefault;
 import frc.helpers.CCSparkMax;
@@ -25,26 +23,7 @@ import frc.maps.Constants;
 public class Declination extends SubsystemBase {
 
   AimSimulator aimer;
-
   double declinationSpeedModifier = 0.1;
-
-  double upperBound = 0.0;
-  double lowerBound = Math.PI / 2;
-
-  // returns Math.PI/4
-  double middlePoint = upperBound + lowerBound / 2;
-  // returns Math.PI/2
-  double range = Math.abs(upperBound - lowerBound);
-
-  // Should return distance from edge.
-  // Ex. pitchLocation = PI/2
-  //  1 - Abs(PI/2 - PI/4) / PI/4
-  //  1 - PI/4 / PI/4 = 0
-  // Ex. pitchLocation = 0
-  //  1 - Abs(0-PI/4) / PI/4
-  //  1 - PI/4 / PI/4 = 0
-  // double distanceFromEdge = 1 - (Math.abs(pitchLocation - middlePoint) / (range / 2));
-  // double maxOutwardSpeed = distanceFromEdge / 1;
 
   private DigitalInput pitchLimitSwitch =
       new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
@@ -57,10 +36,11 @@ public class Declination extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           false,
-          // 25:1 Gearbox
+          // 4:1 Gearbox
           // 200:10 Rack
-          (2 * Math.PI) / 500,
-          ((2 * Math.PI) / 500) / 60);
+          // For some reason, only works in decimal form!
+          (2 * Math.PI) * 0.0125,
+          ((2 * Math.PI) * 0.0125 * 0.0166));
 
   private CCSparkMax declination2 =
       new CCSparkMax(
@@ -70,8 +50,8 @@ public class Declination extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           true,
-          1 / 500,
-          (1 / 500) / 60);
+          ((Math.PI * 2) * 0.0125),
+          ((Math.PI * 2) * 0.0125 * 0.0166));
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
@@ -98,42 +78,39 @@ public class Declination extends SubsystemBase {
     setDefaultCommand(new DeclinationDefault(this));
   }
 
-  public void declinationDefaultMethod(CommandXboxController controller) {
-    double declinationSpeed =
-        MathUtil.applyDeadband(-controller.getRightY(), 0.05) * declinationSpeedModifier;
+  public void declinationDefaultMethod(boolean isUp) {
 
-    System.out.println(pitchLimitSwitch.get());
-    // if (pitchLimitSwitch.get() && pitchLocation < (Math.PI/2)) {
-    declination2.set(
-        declinationSpeed
-        // this.normalizeSpeed(declinationSpeed, pitchLocation)
-        );
-    // }
+    int direction = -1;
+    if (isUp) {
+      direction = 1;
+    }
 
-    this.checkZeroPitch();
+    if (!limitSwitchPressed()) {
+
+      declination1.set(direction * declinationSpeedModifier);
+      declination2.set(direction * declinationSpeedModifier);
+    }
+
+    // System.out.println(pitchLimitSwitch.get());
+
   }
 
-  private void checkZeroPitch() {
+  private boolean limitSwitchPressed() {
 
     if (!pitchLimitSwitch.get()) {
 
-      declination1.setPosition(0);
+      return true;
 
       // CCSparkMax.java makes it so that .getPosition() returns a value in Radians
 
+    } else {
+
+      return false;
     }
   }
 
   public double getDeclination() {
     return declination1.getPosition();
-  }
-
-  private boolean pastMidpoint(double location) {
-    if (location > middlePoint) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   // private double normalizeSpeed(double speed, double location) {
@@ -181,5 +158,6 @@ public class Declination extends SubsystemBase {
     // printEncoders();
     // System.out.println("1:" + declination1.getPosition());
     // System.out.println("2:" + declination2.getPosition());
+    System.out.println(pitchLimitSwitch.get());
   }
 }

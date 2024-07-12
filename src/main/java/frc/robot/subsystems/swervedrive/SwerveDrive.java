@@ -9,9 +9,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAnalogSensor;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -127,7 +127,7 @@ public class SwerveDrive extends SubsystemBase {
           Constants.SwerveConstants.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET,
           "Back Right");
 
-  public final static SwerveModule backLeft =
+  public static final SwerveModule backLeft =
       new SwerveModule(
           new CCSparkMax(
               "Back Left Drive",
@@ -793,7 +793,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setInitialAngle() {}
 
-  public SparkAnalogSensor getTransducer(){
+  public SparkAnalogSensor getTransducer() {
     return backLeft.getDriveAnalog();
   }
 }

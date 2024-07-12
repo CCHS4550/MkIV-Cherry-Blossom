@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
@@ -18,7 +17,6 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.commands.defaultcommands.RightAscensionDefault;
 import frc.helpers.CCSparkMax;
@@ -74,7 +72,6 @@ public class RightAscension extends SubsystemBase {
   public RightAscension(AimSimulator aimer) {
 
     this.aimer = aimer;
-    
 
     turretLocation = 0.0;
     turretOffset = 0.0;
@@ -85,37 +82,7 @@ public class RightAscension extends SubsystemBase {
     setDefaultCommand(new RightAscensionDefault(this));
   }
 
-  public void rightAscensionDefaultMethod(AimSimulator aimer) {
-
-    double controllerInput = MathUtil.applyDeadband(controller.getRightX(), 0.05);
-  }
-
-  public void rightAscensionDefaultMethodOutDated(CommandXboxController controller) {
-
-    // System.out.println("controller input" + controller.getRightX());
-    double rightAscensionSpeed =
-        MathUtil.applyDeadband(controller.getRightX(), 0.05) * rightAscensionSpeedModifier;
-
-    // System.out.println("rightascensionspeed:" + rightAscensionSpeed);
-    if (Math.abs(rightAscensionMotor.getPosition()) < (Math.PI)) {
-
-      rightAscensionMotor.set(rightAscensionSpeed);
-
-    } else if (rightAscensionMotor.getPosition() > (Math.PI)) {
-
-      rightAscensionMotor.set(-.25);
-
-    } else {
-
-      rightAscensionMotor.set(.25);
-    }
-
-    // System.out.println("speed" + rightAscensionMotor.get());
-    // System.out.println("position" + rightAscensionMotor.getPosition());
-
-    // this.checkZeroYaw();
-
-  }
+  public void rightAscensionDefaultMethod(AimSimulator aimer) {}
 
   private void checkZeroYaw() {
     // returns value 0-1

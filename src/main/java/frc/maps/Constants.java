@@ -158,7 +158,7 @@ public class Constants {
     public static final int BARREL_SENSOR = 0;
     public static final int YAW_SENSOR = 1;
     public static final int LEDS = 2;
-    public static final int PITCH_LIMIT_SWITCH = 2;
+    public static final int PITCH_LIMIT_SWITCH = 4;
   }
 
   public class FeedForwardConstants {
