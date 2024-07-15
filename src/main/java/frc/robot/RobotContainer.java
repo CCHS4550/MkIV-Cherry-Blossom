@@ -9,11 +9,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.controlschemes.MechanismScheme;
 import frc.controlschemes.SwerveDriveScheme;
+import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
-import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.PneumaticsSystem;
-import frc.robot.subsystems.Reloading;
-import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.IndexingSubsystem;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.RightAscensionSubsystem;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 /**
@@ -26,28 +29,51 @@ public class RobotContainer {
 
   CommandXboxController controller1 = new CommandXboxController(0);
   CommandXboxController controller2 = new CommandXboxController(1);
-  AimSimulator aimer = new AimSimulator();
+  AimSimulator aimer;
 
-  SwerveDrive swerveDrive = new SwerveDrive();
-  RightAscension rightAscension = new RightAscension(aimer);
-  Declination declination = new Declination(aimer);
-  PneumaticsSystem pneumatics = new PneumaticsSystem();
-  Reloading reload = new Reloading(pneumatics);
-  // Lights lights = new Lights();
+  SwerveDrive swerveDrive;
+  RightAscensionSubsystem rightAscension;
+  DeclinationSubsystem declination;
+  PneumaticsSystem pneumatics;
+  IndexingSubsystem indexer;
+
+  Superstructure superstructure;
+  
+  Lights lights;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    switch(Constants.currentMode) {
+      case REAL:
+      aimer = new AimSimulator();
+      swerveDrive = new SwerveDrive();
+      rightAscension = new RightAscensionSubsystem(aimer);
+      declination = new DeclinationSubsystem(aimer);
+      pneumatics= new PneumaticsSystem();
+      indexer = new IndexingSubsystem(pneumatics);
+
+      lights = new Lights();
+
+      break;
+
+      case SIM:
+      break;
+    }
+
+    superstructure = new Superstructure(declination, indexer, lights, pneumatics, rightAscension);
+
+    RobotState.getInstance();
 
     // Be careful that if you are using the same controller for both schemes, that the controls
     // don't overlap.
     SwerveDriveScheme.configure(swerveDrive, controller1);
     MechanismScheme.configure(
-        reload, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
     // CharacterizingScheme.configure(
     //     barrelRotation, declination, pneumatics, rightAscension, controller1, aimer);
-    // initialize controller schemes here
-    //  SwerveDriveScheme.configure(swerveDrive, 0);
+
 
   }
 
@@ -55,7 +81,7 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@links
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
@@ -72,5 +98,5 @@ public class RobotContainer {
   }
 
   private void defaultCommands() {}
-  ;
+  
 }
