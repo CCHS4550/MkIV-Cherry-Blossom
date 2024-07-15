@@ -27,8 +27,8 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
  */
 public class RobotContainer {
 
-  CommandXboxController controller1 = new CommandXboxController(0);
-  CommandXboxController controller2 = new CommandXboxController(1);
+  CommandXboxController primaryController = new CommandXboxController(0);
+  CommandXboxController secondaryController = new CommandXboxController(1);
   AimSimulator aimer;
 
   SwerveDrive swerveDrive;
@@ -67,9 +67,9 @@ public class RobotContainer {
 
     // Be careful that if you are using the same controller for both schemes, that the controls
     // don't overlap.
-    SwerveDriveScheme.configure(swerveDrive, controller1);
+    SwerveDriveScheme.configure(swerveDrive, primaryController);
     MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+        indexer, declination, pneumatics, rightAscension, primaryController, primaryController, aimer);
 
     // CharacterizingScheme.configure(
     //     barrelRotation, declination, pneumatics, rightAscension, controller1, aimer);
