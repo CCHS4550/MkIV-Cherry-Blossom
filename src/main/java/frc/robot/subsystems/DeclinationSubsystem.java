@@ -20,7 +20,7 @@ import frc.commands.defaultcommands.DeclinationDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
-public class Declination extends SubsystemBase {
+public class DeclinationSubsystem extends SubsystemBase {
 
   AimSimulator aimer;
   double declinationSpeedModifier = 0.1;

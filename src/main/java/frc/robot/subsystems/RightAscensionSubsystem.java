@@ -22,7 +22,7 @@ import frc.commands.defaultcommands.RightAscensionDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
-public class RightAscension extends SubsystemBase {
+public class RightAscensionSubsystem extends SubsystemBase {
 
   AimSimulator aimer;
 

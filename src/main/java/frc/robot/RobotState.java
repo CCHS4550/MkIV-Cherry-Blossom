@@ -7,26 +7,14 @@ package frc.robot;
 /** Add your docs here. */
 public class RobotState {
 
-    public static RobotState instance;
+  public static RobotState instance;
 
-
-    public static RobotState getInstance() {
-        if (instance == null) {
-            instance = new RobotState();
-        }
-        return instance;
+  public static RobotState getInstance() {
+    if (instance == null) {
+      instance = new RobotState();
     }
+    return instance;
+  }
 
-
-
-        public RobotState() {
-
-        }
-    
-
-
-
-
-
-
+  public RobotState() {}
 }

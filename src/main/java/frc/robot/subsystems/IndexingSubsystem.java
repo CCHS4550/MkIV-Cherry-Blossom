@@ -14,7 +14,7 @@ import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
 
-public class Reloading extends SubsystemBase {
+public class IndexingSubsystem extends SubsystemBase {
   PneumaticsSystem pneumatics;
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
   Double barrelAngle;

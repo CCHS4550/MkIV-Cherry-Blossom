@@ -12,9 +12,9 @@ import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
-import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
@@ -38,27 +38,27 @@ public class RobotContainer {
   IndexingSubsystem indexer;
 
   Superstructure superstructure;
-  
+
   Lights lights;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    switch(Constants.currentMode) {
+    switch (Constants.currentMode) {
       case REAL:
-      aimer = new AimSimulator();
-      swerveDrive = new SwerveDrive();
-      rightAscension = new RightAscensionSubsystem(aimer);
-      declination = new DeclinationSubsystem(aimer);
-      pneumatics= new PneumaticsSystem();
-      indexer = new IndexingSubsystem(pneumatics);
+        aimer = new AimSimulator();
+        swerveDrive = new SwerveDrive();
+        rightAscension = new RightAscensionSubsystem(aimer);
+        declination = new DeclinationSubsystem(aimer);
+        pneumatics = new PneumaticsSystem();
+        indexer = new IndexingSubsystem(pneumatics);
 
-      lights = new Lights();
+        lights = new Lights();
 
-      break;
+        break;
 
       case SIM:
-      break;
+        break;
     }
 
     superstructure = new Superstructure(declination, indexer, lights, pneumatics, rightAscension);
@@ -73,7 +73,6 @@ public class RobotContainer {
 
     // CharacterizingScheme.configure(
     //     barrelRotation, declination, pneumatics, rightAscension, controller1, aimer);
-
 
   }
 
@@ -98,5 +97,4 @@ public class RobotContainer {
   }
 
   private void defaultCommands() {}
-  
 }

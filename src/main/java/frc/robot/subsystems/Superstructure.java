@@ -16,9 +16,9 @@ public class Superstructure extends SubsystemBase {
     SHOOT,
     VISION_TRACKING_DEMO,
     SHOW_OFF
-}
+  }
 
-public enum CurrentSuperState {
+  public enum CurrentSuperState {
     IDLE_STATIC,
     IDLE_TRACKING,
     RELOAD,
@@ -26,86 +26,73 @@ public enum CurrentSuperState {
     SHOOT,
     VISION_TRACKING_DEMO,
     SHOW_OFF
-}
+  }
 
+  private WantedSuperState wantedSuperState = WantedSuperState.IDLE_STATIC;
+  private CurrentSuperState currentSuperState = CurrentSuperState.IDLE_STATIC;
 
-private WantedSuperState wantedSuperState = WantedSuperState.IDLE_STATIC;
-private CurrentSuperState currentSuperState = CurrentSuperState.IDLE_STATIC;
-
-private DeclinationSubsystem declination;
-private IndexingSubsystem indexer;
-private Lights lights;
-private PneumaticsSystem pneumatics;
-private RightAscensionSubsystem rightAscension;
+  private DeclinationSubsystem declination;
+  private IndexingSubsystem indexer;
+  private Lights lights;
+  private PneumaticsSystem pneumatics;
+  private RightAscensionSubsystem rightAscension;
 
   /** Creates a new Superstructure. */
   public Superstructure(
-    DeclinationSubsystem declination,
-    IndexingSubsystem indexer,
-    Lights lights,
-    PneumaticsSystem pneumatics,
-    RightAscensionSubsystem rightAscension) {
-      this.declination = declination;
-      this.indexer = indexer;
-      this.lights = lights;
-      this.pneumatics = pneumatics;
-      this.rightAscension = rightAscension;
-
-    }
+      DeclinationSubsystem declination,
+      IndexingSubsystem indexer,
+      Lights lights,
+      PneumaticsSystem pneumatics,
+      RightAscensionSubsystem rightAscension) {
+    this.declination = declination;
+    this.indexer = indexer;
+    this.lights = lights;
+    this.pneumatics = pneumatics;
+    this.rightAscension = rightAscension;
+  }
 
   @Override
   public void periodic() {
 
-
     currentSuperState = handleStateTransitions();
     applyStates();
 
-    
     // This method will be called once per scheduler run
   }
 
   private void applyStates() {
     switch (currentSuperState) {
       case IDLE_STATIC:
-      idleStatic();
-      break;
+        idleStatic();
+        break;
       case IDLE_TRACKING:
-      break;
+        break;
       case RELOAD:
-      break;
+        break;
       case INDEX:
-      break;
+        break;
       case SHOOT:
-      break;
-
+        break;
     }
-    }
+  }
 
   private CurrentSuperState handleStateTransitions() {
     switch (wantedSuperState) {
       case IDLE_STATIC:
-      currentSuperState = CurrentSuperState.IDLE_STATIC;
-    
+        currentSuperState = CurrentSuperState.IDLE_STATIC;
+
       case IDLE_TRACKING:
-      currentSuperState = CurrentSuperState.IDLE_STATIC;
-    
+        currentSuperState = CurrentSuperState.IDLE_STATIC;
+
       case RELOAD:
-      currentSuperState = CurrentSuperState.RELOAD;
-    
+        currentSuperState = CurrentSuperState.RELOAD;
+
       case INDEX:
-      currentSuperState = CurrentSuperState.INDEX;
+        currentSuperState = CurrentSuperState.INDEX;
     }
 
     return currentSuperState;
-
   }
 
-
-  private void idleStatic() {
-    
-  }
-
-
-
-
+  private void idleStatic() {}
 }
