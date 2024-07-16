@@ -78,13 +78,13 @@ public class SwerveDriveScheme implements ControlScheme {
     orientationLockPID.enableContinuousInput(-Math.PI, Math.PI);
     // controller = new CommandXboxController(port);
 
+    // Set to slow mode for recreation
+    setSlowMode();
+
     // Sends this command into the command scheduler on repeat! Very important!
     swerveDrive.setDefaultCommand(
         new RunCommand(
                 () -> {
-
-                  // Set to slow mode for recreation
-                  setSlowMode();
 
                   // Set x, y, and turn speed based on joystick inputs
                   double xSpeed =

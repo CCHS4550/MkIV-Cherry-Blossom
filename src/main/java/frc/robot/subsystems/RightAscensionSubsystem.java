@@ -14,7 +14,6 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,8 +50,9 @@ public class RightAscensionSubsystem extends SubsystemBase {
           ((2 * Math.PI) / 50),
           ((2 * Math.PI) / 50) / 60);
 
-  private DigitalInput hallEffectSensor = new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
-  
+  private DigitalInput hallEffectSensor =
+      new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
+
   private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   SysIdRoutine sysIdRoutine =

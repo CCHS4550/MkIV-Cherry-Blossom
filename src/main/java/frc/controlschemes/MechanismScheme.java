@@ -17,12 +17,18 @@ public class MechanismScheme {
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
       RightAscensionSubsystem rightAscension,
-      CommandXboxController controller,
-      CommandXboxController controller2,
+      CommandXboxController primaryController,
+      CommandXboxController secondaryController,
       AimSimulator aimer) {
 
     configureButtons(
-        indexer, declination, pneumatics, rightAscension, controller, controller, aimer);
+        indexer,
+        declination,
+        pneumatics,
+        rightAscension,
+        primaryController,
+        secondaryController,
+        aimer);
   }
 
   public static void configureButtons(
