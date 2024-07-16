@@ -59,6 +59,9 @@ public class RobotContainer {
 
       case SIM:
         break;
+
+      case REPLAY:
+        break;
     }
 
     superstructure = new Superstructure(declination, indexer, lights, pneumatics, rightAscension);

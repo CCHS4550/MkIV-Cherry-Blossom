@@ -5,13 +5,15 @@
 package frc.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RightAscension;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.RightAscensionSubsystem;
 
 public class RightAscensionManual extends Command {
-  RightAscension rightAscension;
+  RightAscensionSubsystem rightAscension;
 
   /** Creates a new RightAscensionManual. */
-  public RightAscensionManual(RightAscension rightAscension) {
+  public RightAscensionManual(
+      RightAscensionSubsystem rightAscension, CommandXboxController controller) {
 
     this.rightAscension = rightAscension;
 

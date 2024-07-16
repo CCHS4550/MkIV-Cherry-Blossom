@@ -7,13 +7,16 @@ package frc.commands;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Declination;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.DeclinationSubsystem;
 
-public class DeclinationManualDown extends Command {
-  Declination declination;
+public class DeclinationManual extends Command {
+  DeclinationSubsystem declination;
+  CommandXboxController controller;
   /** Creates a new DeclinationManualDown. */
-  public DeclinationManualDown(Declination declination) {
+  public DeclinationManual(DeclinationSubsystem declination, CommandXboxController controller) {
     this.declination = declination;
+    this.controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(declination);
   }

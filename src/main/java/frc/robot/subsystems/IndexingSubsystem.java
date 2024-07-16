@@ -29,8 +29,8 @@ public class IndexingSubsystem extends SubsystemBase {
   // Will not work because PWM is only an output!
   // private PWM hallEffectSensor = new PWM(0);
 
-  /** Creates a new BarrelRotation. */
-  public Reloading(PneumaticsSystem pneumatics) {
+  /** Creates a new IndexingSubsystem. */
+  public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
 
     setDefaultCommand(new ReloadingDefault(this));

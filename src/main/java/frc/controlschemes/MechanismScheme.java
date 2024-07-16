@@ -2,48 +2,47 @@ package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.commands.DeclinationManualDown;
-import frc.commands.DeclinationManualUp;
+import frc.commands.DeclinationManual;
 import frc.robot.subsystems.AimSimulator;
-// import frc.robot.subsystems.BarrelRotation;
-import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.DeclinationSubsystem;
+import frc.robot.subsystems.IndexingSubsystem;
 // import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
-import frc.robot.subsystems.Reloading;
-import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.RightAscensionSubsystem;
 
 public class MechanismScheme {
 
   public static void configure(
-      Reloading reloading,
-      Declination declination,
+      IndexingSubsystem indexer,
+      DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
-      RightAscension rightAscension,
+      RightAscensionSubsystem rightAscension,
       CommandXboxController controller,
       CommandXboxController controller2,
       AimSimulator aimer) {
 
     configureButtons(
-        reloading, declination, pneumatics, rightAscension, controller, controller, aimer);
+        indexer, declination, pneumatics, rightAscension, controller, controller, aimer);
   }
 
   public static void configureButtons(
-      Reloading reloading,
-      Declination declination,
+      IndexingSubsystem indexer,
+      DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
-      RightAscension rightAscension,
+      RightAscensionSubsystem rightAscension,
       CommandXboxController controller,
       CommandXboxController controller2,
       AimSimulator aimer) {
 
-    controller.povUp().whileTrue(new DeclinationManualUp(declination));
-    controller.povDown().whileTrue(new DeclinationManualDown(declination));
+    controller.povUp().whileTrue(new DeclinationManual(declination, controller));
+    // controller.povDown().whileTrue(new DeclinationManual(declination));
     // Toggle air compressors and fan with left trigger.
     controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()));
     // Rotate Barrels
-    // controller.rightTrigger().whileTrue(reloading.reload());
+    controller.rightTrigger().whileTrue(indexer.reload());
     // Shoot the cannon by pressing both controller bumpers.
-    controller.leftBumper().onTrue(pneumatics.shoot());
+    controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
+    // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
     controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
 
     controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXY()));

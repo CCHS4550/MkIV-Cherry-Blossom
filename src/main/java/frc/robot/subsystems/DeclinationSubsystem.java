@@ -68,7 +68,7 @@ public class DeclinationSubsystem extends SubsystemBase {
               this));
 
   /** Creates a new Declination. */
-  public Declination(AimSimulator aimer) {
+  public DeclinationSubsystem(AimSimulator aimer) {
 
     this.aimer = aimer;
 
@@ -158,6 +158,6 @@ public class DeclinationSubsystem extends SubsystemBase {
     // printEncoders();
     // System.out.println("1:" + declination1.getPosition());
     // System.out.println("2:" + declination2.getPosition());
-    System.out.println(pitchLimitSwitch.get());
+    // System.out.println(pitchLimitSwitch.get());
   }
 }

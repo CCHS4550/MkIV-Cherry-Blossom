@@ -5,13 +5,13 @@
 package frc.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.DeclinationSubsystem;
 
 public class DeclinationDefault extends Command {
 
-  Declination declination;
+  DeclinationSubsystem declination;
   /** Creates a new DeclinationDefault. */
-  public DeclinationDefault(Declination declination) {
+  public DeclinationDefault(DeclinationSubsystem declination) {
 
     this.declination = declination;
 

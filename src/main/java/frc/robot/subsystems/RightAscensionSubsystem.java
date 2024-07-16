@@ -68,8 +68,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
               null, // No log consumer, since data is recorded by URCL
               this));
 
-  /** Creates a new RightAscension. */
-  public RightAscension(AimSimulator aimer) {
+  /** Creates a new RightAscension Subsystem. */
+  public RightAscensionSubsystem(AimSimulator aimer) {
 
     this.aimer = aimer;
 

@@ -5,14 +5,14 @@
 package frc.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RightAscension;
+import frc.robot.subsystems.RightAscensionSubsystem;
 
 public class RightAscensionDefault extends Command {
 
-  RightAscension rightAscension;
+  RightAscensionSubsystem rightAscension;
 
   /** Creates a new RightAscensionDefault. */
-  public RightAscensionDefault(RightAscension rightAscension) {
+  public RightAscensionDefault(RightAscensionSubsystem rightAscension) {
 
     this.rightAscension = rightAscension;
 

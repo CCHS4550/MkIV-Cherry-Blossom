@@ -4,18 +4,18 @@
 
 package frc.commands;
 
-import static edu.wpi.first.units.Units.Volts;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Declination;
+import frc.robot.subsystems.IndexingSubsystem;
 
-public class DeclinationManualUp extends Command {
-  Declination declination;
-  /** Creates a new DeclinationManualUp. */
-  public DeclinationManualUp(Declination declination) {
-    this.declination = declination;
+public class AutoIndex extends Command {
+
+  IndexingSubsystem indexer;
+
+  /** Creates a new AutoReload. */
+  public AutoIndex(IndexingSubsystem indexer) {
+    this.indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(declination);
+    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
@@ -24,16 +24,11 @@ public class DeclinationManualUp extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    declination.declinationDefaultMethod(true);
-    System.out.println("goingup");
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    declination.setPitchVoltage(Volts.of(0));
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

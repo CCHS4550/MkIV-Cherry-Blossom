@@ -6,18 +6,18 @@ package frc.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Reloading;
+import frc.robot.subsystems.IndexingSubsystem;
 
 public class ReloadingDefault extends Command {
 
-  Reloading reloading;
+  IndexingSubsystem indexer;
   /** Creates a new BarrelRotationDefault. */
-  public ReloadingDefault(Reloading reloading) {
+  public ReloadingDefault(IndexingSubsystem indexer) {
 
-    this.reloading = reloading;
+    this.indexer = indexer;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(reloading);
+    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
