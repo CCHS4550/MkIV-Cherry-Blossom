@@ -14,6 +14,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,8 +51,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
           ((2 * Math.PI) / 50),
           ((2 * Math.PI) / 50) / 60);
 
-  private DigitalInput hallEffectSensor = new DigitalInput(1);
-
+  private DigitalInput hallEffectSensor = new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
+  
   private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   SysIdRoutine sysIdRoutine =
@@ -84,13 +85,13 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
   public void rightAscensionDefaultMethod(AimSimulator aimer) {}
 
-  private void checkZeroYaw() {
-    // returns value 0-1
+  private boolean atZero() {
 
-    if (hallEffectSensor.get()) {
+    if (!hallEffectSensor.get()) {
       // System.out.println(rightAscensionMotor.getPosition());
-      rightAscensionMotor.setPosition((3 * Math.PI) / 4);
+      return true;
     }
+    return false;
   }
 
   public double getRightAscension() {
@@ -142,5 +143,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // printEncoders();
+    System.out.println("RightAscension: " + hallEffectSensor.get());
   }
 }

@@ -164,18 +164,18 @@ public class Constants {
   public class FeedForwardConstants {
 
     // TODO Do sysid to get values
-    public static final double DRIVE_KS = 0.19268;
-    public static final double DRIVE_KV = 2.642;
-    public static final double DRIVE_KA = 0.55965;
+    public static final double DRIVE_KS = 0;
+    public static final double DRIVE_KV = 0;
+    public static final double DRIVE_KA = 0;
 
     public static final double TURNKS = 0;
     public static final double TURNKV = 0;
 
-    // * TODO SysId these values */
-    public static final double ELEVATOR_KS = 0.17092;
-    public static final double ELEVATOR_KG = 0.075178;
-    public static final double ELEVATOR_KV = 0.0019272;
-    public static final double ELEVATOR_KA = 0.00029478;
+    /* TODO SysId these values */
+    public static final double DECLINATION_KS = -0.42049;
+    public static final double DECLINATION_KV = 0.34102;
+    public static final double DECLINATION_KA = 0.13214;
+    public static final double DECLINATION_KG = 0.48807;
 
     public static final double WRIST_KS = 0.17091;
     public static final double WRIST_KG = 0.32638;

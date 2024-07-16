@@ -7,8 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.controlschemes.MechanismScheme;
-import frc.controlschemes.SwerveDriveScheme;
+import frc.controlschemes.CharacterizingScheme;
 import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
@@ -70,13 +69,12 @@ public class RobotContainer {
 
     // Be careful that if you are using the same controller for both schemes, that the controls
     // don't overlap.
-    SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    // SwerveDriveScheme.configure(swerveDrive, controller1);
+    // MechanismScheme.configure(
+    //     indexer, dec   lination, pneumatics, rightAscension, controller1, controller2, aimer);
 
-    // CharacterizingScheme.configure(
-    //     barrelRotation, declination, pneumatics, rightAscension, controller1, aimer);
-
+    CharacterizingScheme.configure(
+        indexer, declination, pneumatics, rightAscension, controller1, aimer);
   }
 
   /**

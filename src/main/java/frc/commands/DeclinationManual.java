@@ -7,6 +7,7 @@ package frc.commands;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.DeclinationSubsystem;
 
@@ -28,7 +29,7 @@ public class DeclinationManual extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    declination.declinationDefaultMethod(false);
+    controller.povUp().whileTrue(new RunCommand(() -> declination.declinationSetUpDown(true)));
   }
 
   // Called once the command ends or is interrupted.

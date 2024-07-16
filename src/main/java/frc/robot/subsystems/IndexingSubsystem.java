@@ -36,14 +36,9 @@ public class IndexingSubsystem extends SubsystemBase {
     setDefaultCommand(new ReloadingDefault(this));
   }
 
-  public Command reload() {
-    System.out.println("asjdlgkfhgj");
+  public Command continuousIndex() {
 
-    return this.runEnd(
-        () -> {
-          spinBarrels();
-        },
-        () -> {});
+    return this.startEnd(() -> spinBarrels(), () -> stop());
   }
 
   private void spinBarrels() {
@@ -51,9 +46,17 @@ public class IndexingSubsystem extends SubsystemBase {
     barrelRotationMotor.set(-1 * barrelRotationSpeedModifier.getAsDouble());
   }
 
-  private void checkZero() {
-    // returns value 0-1
-    // double hallEffectInput = MathUtil.applyDeadband(hallEffectSensor.getPosition(), 0.1);
+  private void stop() {
+    barrelRotationMotor.set(0);
+  }
+
+  private boolean atZero() {
+
+    if (!hallEffectSensor.get()) {
+      // System.out.println(rightAscensionMotor.getPosition());
+      return true;
+    }
+    return false;
   }
 
   private void rotateUntilReady() {
@@ -64,5 +67,6 @@ public class IndexingSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println("Indexing: " + hallEffectSensor.get());
   }
 }

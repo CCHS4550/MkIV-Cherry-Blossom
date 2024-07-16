@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,6 +26,12 @@ public class DeclinationSubsystem extends SubsystemBase {
   AimSimulator aimer;
   double declinationSpeedModifier = 0.1;
 
+  ArmFeedforward declinationFeedforward =
+      new ArmFeedforward(
+          Constants.FeedForwardConstants.DECLINATION_KS,
+          Constants.FeedForwardConstants.DECLINATION_KG,
+          Constants.FeedForwardConstants.DECLINATION_KV);
+
   private DigitalInput pitchLimitSwitch =
       new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
 
@@ -39,8 +46,10 @@ public class DeclinationSubsystem extends SubsystemBase {
           // 4:1 Gearbox
           // 200:10 Rack
           // For some reason, only works in decimal form!
-          (2 * Math.PI) * 0.0125,
-          ((2 * Math.PI) * 0.0125 * 0.0166));
+          // (2 * Math.PI) * 0.0125,
+          // ((2 * Math.PI) * 0.0125 * 0.0166));
+          1,
+          1);
 
   private CCSparkMax declination2 =
       new CCSparkMax(
@@ -50,15 +59,19 @@ public class DeclinationSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           true,
-          ((Math.PI * 2) * 0.0125),
-          ((Math.PI * 2) * 0.0125 * 0.0166));
+          1,
+          1
+
+          // ((Math.PI * 2) * 0.0125),
+          // ((Math.PI * 2) * 0.0125 * 0.0166));
+          );
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.per(Second).of(1),
-              Volts.of(5),
-              Seconds.of(4),
+              Volts.per(Second).of(0.25),
+              Volts.of(0.25),
+              Seconds.of(2),
               (state) ->
                   org.littletonrobotics.junction.Logger.recordOutput(
                       "SysIdTestState", state.toString())),
@@ -78,7 +91,7 @@ public class DeclinationSubsystem extends SubsystemBase {
     setDefaultCommand(new DeclinationDefault(this));
   }
 
-  public void declinationDefaultMethod(boolean isUp) {
+  public void declinationSetUpDown(boolean isUp) {
 
     int direction = -1;
     if (isUp) {
@@ -93,6 +106,11 @@ public class DeclinationSubsystem extends SubsystemBase {
 
     // System.out.println(pitchLimitSwitch.get());
 
+  }
+
+  public void declinationStop() {
+    declination1.set(0);
+    declination2.set(0);
   }
 
   private boolean limitSwitchPressed() {

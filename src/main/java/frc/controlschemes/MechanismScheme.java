@@ -1,8 +1,8 @@
 package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.commands.DeclinationManual;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -34,12 +34,24 @@ public class MechanismScheme {
       CommandXboxController controller2,
       AimSimulator aimer) {
 
-    controller.povUp().whileTrue(new DeclinationManual(declination, controller));
+    controller
+        .povUp()
+        .whileTrue(
+            new StartEndCommand(
+                () -> declination.declinationSetUpDown(true), () -> declination.declinationStop()));
+
+    controller
+        .povDown()
+        .whileTrue(
+            new StartEndCommand(
+                () -> declination.declinationSetUpDown(false),
+                () -> declination.declinationStop()));
+
     // controller.povDown().whileTrue(new DeclinationManual(declination));
     // Toggle air compressors and fan with left trigger.
     controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()));
     // Rotate Barrels
-    controller.rightTrigger().whileTrue(indexer.reload());
+    controller.rightTrigger().whileTrue(indexer.continuousIndex());
     // Shoot the cannon by pressing both controller bumpers.
     controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
     // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
