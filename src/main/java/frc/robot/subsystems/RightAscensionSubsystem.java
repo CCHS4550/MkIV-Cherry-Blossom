@@ -143,6 +143,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // printEncoders();
-    System.out.println("RightAscension: " + hallEffectSensor.get());
+    // System.out.println("RightAscension: " + hallEffectSensor.get());
   }
 }

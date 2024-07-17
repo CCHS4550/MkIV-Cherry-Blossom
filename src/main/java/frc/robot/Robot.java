@@ -13,9 +13,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.maps.Constants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -48,22 +47,21 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
-    if (isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter("/U/logs")); // Log to a USB stick
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution
-      // logging
-    } else {
-      setUseTiming(false); // Run as fast as possible
-      String logPath =
-          LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the
-      // user)
-      Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-      Logger.addDataReceiver(
-          new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a
-      // new log
-    }
+    // Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    // if (isReal()) {
+    //   Logger.addDataReceiver(new WPILOGWriter("/U/logs")); // Log to a USB stick
+    //   Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTablesc
+    //   // logging
+    // } else {
+    //   setUseTiming(false); // Run as fast as possible
+    //   String logPath =
+    //       LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the
+    //   // user)
+    //   Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+    //   Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+    //   Logger.addDataReceiver(new NT4Publisher()); // Save outputs to a
+    //   // new log
+    // }
 
     // // Record metadata
     // Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -84,26 +82,29 @@ public class Robot extends LoggedRobot {
     // }
 
     // // Set up data receivers & replay source
-    // switch (Constants.currentMode) {
-    //   case REAL:
-    //     // Running on a real robot, log to a USB stick ("/U/logs")
-    //     Logger.addDataReceiver(new WPILOGWriter());
-    //     Logger.addDataReceiver(new NT4Publisher());
-    //     break;
 
-    //   case SIM:
-    //     // Running a physics simulator, log to NT
-    //     Logger.addDataReceiver(new NT4Publisher());
-    //     break;
+    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    switch (Constants.currentMode) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter("/U/logs")); // Log to a USB stick
+        Logger.addDataReceiver(new NT4Publisher());
+        Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+        break;
 
-    //   case REPLAY:
-    //     // Replaying a log, set up replay source
-    //     setUseTiming(false); // Run as fast as possible
-    //     String logPath = LogFileUtil.findReplayLog();
-    //     Logger.setReplaySource(new WPILOGReader(logPath));
-    //     Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-    //     break;
-    // }
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case REPLAY:
+        // Replaying a log, set up replay source
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
 
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.disableDeterministicTimestamps()
@@ -113,6 +114,8 @@ public class Robot extends LoggedRobot {
     Logger.registerURCL(URCL.startExternal());
     // Start AdvantageKit logger
     Logger.start();
+
+    Logger.recordOutput("blehh", "what");
 
     // Initialize auto chooser
     chooser.addDefaultOption("Default Auto", defaultAuto);
