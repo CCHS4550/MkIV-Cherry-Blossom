@@ -108,6 +108,9 @@ public class DeclinationSubsystem extends SubsystemBase {
     declination1.setPosition(0);
     declination2.setPosition(0);
 
+    declination1.setSmartCurrentLimit(10);
+    declination2.setSmartCurrentLimit(10);
+
     constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
     profile = new TrapezoidProfile(constraints);
     setPoint = new TrapezoidProfile.State();
