@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commands.defaultcommands.AimerDefault;
 import frc.helpers.OI;
@@ -50,8 +52,10 @@ public class AimSimulator extends SubsystemBase {
   }
 
   public void printXYAngle() {
-    DecimalFormat df = new DecimalFormat("#.##");
-    System.out.println("XAngle: " + df.format(xAngle) + "\tYAngle: " + df.format(yAngle));
+    // DecimalFormat df = new DecimalFormat("#.##");
+    // System.out.println("XAngle: " + df.format(xAngle) + "\tYAngle: " + df.format(yAngle));
+    SmartDashboard.putNumber("xAngle", xAngle);
+    SmartDashboard.putNumber("yAngle", yAngle);
   }
 
   public void zeroXY() {
@@ -68,8 +72,17 @@ public class AimSimulator extends SubsystemBase {
     targetRad %= Math.PI;
   }
 
+  public Command continuousXChange(double increment) {
+    return this.run(() -> changeXAngle(increment));
+  }
+
+  public Command continuousYChange(double increment) {
+    return this.run(() -> changeYAngle(increment));
+  }
+
   @Override
   public void periodic() {
     // printXY();
+    printXYAngle();
   }
 }

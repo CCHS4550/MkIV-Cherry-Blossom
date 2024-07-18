@@ -4,17 +4,25 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -23,6 +31,8 @@ import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
 public class RightAscensionSubsystem extends SubsystemBase {
+
+  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   AimSimulator aimer;
 
@@ -39,6 +49,21 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double kV = 72.552;
   double kA = 41.245;
 
+  SimpleMotorFeedforward rightAscensionFeedForward = new SimpleMotorFeedforward(kS, kV);
+
+  PIDController rightAscensionFeedback = new PIDController(0.08, 0, 0);
+
+  private TrapezoidProfile.Constraints constraints;
+
+  // Creates a Trapezoid Profile.
+  // Instead of using one singular setpoint, the Trapezoid Profile creates setpoints to segment the
+  // movement.
+  private TrapezoidProfile profile;
+
+  // States of the mechanism with position and velocity.
+  // Ex. "goal" is our desired final position at a velocity of 0 (See setGoal method!)
+  private TrapezoidProfile.State setPoint, goal;
+
   private CCSparkMax rightAscensionMotor =
       new CCSparkMax(
           "yawMotor",
@@ -52,8 +77,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
-
-  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
@@ -78,7 +101,14 @@ public class RightAscensionSubsystem extends SubsystemBase {
     turretOffset = 0.0;
     rightAscensionMotor.setVoltage(6);
     rightAscensionMotor.set(0);
-    rightAscensionMotor.setPosition((3 * Math.PI) / 4);
+    rightAscensionMotor.setPosition(0);
+
+    constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
+    profile = new TrapezoidProfile(constraints);
+    setPoint = new TrapezoidProfile.State();
+    goal = new TrapezoidProfile.State();
+
+    setSetpoint(new State(rightAscensionMotor.getPosition(), 0));
 
     setDefaultCommand(new RightAscensionDefault(this));
   }
@@ -94,15 +124,66 @@ public class RightAscensionSubsystem extends SubsystemBase {
     return false;
   }
 
-  public double getRightAscension() {
-    return rightAscensionMotor.getPosition();
+  // Helper method called repeatedly for rightAscensionToPoint() Method.
+  private void targetPosition(double targetPosition) {
+    setGoal(targetPosition);
+
+    // First argument = how long to go from current state to the next state.
+    // Second argument = mechanism's current state.
+    // Third argument = the goal state, defined in setGoal() method.
+    // the profile.calculate returns the next setpoint state at the time given (0.02 seconds from
+    // now).
+    TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
+
+    // The Feed Forward Calculation, calculating the voltage for the motor using the position and
+    // velocity of the next setpoint.
+    double feedForwardPower =
+        rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+
+    // The Pid Calculation, calculating a voltage using the current position and the goal position.
+    double feedBackPower =
+        rightAscensionFeedback.calculate(rightAscensionMotor.getPosition(), targetPosition);
+
+    rightAscensionMotor.setVoltage(feedForwardPower + feedBackPower);
+    SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
+    // Sets the current setpoint to the point it will be in the future to prepare for the next time
+    // targetPosition() is called.
+    setSetpoint(nextSetpoint);
   }
 
-  public void printRightAscension() {
-    System.out.println("Right Ascension:" + rightAscensionMotor.getPosition());
+  // Main command called
+  public Command rightAscensionToPoint(double goalPosition) {
+    return this.runEnd(() -> this.targetPosition(goalPosition), () -> setTurretSpeed(0))
+        .until(() -> ((Math.abs(goalPosition - rightAscensionMotor.getPosition())) < 0.3));
   }
 
-  public void zeroEncoders() {
+  // Repeatable version of Main Command
+  public void rightAscensionToPointRepeatable(double goalPosition) {
+    if (!((Math.abs(goalPosition - rightAscensionMotor.getPosition())) < 0.03)) {
+      this.targetPosition(goalPosition);
+    }
+    if (rightAscensionMotor.getSpeed() > 0) {
+      setTurretSpeed(0);
+    }
+  }
+
+  public void setTurretVoltage(Measure<Voltage> volts) {
+    rightAscensionMotor.setVoltage(volts.magnitude());
+  }
+
+  private void setTurretSpeed(double speed) {
+    if (true) {
+      rightAscensionMotor.set(speed);
+    }
+  }
+
+  private void checkHallSensor() {
+    if (!hallEffectSensor.get()) {
+      zeroEncoder();
+    }
+  }
+
+  private void zeroEncoder() {
     rightAscensionMotor.setPosition(0);
   }
 
@@ -114,8 +195,20 @@ public class RightAscensionSubsystem extends SubsystemBase {
     }
   }
 
-  public void setTurretVoltage(Measure<Voltage> volts) {
-    rightAscensionMotor.setVoltage(volts.magnitude());
+  public void setSetpoint(TrapezoidProfile.State setPoint) {
+    this.setPoint = setPoint;
+  }
+
+  public TrapezoidProfile.State getSetpoint() {
+    return setPoint;
+  }
+
+  public void setGoal(double goalState) {
+    goal = new TrapezoidProfile.State(goalState, 0);
+  }
+
+  public State getGoal() {
+    return goal;
   }
 
   /**
@@ -125,7 +218,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
    * @return the quasistatic characterization test
    */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    System.out.println("awhesfkjldg");
     return sysIdRoutine.quasistatic(direction);
   }
 
@@ -144,5 +236,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // printEncoders();
     // System.out.println("RightAscension: " + hallEffectSensor.get());
+    this.checkHallSensor();
+    SmartDashboard.putNumber("X Setpoint", getSetpoint().position);
+    rightAscensionToPointRepeatable(aimer.xAngle);
   }
 }

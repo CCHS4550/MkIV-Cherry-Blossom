@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.commands.defaultcommands.SwerveDriveDefault;
@@ -122,9 +121,9 @@ public class SwerveDriveScheme implements ControlScheme {
                   ySpeed = yRateLimiter.calculate(ySpeed);
                   turnSpeed = turnRateLimiter.calculate(turnSpeed);
 
-                  SmartDashboard.putNumber("xSpeed", xSpeed);
-                  SmartDashboard.putNumber("ySpeed", ySpeed);
-                  SmartDashboard.putNumber("turnSpeed", turnSpeed);
+                  // SmartDashboard.putNumber("xSpeed", xSpeed);
+                  // SmartDashboard.putNumber("ySpeed", ySpeed);
+                  // SmartDashboard.putNumber("turnSpeed", turnSpeed);
 
                   // Constructs desired chassis speeds
                   ChassisSpeeds chassisSpeeds;
