@@ -14,6 +14,7 @@ import frc.robot.subsystems.DeclinationSubsystem;
 public class DeclinationManual extends Command {
   DeclinationSubsystem declination;
   CommandXboxController controller;
+
   /** Creates a new DeclinationManualDown. */
   public DeclinationManual(DeclinationSubsystem declination, CommandXboxController controller) {
     this.declination = declination;
@@ -24,7 +25,8 @@ public class DeclinationManual extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
