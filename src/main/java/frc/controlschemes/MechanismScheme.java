@@ -60,15 +60,16 @@ public class MechanismScheme {
     controller.rightTrigger().whileTrue(indexer.continuousIndex());
     // Shoot the cannon by pressing both controller bumpers.
     controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
+    controller.rightBumper().onTrue(pneumatics.shoot());
     // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
     // controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
 
     controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXY()));
 
-    controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(1)));
-    controller.povDown().whileTrue(aimer.continuousYChange(Math.toRadians(-1)));
-    controller.povLeft().whileTrue(aimer.continuousXChange(Math.toRadians(1)));
-    controller.povRight().whileTrue(aimer.continuousXChange(Math.toRadians(-1)));
+    controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(.25)));
+    controller.povDown().whileTrue(aimer.continuousYChange(-Math.toRadians(.25)));
+    controller.povLeft().whileTrue(aimer.continuousXChange(Math.toRadians(.25)));
+    controller.povRight().whileTrue(aimer.continuousXChange(-Math.toRadians(.25)));
     // controller.povUp().onTrue(new InstantCommand(() -> System.out.println("adsjfgkl")));
   }
 }

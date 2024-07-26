@@ -35,7 +35,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
   private static DoubleSupplier driveSpeedModifier = () -> 0.75;
 
-  private static double turnSpeedModifier = 0.75;
+  private static double turnSpeedModifier = 1.00;
 
   /**
    * Configures the basic driving as well as buttons.
@@ -70,8 +70,8 @@ public class SwerveDriveScheme implements ControlScheme {
             Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
             -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             0);
-    SlewRateLimiter turnRateLimiter =
-        new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
+    // SlewRateLimiter turnRateLimiter =
+    //     new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
     PIDController orientationLockPID = new PIDController(.5, 0, 0);
 
@@ -79,7 +79,8 @@ public class SwerveDriveScheme implements ControlScheme {
     // controller = new CommandXboxController(port);
 
     // Set to slow mode for recreation
-    setSlowMode();
+    // setSlowMode();
+    setFastMode();
 
     // Sends this command into the command scheduler on repeat! Very important!
     swerveDrive.setDefaultCommand(
@@ -119,7 +120,7 @@ public class SwerveDriveScheme implements ControlScheme {
                   // function)
                   xSpeed = xRateLimiter.calculate(xSpeed);
                   ySpeed = yRateLimiter.calculate(ySpeed);
-                  turnSpeed = turnRateLimiter.calculate(turnSpeed);
+                  // turnSpeed = turnRateLimiter.calculate(turnSpeed);
 
                   // SmartDashboard.putNumber("xSpeed", xSpeed);
                   // SmartDashboard.putNumber("ySpeed", ySpeed);

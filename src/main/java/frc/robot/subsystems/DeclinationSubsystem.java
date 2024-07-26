@@ -33,10 +33,11 @@ public class DeclinationSubsystem extends SubsystemBase {
   AimSimulator aimer;
   double declinationSpeedModifier = 0.1;
 
-  ArmFeedforward declinationFeedForward = new ArmFeedforward(
-      Constants.FeedForwardConstants.DECLINATION_KS,
-      Constants.FeedForwardConstants.DECLINATION_KG,
-      Constants.FeedForwardConstants.DECLINATION_KV);
+  ArmFeedforward declinationFeedForward =
+      new ArmFeedforward(
+          Constants.FeedForwardConstants.DECLINATION_KS,
+          Constants.FeedForwardConstants.DECLINATION_KG,
+          Constants.FeedForwardConstants.DECLINATION_KV);
 
   PIDController declinationFeedBack = new PIDController(0.08, 0, 0);
 
@@ -53,48 +54,51 @@ public class DeclinationSubsystem extends SubsystemBase {
   // method!)
   private TrapezoidProfile.State setPoint, goal;
 
-  private DigitalInput pitchLimitSwitch = new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
+  private DigitalInput pitchLimitSwitch =
+      new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
 
-  private CCSparkMax declination1 = new CCSparkMax(
-      "pitchMotor1",
-      "pM1",
-      Constants.MotorConstants.DECLINATION[0],
-      MotorType.kBrushless,
-      IdleMode.kCoast,
-      false,
-      // 4:1 Gearbox
-      // 200:10 Rack
-      // For some reason, only works in decimal form!
-      // (2 * Math.PI) * 0.0125,
-      // ((2 * Math.PI) * 0.0125 * 0.0166));
-      1,
-      1);
+  private CCSparkMax declination1 =
+      new CCSparkMax(
+          "pitchMotor1",
+          "pM1",
+          Constants.MotorConstants.DECLINATION[0],
+          MotorType.kBrushless,
+          IdleMode.kCoast,
+          false,
+          // 4:1 Gearbox
+          // 200:10 Rack
+          // For some reason, only works in decimal form!
+          (2 * Math.PI) * 0.0125,
+          ((2 * Math.PI) * 0.0125 * 0.0166));
+  // 1,
+  // 1);
 
-  private CCSparkMax declination2 = new CCSparkMax(
-      "pitchMotor2",
-      "pM2",
-      Constants.MotorConstants.DECLINATION[1],
-      MotorType.kBrushless,
-      IdleMode.kCoast,
-      true,
-      1,
-      1
+  private CCSparkMax declination2 =
+      new CCSparkMax(
+          "pitchMotor2",
+          "pM2",
+          Constants.MotorConstants.DECLINATION[1],
+          MotorType.kBrushless,
+          IdleMode.kCoast,
+          true,
+          ((Math.PI * 2) * 0.0125),
+          ((Math.PI * 2) * 0.0125 * 0.0166));
+  // 1,
+  // 1);
 
-  // ((Math.PI * 2) * 0.0125),
-  // ((Math.PI * 2) * 0.0125 * 0.0166));
-  );
-
-  SysIdRoutine sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.per(Second).of(0.25),
-          Volts.of(0.25),
-          Seconds.of(2),
-          (state) -> org.littletonrobotics.junction.Logger.recordOutput(
-              "SysIdTestState", state.toString())),
-      new SysIdRoutine.Mechanism(
-          (voltage) -> setPitchVoltage(voltage),
-          null, // No log consumer, since data is recorded by URCL
-          this));
+  SysIdRoutine sysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              Volts.per(Second).of(0.25),
+              Volts.of(0.25),
+              Seconds.of(2),
+              (state) ->
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "SysIdTestState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (voltage) -> setPitchVoltage(voltage),
+              null, // No log consumer, since data is recorded by URCL
+              this));
 
   /** Creates a new Declination. */
   public DeclinationSubsystem(AimSimulator aimer) {
@@ -104,8 +108,8 @@ public class DeclinationSubsystem extends SubsystemBase {
     declination1.setPosition(0);
     declination2.setPosition(0);
 
-    declination1.setSmartCurrentLimit(10);
-    declination2.setSmartCurrentLimit(10);
+    // declination1.setSmartCurrentLimit(10);
+    // declination2.setSmartCurrentLimit(10);
 
     constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
     profile = new TrapezoidProfile(constraints);
@@ -145,29 +149,30 @@ public class DeclinationSubsystem extends SubsystemBase {
 
   /**
    * Helper method called repeatedly for declinationToPoint() Method.
-   * 
+   *
    * @param targetPosition the end goal position.
    */
   private void targetPosition(double targetPosition) {
     setGoal(targetPosition);
 
-    // First argument = how long to go from current state to the next state.
-    // Second argument = mechanism's current state.
-    // Third argument = the goal state, defined in setGoal() method.
-    // the profile.calculate returns the next setpoint state at the time given (0.02
-    // seconds from
-    // now).
+    /* First argument = how long to go from current state to the next state.
+    Second argument = mechanism's current state.
+    Third argument = the goal state, defined in setGoal() method.
+    the profile.calculate returns the next setpoint state at the time given (0.02 seconds from now).
+    */
 
     TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
 
     // The Feed Forward Calculation, calculating the voltage for the motor using the
     // position and
     // velocity of the next setpoint.
-    double feedForwardPower = declinationFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    double feedForwardPower =
+        declinationFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
-    double feedBackPower = declinationFeedBack.calculate(declination1.getPosition(), targetPosition);
+    double feedBackPower =
+        declinationFeedBack.calculate(declination1.getPosition(), targetPosition);
 
     declination1.setVoltage(feedForwardPower + feedBackPower);
     declination2.setVoltage(feedForwardPower + feedBackPower);
@@ -188,6 +193,9 @@ public class DeclinationSubsystem extends SubsystemBase {
   public void declinationToPointRepeatable(double goalPosition) {
     if (!((Math.abs(goalPosition - declination1.getPosition())) < 0.03)) {
       this.targetPosition(goalPosition);
+      SmartDashboard.putBoolean("Moving", true);
+    } else {
+      SmartDashboard.putBoolean("Moving", false);
     }
     if (declination1.getSpeed() > 0) {
       setPitchSpeed(0);
@@ -204,8 +212,11 @@ public class DeclinationSubsystem extends SubsystemBase {
       declination1.set(speed);
       declination2.set(speed);
     } else {
-      declination1.set(0);
-      declination1.set(0);
+      if (speed > 0) {
+        speed *= -1;
+      }
+      declination1.set(speed);
+      declination1.set(speed);
     }
   }
 
@@ -263,6 +274,7 @@ public class DeclinationSubsystem extends SubsystemBase {
     // System.out.println(pitchLimitSwitch.get());
     // System.out.println();
     SmartDashboard.putNumber("Y Setpoint", getSetpoint().position);
+    SmartDashboard.putNumber("Y Actual", declination1.getPosition());
     declinationToPointRepeatable(aimer.yAngle);
   }
 }

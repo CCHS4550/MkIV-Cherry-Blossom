@@ -46,8 +46,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double range = Math.abs(leftBound - middlePoint);
 
   double kS = 0;
-  double kV = 72.552;
-  double kA = 41.245;
+  double kV = .72552;
+  double kA = .41245;
 
   SimpleMotorFeedforward rightAscensionFeedForward = new SimpleMotorFeedforward(kS, kV);
 
@@ -238,6 +238,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // System.out.println("RightAscension: " + hallEffectSensor.get());
     this.checkHallSensor();
     SmartDashboard.putNumber("X Setpoint", getSetpoint().position);
+    SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
     rightAscensionToPointRepeatable(aimer.xAngle);
   }
 }

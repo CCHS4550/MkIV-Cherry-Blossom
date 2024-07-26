@@ -171,11 +171,16 @@ public class Constants {
     public static final double TURNKS = 0;
     public static final double TURNKV = 0;
 
-    /* TODO SysId these values */
-    public static final double DECLINATION_KS = -0.42049;
-    public static final double DECLINATION_KV = 0.34102;
-    public static final double DECLINATION_KA = 0.13214;
-    public static final double DECLINATION_KG = 0.48807;
+    // /* TODO SysId these values */
+    // public static final double DECLINATION_KS = -0.42049;
+    // public static final double DECLINATION_KV = 0.34102;
+    // public static final double DECLINATION_KA = 0.13214;
+    // public static final double DECLINATION_KG = 0.48807;
+
+    public static final double DECLINATION_KS = .5;
+    public static final double DECLINATION_KV = .5;
+    public static final double DECLINATION_KA = .5;
+    public static final double DECLINATION_KG = .5;
 
     public static final double WRIST_KS = 0.17091;
     public static final double WRIST_KG = 0.32638;
