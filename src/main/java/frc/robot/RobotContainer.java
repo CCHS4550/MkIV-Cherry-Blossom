@@ -76,15 +76,14 @@ public class RobotContainer {
     RobotState.getInstance();
 
     // Be careful that if you are using the same controller for both schemes, that the controls
-    // don't overlap.
+    // // don't overlap.
     SwerveDriveScheme.configure(swerveDrive, controller1);
     MechanismScheme.configure(
         indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
-  }
 
-  //   CharacterizingScheme.configure(
-  //       indexer, declination, pneumatics, rightAscension, controller1, aimer);
-  // }
+    // CharacterizingScheme.configure(
+    //     indexer, declination, pneumatics, rightAscension, controller1, aimer);
+  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

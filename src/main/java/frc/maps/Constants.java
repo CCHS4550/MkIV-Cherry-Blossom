@@ -172,15 +172,27 @@ public class Constants {
     public static final double TURNKV = 0;
 
     // /* TODO SysId these values */
-    // public static final double DECLINATION_KS = -0.42049;
-    // public static final double DECLINATION_KV = 0.34102;
-    // public static final double DECLINATION_KA = 0.13214;
-    // public static final double DECLINATION_KG = 0.48807;
 
-    public static final double DECLINATION_KS = .5;
-    public static final double DECLINATION_KV = .5;
-    public static final double DECLINATION_KA = .5;
-    public static final double DECLINATION_KG = .5;
+    // conversion by 0.25
+    public static final double DECLINATION_KS = 0.16328;
+    public static final double DECLINATION_KV = 0.0029191;
+    public static final double DECLINATION_KA = 0.0016397;
+    public static final double DECLINATION_KG = 0.15212;
+
+    // conversion by 0.0125
+    // public static final double DECLINATION_KS = 0.16117;
+    // public static final double DECLINATION_KV = 0.11154;
+    // public static final double DECLINATION_KA = 0.015231;
+    // public static final double DECLINATION_KG = 0.79476;
+
+    public static final double RIGHT_ASCENSION_KS = .5;
+    public static final double RIGHT_ASCENSION_KV = .5;
+    public static final double RIGHT_ASCENSION_KA = .5;
+    public static final double RIGHT_ASCENSION_KG = .5;
+
+    public static final double RIGHT_ASCENSION_KS_TEST = 0.076895;
+    public static final double RIGHT_ASCENSION_KV_TEST = 0.0019762;
+    public static final double RIGHT_ASCENSION_KA_TEST = 0.00024605;
 
     public static final double WRIST_KS = 0.17091;
     public static final double WRIST_KG = 0.32638;

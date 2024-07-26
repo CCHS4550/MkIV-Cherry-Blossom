@@ -66,10 +66,23 @@ public class MechanismScheme {
 
     controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXY()));
 
-    controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(.25)));
-    controller.povDown().whileTrue(aimer.continuousYChange(-Math.toRadians(.25)));
-    controller.povLeft().whileTrue(aimer.continuousXChange(Math.toRadians(.25)));
-    controller.povRight().whileTrue(aimer.continuousXChange(-Math.toRadians(.25)));
+    controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(5)));
+    // controller.povDown().whileTrue(aimer.continuousYChange(-Math.toRadians(5)));
+    // controller.povLeft().whileTrue(aimer.continuousXChange(Math.toRadians(5)));
+    // controller.povRight().whileTrue(aimer.continuousXChange(-Math.toRadians(5)));
     // controller.povUp().onTrue(new InstantCommand(() -> System.out.println("adsjfgkl")));
+
+    controller
+        .povUp()
+        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
+    controller
+        .povDown()
+        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
+    controller
+        .povLeft()
+        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
+    controller
+        .povRight()
+        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
   }
 }

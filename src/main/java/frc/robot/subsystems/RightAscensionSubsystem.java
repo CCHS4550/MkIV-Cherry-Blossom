@@ -46,10 +46,14 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double range = Math.abs(leftBound - middlePoint);
 
   double kS = 0;
-  double kV = .72552;
-  double kA = .41245;
+  double kV = 72.552;
+  double kA = 41.245;
 
-  SimpleMotorFeedforward rightAscensionFeedForward = new SimpleMotorFeedforward(kS, kV);
+  SimpleMotorFeedforward rightAscensionFeedForward =
+      new SimpleMotorFeedforward(
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KS_TEST,
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KV_TEST,
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KA_TEST);
 
   PIDController rightAscensionFeedback = new PIDController(0.08, 0, 0);
 
@@ -72,8 +76,10 @@ public class RightAscensionSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kBrake,
           false,
-          ((2 * Math.PI) / 50),
-          ((2 * Math.PI) / 50) / 60);
+          // ((2 * Math.PI) / 50),
+          // ((2 * Math.PI) / 50) / 60);
+          1,
+          1);
 
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
@@ -81,7 +87,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.per(Second).of(.5),
+              Volts.per(Second).of(1),
               Volts.of(1),
               Seconds.of(4),
               (state) ->
@@ -139,10 +145,12 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // velocity of the next setpoint.
     double feedForwardPower =
         rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    SmartDashboard.putNumber("feedForwardPower", feedForwardPower);
 
     // The Pid Calculation, calculating a voltage using the current position and the goal position.
     double feedBackPower =
         rightAscensionFeedback.calculate(rightAscensionMotor.getPosition(), targetPosition);
+    SmartDashboard.putNumber("feedBackPower", feedBackPower);
 
     rightAscensionMotor.setVoltage(feedForwardPower + feedBackPower);
     SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
@@ -237,7 +245,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // printEncoders();
     // System.out.println("RightAscension: " + hallEffectSensor.get());
     this.checkHallSensor();
-    SmartDashboard.putNumber("X Setpoint", getSetpoint().position);
+    SmartDashboard.putNumber("X Goal", getGoal().position);
     SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
     rightAscensionToPointRepeatable(aimer.xAngle);
   }

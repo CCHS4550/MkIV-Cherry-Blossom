@@ -37,9 +37,10 @@ public class DeclinationSubsystem extends SubsystemBase {
       new ArmFeedforward(
           Constants.FeedForwardConstants.DECLINATION_KS,
           Constants.FeedForwardConstants.DECLINATION_KG,
-          Constants.FeedForwardConstants.DECLINATION_KV);
+          Constants.FeedForwardConstants.DECLINATION_KV,
+          Constants.FeedForwardConstants.DECLINATION_KA);
 
-  PIDController declinationFeedBack = new PIDController(0.08, 0, 0);
+  PIDController declinationFeedBack = new PIDController(0, 0, 25.742);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -68,10 +69,10 @@ public class DeclinationSubsystem extends SubsystemBase {
           // 4:1 Gearbox
           // 200:10 Rack
           // For some reason, only works in decimal form!
-          (2 * Math.PI) * 0.0125,
-          ((2 * Math.PI) * 0.0125 * 0.0166));
-  // 1,
-  // 1);
+          // (2 * Math.PI) * 0.0125,
+          // ((2 * Math.PI) * 0.0125 * 0.0166));
+          1,
+          1);
 
   private CCSparkMax declination2 =
       new CCSparkMax(
@@ -81,17 +82,17 @@ public class DeclinationSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           true,
-          ((Math.PI * 2) * 0.0125),
-          ((Math.PI * 2) * 0.0125 * 0.0166));
-  // 1,
-  // 1);
+          // ((Math.PI * 2) * 0.0125),
+          // ((Math.PI * 2) * 0.0125 * 0.0166));
+          1,
+          1);
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.per(Second).of(0.25),
-              Volts.of(0.25),
-              Seconds.of(2),
+              Volts.per(Second).of(0.5),
+              Volts.of(0.5),
+              Seconds.of(1.25),
               (state) ->
                   org.littletonrobotics.junction.Logger.recordOutput(
                       "SysIdTestState", state.toString())),
@@ -186,12 +187,12 @@ public class DeclinationSubsystem extends SubsystemBase {
   // Main command called
   public Command declinationToPoint(double goalPosition) {
     return this.runEnd(() -> this.targetPosition(goalPosition), () -> setPitchSpeed(0))
-        .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.3));
+        .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
   }
 
   // Repeatable version of Main Command
   public void declinationToPointRepeatable(double goalPosition) {
-    if (!((Math.abs(goalPosition - declination1.getPosition())) < 0.03)) {
+    if (!((Math.abs(goalPosition - declination1.getPosition())) < 0.01)) {
       this.targetPosition(goalPosition);
       SmartDashboard.putBoolean("Moving", true);
     } else {
@@ -265,6 +266,17 @@ public class DeclinationSubsystem extends SubsystemBase {
     return sysIdRoutine.dynamic(direction);
   }
 
+  public static double convertDeclination(double degree) {
+
+    // convert to a percentage
+    degree /= 360;
+    // 4:1 gearbox
+    // 20:1 rack
+    degree *= 80;
+
+    return degree;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -273,7 +285,7 @@ public class DeclinationSubsystem extends SubsystemBase {
     // System.out.println("2:" + declination2.getPosition());
     // System.out.println(pitchLimitSwitch.get());
     // System.out.println();
-    SmartDashboard.putNumber("Y Setpoint", getSetpoint().position);
+    SmartDashboard.putNumber("Y Goal", getGoal().position);
     SmartDashboard.putNumber("Y Actual", declination1.getPosition());
     declinationToPointRepeatable(aimer.yAngle);
   }
