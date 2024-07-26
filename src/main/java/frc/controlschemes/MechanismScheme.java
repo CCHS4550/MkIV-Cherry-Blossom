@@ -54,35 +54,73 @@ public class MechanismScheme {
     //             () -> declination.declinationStop()));
 
     // controller.povDown().whileTrue(new DeclinationManual(declination));
-    // Toggle air compressors and fan with left trigger.
+
+    /*
+     * Toggle air compressors and fan with left trigger. (FUNCTIONAL)
+     */
     controller.leftTrigger().onTrue(new InstantCommand(() -> pneumatics.toggleAirCompressors()));
-    // Rotate Barrels
+
+    /*
+     * Continuously rotates the barrels. (FUNCTIONAL)
+     */
     controller.rightTrigger().whileTrue(indexer.continuousIndex());
-    // Shoot the cannon by pressing both controller bumpers.
+
+    /*
+     * TODO make this work
+     */
     controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
     controller.rightBumper().onTrue(pneumatics.shoot());
+    
     // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
     // controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
 
-    controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXY()));
+    /*
+     * Resets the Aimsimulator, resetting the heading.
+     */
+    controller2.a().onTrue(new InstantCommand(() -> aimer.zeroXYAngle()));
 
-    controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(5)));
+    /*
+     * Ignore this
+     */
+    // controller.povUp().whileTrue(aimer.continuousYChange(Math.toRadians(5)));
     // controller.povDown().whileTrue(aimer.continuousYChange(-Math.toRadians(5)));
     // controller.povLeft().whileTrue(aimer.continuousXChange(Math.toRadians(5)));
     // controller.povRight().whileTrue(aimer.continuousXChange(-Math.toRadians(5)));
     // controller.povUp().onTrue(new InstantCommand(() -> System.out.println("adsjfgkl")));
 
+    /*
+     * Default controls.
+     */
+    // controller
+    //     .povUp()
+    //     .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
+    // controller
+    //     .povDown()
+    //     .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
+    // controller
+    //     .povLeft()
+    //     .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
+    // controller
+    //     .povRight()
+    //     .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
+
+    /*
+     * Tells rightAscension and declination to move to a specific point for testing.
+     */
     controller
         .povUp()
-        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
+        .onTrue(declination.declinationToPoint(5));
     controller
         .povDown()
-        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
+        .onTrue(declination.declinationToPoint(-5));
     controller
         .povLeft()
-        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
+        .onTrue(rightAscension.rightAscensionToPoint(-5));
     controller
         .povRight()
-        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
+        .whileTrue(rightAscension.rightAscensionToPoint(5));
+
+    
+  
   }
 }

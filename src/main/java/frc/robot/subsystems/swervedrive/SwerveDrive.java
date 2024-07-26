@@ -387,8 +387,7 @@ public class SwerveDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
-    SmartDashboard.putNumber(
-        "Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
+    SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
 
     // SmartDashboard.putNumber("pose to middle",
     // getPose().getTranslation().getDistance(speakerPoses[0].getTranslation()));
@@ -793,9 +792,6 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setInitialAngle() {}
 
-  public SparkAnalogSensor getTransducer() {
-    return backLeft.getDriveAnalog();
-  }
 }
 
 // // Mutable holder for unit-safe voltage values, persisted to avoid

@@ -63,7 +63,7 @@ public class AimSimulator extends SubsystemBase {
     yPos = 0;
   }
 
-  public void resetXYAngle() {
+  public void zeroXYAngle() {
     xAngle = 0;
     yAngle = 0;
   }

@@ -50,7 +50,7 @@ public class SwerveDriveScheme implements ControlScheme {
       //    int port
       CommandXboxController controller) {
 
-    setSlowMode();
+    
 
     Shuffleboard.getTab("Diagnostics")
         .getLayout("Swerve", "List")
@@ -80,7 +80,8 @@ public class SwerveDriveScheme implements ControlScheme {
 
     // Set to slow mode for recreation
     // setSlowMode();
-    setFastMode();
+    setNormalMode();
+
 
     // Sends this command into the command scheduler on repeat! Very important!
     swerveDrive.setDefaultCommand(
@@ -142,14 +143,11 @@ public class SwerveDriveScheme implements ControlScheme {
 
                   SwerveModuleState[] moduleStates;
                   // Convert chassis speeds to individual module states
-                  moduleStates =
-                      Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
-                          chassisSpeeds);
+                  moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
                   swerveDrive.setModuleStates(moduleStates);
                 },
-                swerveDrive)
-            .withName("Swerve Controller Command"));
+                swerveDrive).withName("Swerve Controller Command"));
 
     configureButtons(
         swerveDrive,

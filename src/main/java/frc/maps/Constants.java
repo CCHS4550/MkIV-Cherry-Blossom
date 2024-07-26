@@ -125,16 +125,16 @@ public class Constants {
     public static final TrapezoidProfile.Constraints thetaControlConstraints =
         new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, TURN_RATE_LIMIT);
 
+
     // Robot Dimensions (relative to wheel locations)
     // Since this robot is a square, no need for 2 values. In a non-square chassis,
     // 2 values needed.
 
     // Front to back
     public static final double WHEEL_BASE =
-        Units.inchesToMeters(19.25); // from drive shaft to drive shaft. Previous
-    // was
+        Units.inchesToMeters(24.750000); // from drive shaft to drive shaft. Previous was
     // Right to Left                                                            // 27
-    public static final double TRACK_WITDTH = Units.inchesToMeters(22.25);
+    public static final double TRACK_WITDTH = Units.inchesToMeters(24.750000);
 
     /** FR FL BR BL. Same as order of swerve module states */
     public static final SwerveDriveKinematics DRIVE_KINEMATICS =
@@ -173,13 +173,14 @@ public class Constants {
 
     // /* TODO SysId these values */
 
-    // conversion by 0.25
+    // conversion by 0.25 (Not Ideal)
     public static final double DECLINATION_KS = 0.16328;
     public static final double DECLINATION_KV = 0.0029191;
     public static final double DECLINATION_KA = 0.0016397;
     public static final double DECLINATION_KG = 0.15212;
 
-    // conversion by 0.0125
+    // conversion by 0.0125 (Ideal)
+    // Doesn't work oddly enough
     // public static final double DECLINATION_KS = 0.16117;
     // public static final double DECLINATION_KV = 0.11154;
     // public static final double DECLINATION_KA = 0.015231;
@@ -190,14 +191,10 @@ public class Constants {
     public static final double RIGHT_ASCENSION_KA = .5;
     public static final double RIGHT_ASCENSION_KG = .5;
 
+    // Free Running Motor
     public static final double RIGHT_ASCENSION_KS_TEST = 0.076895;
     public static final double RIGHT_ASCENSION_KV_TEST = 0.0019762;
     public static final double RIGHT_ASCENSION_KA_TEST = 0.00024605;
-
-    public static final double WRIST_KS = 0.17091;
-    public static final double WRIST_KG = 0.32638;
-    public static final double WRIST_KV = 0.0017181;
-    public static final double WRIST_KA = 0.00024211;
   }
 
   public class FieldPositionConstants {
