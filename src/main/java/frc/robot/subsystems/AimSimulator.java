@@ -42,7 +42,7 @@ public class AimSimulator extends SubsystemBase {
 
   public double changeYAngle(double rad) {
     yAngle += rad;
-    yAngle = OI.normalize(yAngle, 0, 15);
+    yAngle = OI.normalize(yAngle, 0, 11);
     return yAngle;
   }
 

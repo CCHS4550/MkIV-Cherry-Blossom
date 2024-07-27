@@ -125,7 +125,6 @@ public class Constants {
     public static final TrapezoidProfile.Constraints thetaControlConstraints =
         new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, TURN_RATE_LIMIT);
 
-
     // Robot Dimensions (relative to wheel locations)
     // Since this robot is a square, no need for 2 values. In a non-square chassis,
     // 2 values needed.

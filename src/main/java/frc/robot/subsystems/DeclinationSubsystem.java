@@ -40,11 +40,16 @@ public class DeclinationSubsystem extends SubsystemBase {
           Constants.FeedForwardConstants.DECLINATION_KV,
           Constants.FeedForwardConstants.DECLINATION_KA);
 
-  PIDController declinationFeedBack = new PIDController(0, 0, 25.742);
+  /*
+   * This is the controller that actually brings the mechanism to the point.
+   * Very important to test manually! Google PID tuning to find out how to tune PID constants.
+   */
+  PIDController declinationFeedBack = new PIDController(.9, 0.2, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 
   // Creates a Trapezoid Profile.
+
   // Instead of using one singular setpoint, the Trapezoid Profile creates
   // setpoints to segment the
   // movement.
@@ -109,8 +114,12 @@ public class DeclinationSubsystem extends SubsystemBase {
     declination1.setPosition(0);
     declination2.setPosition(0);
 
-    // declination1.setSmartCurrentLimit(10);
-    // declination2.setSmartCurrentLimit(10);
+    /*
+     * Test mechanism and view Sparkmax-##/MotorCurrentAmps.
+     * If the mechanism draws more amps from hypothetically reaching an obstacle, the current will not surpass this and break the mechanism.
+     */
+    declination1.setSmartCurrentLimit(45);
+    declination2.setSmartCurrentLimit(45);
 
     constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
     profile = new TrapezoidProfile(constraints);
@@ -167,8 +176,9 @@ public class DeclinationSubsystem extends SubsystemBase {
     // The Feed Forward Calculation, calculating the voltage for the motor using the
     // position and
     // velocity of the next setpoint.
-    double feedForwardPower =
-        declinationFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    // Feedforward doesn't seem necessarily necessary?
+    double feedForwardPower = 0;
+    // declinationFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
@@ -186,8 +196,8 @@ public class DeclinationSubsystem extends SubsystemBase {
 
   // Main command called
   public Command declinationToPoint(double goalPosition) {
-    return this.runEnd(() -> this.targetPosition(goalPosition), () -> setPitchSpeed(0))
-        .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
+    return this.runEnd(() -> this.targetPosition(goalPosition), () -> setPitchSpeed(0));
+    // .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
   }
 
   // Repeatable version of Main Command

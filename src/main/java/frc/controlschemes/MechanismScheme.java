@@ -70,7 +70,7 @@ public class MechanismScheme {
      */
     controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
     controller.rightBumper().onTrue(pneumatics.shoot());
-    
+
     // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
     // controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));
 
@@ -91,36 +91,26 @@ public class MechanismScheme {
     /*
      * Default controls.
      */
-    // controller
-    //     .povUp()
-    //     .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
-    // controller
-    //     .povDown()
-    //     .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
-    // controller
-    //     .povLeft()
-    //     .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
-    // controller
-    //     .povRight()
-    //     .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
+    controller
+        .povUp()
+        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
+    controller
+        .povDown()
+        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
+    controller
+        .povLeft()
+        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
+    controller
+        .povRight()
+        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
 
     /*
      * Tells rightAscension and declination to move to a specific point for testing.
      */
-    controller
-        .povUp()
-        .onTrue(declination.declinationToPoint(5));
-    controller
-        .povDown()
-        .onTrue(declination.declinationToPoint(-5));
-    controller
-        .povLeft()
-        .onTrue(rightAscension.rightAscensionToPoint(-5));
-    controller
-        .povRight()
-        .whileTrue(rightAscension.rightAscensionToPoint(5));
 
-    
-  
+    //   controller.povUp().onTrue(declination.declinationToPoint(5));
+    //   controller.povDown().onTrue(declination.declinationToPoint(3));
+    //   controller.povLeft().onTrue(rightAscension.rightAscensionToPoint(-5));
+    //   controller.povRight().whileTrue(rightAscension.rightAscensionToPoint(5));
   }
 }

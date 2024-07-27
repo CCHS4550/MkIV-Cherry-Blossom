@@ -11,7 +11,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAnalogSensor;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -387,7 +386,8 @@ public class SwerveDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
-    SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
+    SmartDashboard.putNumber(
+        "Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
 
     // SmartDashboard.putNumber("pose to middle",
     // getPose().getTranslation().getDistance(speakerPoses[0].getTranslation()));
@@ -791,7 +791,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void setInitialAngle() {}
-
 }
 
 // // Mutable holder for unit-safe voltage values, persisted to avoid
