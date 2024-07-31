@@ -1,6 +1,7 @@
 package frc.controlschemes;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
@@ -19,6 +20,14 @@ public class MechanismScheme {
       CommandXboxController primaryController,
       CommandXboxController secondaryController,
       AimSimulator aimer) {
+
+        RunCommand defaultDeclination = new RunCommand(() -> declination.declinationToPointRepeatable(aimer.yAngle));
+        RunCommand defaultRightAscension = new RunCommand(() -> rightAscension.rightAscensionToPointRepeatable(aimer.xAngle));
+        RunCommand defaultIndex = new RunCommand(() -> indexer.indexToPointRepeatable(aimer.xPos));
+
+        declination.setDefaultCommand(defaultDeclination);
+        rightAscension.setDefaultCommand(defaultRightAscension);
+        indexer.setDefaultCommand(defaultIndex);
 
     configureButtons(
         indexer,
@@ -63,7 +72,7 @@ public class MechanismScheme {
     /*
      * Continuously rotates the barrels. (FUNCTIONAL)
      */
-    controller.rightTrigger().whileTrue(indexer.continuousIndex());
+    controller.rightTrigger().whileTrue(aimer.continuousXChange(0.5));
 
     /*
      * TODO make this work
@@ -93,16 +102,16 @@ public class MechanismScheme {
      */
     controller
         .povUp()
-        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(1)));
+        .whileTrue(aimer.continuousYAngleChange(DeclinationSubsystem.convertDeclination(1)));
     controller
         .povDown()
-        .whileTrue(aimer.continuousYChange(DeclinationSubsystem.convertDeclination(-1)));
+        .whileTrue(aimer.continuousYAngleChange(DeclinationSubsystem.convertDeclination(-1)));
     controller
         .povLeft()
-        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(-1)));
+        .whileTrue(aimer.continuousXAngleChange(DeclinationSubsystem.convertDeclination(-1)));
     controller
         .povRight()
-        .whileTrue(aimer.continuousXChange(DeclinationSubsystem.convertDeclination(1)));
+        .whileTrue(aimer.continuousXAngleChange(DeclinationSubsystem.convertDeclination(1)));
 
     /*
      * Tells rightAscension and declination to move to a specific point for testing.
@@ -112,5 +121,9 @@ public class MechanismScheme {
     //   controller.povDown().onTrue(declination.declinationToPoint(3));
     //   controller.povLeft().onTrue(rightAscension.rightAscensionToPoint(-5));
     //   controller.povRight().whileTrue(rightAscension.rightAscensionToPoint(5));
+  }
+  public static void configureTeleopPeriodic() {
+    
+
   }
 }

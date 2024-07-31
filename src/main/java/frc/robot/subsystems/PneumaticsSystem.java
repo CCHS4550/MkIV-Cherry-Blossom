@@ -25,7 +25,8 @@ public class PneumaticsSystem extends SubsystemBase {
   // SparkAnalogSensor transducer = getDriveAnalog();
 
   private boolean airCompressorStatus;
-  private DoubleSolenoid.Value pressureSealStatus;
+  public DoubleSolenoid.Value pressureSealStatus;
+  
 
   private CCSparkMax airCompressors =
       new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false, false);
@@ -56,6 +57,7 @@ public class PneumaticsSystem extends SubsystemBase {
   private double slope = ((150 - 0) / (5 - 0));
   private double input;
   private double psi;
+  
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {

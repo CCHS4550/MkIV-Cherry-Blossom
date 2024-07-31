@@ -3,15 +3,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.commands.defaultcommands.AimerDefault;
 import frc.helpers.OI;
 import java.text.DecimalFormat;
 
 public class AimSimulator extends SubsystemBase {
-  double xPos;
-  double yPos;
-  double xAngle;
-  double yAngle;
+  public double xPos;
+  public double yPos;
+  public double xAngle;
+  public double yAngle;
 
   public AimSimulator() {
     xPos = 0;
@@ -19,7 +18,7 @@ public class AimSimulator extends SubsystemBase {
     xAngle = 0;
     yAngle = 0;
 
-    setDefaultCommand(new AimerDefault(this));
+
   }
 
   public double changeXPos(double val) {
@@ -73,10 +72,16 @@ public class AimSimulator extends SubsystemBase {
   }
 
   public Command continuousXChange(double increment) {
+    return this.run(() -> changeXPos(increment));
+  }
+  public Command continuousYChange(double increment) {
+    return this.run(() -> changeYPos(increment));
+  }
+  public Command continuousXAngleChange(double increment) {
     return this.run(() -> changeXAngle(increment));
   }
 
-  public Command continuousYChange(double increment) {
+  public Command continuousYAngleChange(double increment) {
     return this.run(() -> changeYAngle(increment));
   }
 

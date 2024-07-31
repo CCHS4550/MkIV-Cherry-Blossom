@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,8 +32,14 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
  */
 public class RobotContainer {
 
+  
+
+  /*
+   * Initialize controllers.
+   */
   CommandXboxController controller1 = new CommandXboxController(0);
   CommandXboxController controller2 = new CommandXboxController(1);
+
   AimSimulator aimer;
 
   SwerveDrive swerveDrive;
@@ -75,35 +87,26 @@ public class RobotContainer {
 
     RobotState.getInstance();
 
-    // Be careful that if you are using the same controller for both schemes, that the controls
-    // // don't overlap.
+    /*
+     * Configure schemes.
+     * These configure the controller bindings.
+     * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
+     */
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    MechanismScheme.configure(indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
-    // CharacterizingScheme.configure(
-    //     indexer, declination, pneumatics, rightAscension, controller1, aimer);
+    AutonomousScheme.configurePathPlannerBuilder(swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
+
+    // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1, aimer);
+
+
+
+    
+
+
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@links
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return new SequentialCommandGroup();
-  }
-
-  private void defaultCommands() {}
 }
+
+
