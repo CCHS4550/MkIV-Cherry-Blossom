@@ -4,17 +4,12 @@
 
 package frc.robot.subsystems;
 
-
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -28,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
+import java.util.function.DoubleSupplier;
 
 public class IndexingSubsystem extends SubsystemBase {
   PneumaticsSystem pneumatics;
@@ -65,21 +61,21 @@ public class IndexingSubsystem extends SubsystemBase {
 
   CCSparkMax indexMotor =
       new CCSparkMax(
-          "barrelRotationMotor", 
-          "bRM", 
-          13, 
-          MotorType.kBrushless, 
-          IdleMode.kBrake, 
-          false);
-  
-  SysIdRoutine sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(
-            Volts.per(Second).of(0.5),
-            Volts.of(0.5),
-            Seconds.of(1.25),
-            (state) -> org.littletonrobotics.junction.Logger.recordOutput("SysIdTestState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> setIndexVoltage(voltage),
-            null, // No log consumer, since data is recorded by URCL
-            this));
+          "barrelRotationMotor", "bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
+
+  SysIdRoutine sysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              Volts.per(Second).of(0.5),
+              Volts.of(0.5),
+              Seconds.of(1.25),
+              (state) ->
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "SysIdTestState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (voltage) -> setIndexVoltage(voltage),
+              null, // No log consumer, since data is recorded by URCL
+              this));
 
   // Will not work because PWM is only an output!
   // private PWM hallEffectSensor = new PWM(0);
@@ -87,10 +83,8 @@ public class IndexingSubsystem extends SubsystemBase {
   /** Creates a new IndexingSubsystem. */
   public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
-
   }
 
-  
   /**
    * Helper method called repeatedly for declinationToPoint() Method.
    *
@@ -116,8 +110,7 @@ public class IndexingSubsystem extends SubsystemBase {
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
-    double feedBackPower =
-        indexFeedBack.calculate(indexMotor.getPosition(), targetPosition);
+    double feedBackPower = indexFeedBack.calculate(indexMotor.getPosition(), targetPosition);
 
     indexMotor.setVoltage(feedForwardPower + feedBackPower);
     SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
@@ -128,13 +121,13 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   // Main command called
-  public Command declinationToPoint(double goalPosition) {
+  public Command indexToPoint(double goalPosition) {
     return this.runEnd(() -> this.targetPosition(goalPosition), () -> setIndexSpeed(0));
     // .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
   }
 
   // Repeatable version of Main Command
-  public void declinationToPointRepeatable(double goalPosition) {
+  public void indexToPointRepeatable(double goalPosition) {
     if (!((Math.abs(goalPosition - indexMotor.getPosition())) < 0.01)) {
       this.targetPosition(goalPosition);
       SmartDashboard.putBoolean("Moving", true);
@@ -156,8 +149,6 @@ public class IndexingSubsystem extends SubsystemBase {
     indexMotor.set(-1 * barrelRotationSpeedModifier.getAsDouble());
   }
 
-
-
   private boolean atZero() {
 
     if (!hallEffectSensor.get()) {
@@ -167,24 +158,19 @@ public class IndexingSubsystem extends SubsystemBase {
     return false;
   }
 
-
-
   public void setIndexSpeed(double speed) {
     if (true) {
       indexMotor.set(speed);
     }
-
   }
 
-  public void setIndexVoltage(Measure<Voltage> volts){
+  public void setIndexVoltage(Measure<Voltage> volts) {
     indexMotor.setVoltage(volts.magnitude());
-
   }
 
   private void stop() {
     indexMotor.set(0);
   }
-  
 
   public void setSetpoint(TrapezoidProfile.State setPoint) {
     this.setPoint = setPoint;
@@ -226,5 +212,6 @@ public class IndexingSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // System.out.println("Indexing: " + hallEffectSensor.get());
+
   }
 }

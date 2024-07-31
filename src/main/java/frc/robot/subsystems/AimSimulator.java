@@ -17,8 +17,6 @@ public class AimSimulator extends SubsystemBase {
     yPos = 0;
     xAngle = 0;
     yAngle = 0;
-
-
   }
 
   public double changeXPos(double val) {
@@ -74,9 +72,11 @@ public class AimSimulator extends SubsystemBase {
   public Command continuousXChange(double increment) {
     return this.run(() -> changeXPos(increment));
   }
+
   public Command continuousYChange(double increment) {
     return this.run(() -> changeYPos(increment));
   }
+
   public Command continuousXAngleChange(double increment) {
     return this.run(() -> changeXAngle(increment));
   }

@@ -4,11 +4,6 @@
 
 package frc.controlschemes;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,7 +13,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -38,18 +32,20 @@ import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
+import java.util.Arrays;
+import java.util.List;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /** Add your docs here. */
 public class AutonomousScheme implements ControlScheme {
 
+  static Command autoCommand;
 
-    static Command autoCommand;
-
-    /**
-     * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to follow .traj files in src\main\deploy.
-     * 
-     */
-    public static void configurePathPlannerBuilder(
+  /**
+   * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to
+   * follow .traj files in src\main\deploy.
+   */
+  public static void configurePathPlannerBuilder(
       SwerveDrive swerveDrive,
       IndexingSubsystem indexer,
       DeclinationSubsystem declination,
@@ -58,73 +54,73 @@ public class AutonomousScheme implements ControlScheme {
       CommandXboxController controller,
       AimSimulator aimer) {
 
-        
-        /** Command List for autos in SmartDashBoard */
-        SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-        autoCommand = autoChooser.getSelected();
+    System.out.println("Configuring Pathplanner...");
 
-        AutoBuilder.configureHolonomic(
-            swerveDrive::getPose, // Robot pose supplier
-            swerveDrive::setOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            swerveDrive::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            swerveDrive::driveRobotRelative, 
-            // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(
-                        swerveDrive.xPID.getP(),
-                        swerveDrive.xPID.getI(), 
-                        swerveDrive.xPID.getD()
-                        ), // Translation PID constants
-                    new PIDConstants(
-                        swerveDrive.turnPID.getP(), 
-                        swerveDrive.turnPID.getI(), 
-                        swerveDrive.turnPID.getD()
-                        ), // Rotation PID constants
-                    Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
-                    0.44, // Drive base radius in meters. Distance from robot center to furthest module. (0.444522677)
-                    new ReplanningConfig() // Default path replanning config. See the API for the options here
+    /** Command List for autos in SmartDashBoard */
+    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoCommand = autoChooser.getSelected();
+
+    AutoBuilder.configureHolonomic(
+        swerveDrive::getPose, // Robot pose supplier
+        swerveDrive
+            ::setOdometry, // Method to reset odometry (will be called if your auto has a starting
+        // pose)
+        swerveDrive::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        swerveDrive::driveRobotRelative,
+        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
+            // your Constants class
+            new PIDConstants(
+                swerveDrive.xPID.getP(),
+                swerveDrive.xPID.getI(),
+                swerveDrive.xPID.getD()), // Translation PID constants
+            new PIDConstants(
+                swerveDrive.turnPID.getP(),
+                swerveDrive.turnPID.getI(),
+                swerveDrive.turnPID.getD()), // Rotation PID constants
+            Constants.SwerveConstants
+                .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+            0.44, // Drive base radius in meters. Distance from robot center to furthest module.
+            // (0.444522677)
+            new ReplanningConfig() // Default path replanning config. See the API for the options
+            // here
             ),
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            swerveDrive // Reference to this subsystem to set requirements
-    );
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        swerveDrive // Reference to this subsystem to set requirements
+        );
 
-
-    configureButtons(
+    registerCommands(
         swerveDrive,
-        indexer, 
-        declination, 
-        pneumatics, 
-        rightAscension, 
-        controller, 
-        controller, 
+        indexer,
+        declination,
+        pneumatics,
+        rightAscension,
+        controller,
+        controller,
         aimer);
-      }
+  }
 
+  static String[] allAutos =
+      Arrays.stream(Filesystem.getDeployDirectory().list())
+          .map(s -> s.endsWith(".chor") ? s.substring(0, s.length() - 5) : s)
+          .toArray(String[]::new);
 
-
-
-    
-    static String[] allAutos = Arrays.stream(Filesystem.getDeployDirectory().list())
-                .map(s -> s.endsWith(".chor") ? s.substring(0, s.length() - 5) : s)
-                .toArray(String[]::new);
-    
-
-    /**
-     * Main method called in RobotContainer INSTEAD of configurePathPlannerBuilder() to allow the robot to follow .chor files in src\main\deploy.
-     * We do not use this method because Choreo currently does not support adding commands to an autonomous routine.
-     * 
-     */ 
-    public static void configureChoreoBuilder(
+  /**
+   * Main method called in RobotContainer INSTEAD of configurePathPlannerBuilder() to allow the
+   * robot to follow .chor files in src\main\deploy. We do not use this method because Choreo
+   * currently does not support adding commands to an autonomous routine.
+   */
+  public static void configureChoreoBuilder(
       SwerveDrive swerveDrive,
       IndexingSubsystem indexer,
       DeclinationSubsystem declination,
@@ -132,15 +128,14 @@ public class AutonomousScheme implements ControlScheme {
       RightAscensionSubsystem rightAscension,
       CommandXboxController controller,
       AimSimulator aimer) {
-    
 
     LoggedDashboardChooser<String> chooser = new LoggedDashboardChooser<>("Auto Choices");
     String autoSelected = chooser.get();
-    
-    for (String autonomous : allAutos) {           
-        //Do your stuff here
-        System.out.println(autonomous); 
-        chooser.addOption(autonomous, autonomous);   
+
+    for (String autonomous : allAutos) {
+      // Do your stuff here
+      System.out.println(autonomous);
+      chooser.addOption(autonomous, autonomous);
     }
 
     /*
@@ -149,50 +144,45 @@ public class AutonomousScheme implements ControlScheme {
     ChoreoTrajectory traj = Choreo.getTrajectory(autoSelected);
 
     Choreo.choreoSwerveCommand(
-    traj,  
-    () -> swerveDrive.getPose(), 
-    swerveDrive.xPID, 
-    swerveDrive.yPID,  
-    swerveDrive.turnPID, 
-
-    (ChassisSpeeds speeds) ->  
-          {
-            SwerveModuleState[] moduleStates;
-            // Convert chassis speeds to individual module states
-            moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
-            swerveDrive.setModuleStates(moduleStates);
-
-          },
-
-    () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          }, // 
-    swerveDrive // 
-    );
+        traj,
+        () -> swerveDrive.getPose(),
+        swerveDrive.xPID,
+        swerveDrive.yPID,
+        swerveDrive.turnPID,
+        (ChassisSpeeds speeds) -> {
+          SwerveModuleState[] moduleStates;
+          // Convert chassis speeds to individual module states
+          moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
+          swerveDrive.setModuleStates(moduleStates);
+        },
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        }, //
+        swerveDrive //
+        );
 
     registerCommands(
         swerveDrive,
-        indexer, 
-        declination, 
-        pneumatics, 
-        rightAscension, 
-        controller, 
-        controller, 
+        indexer,
+        declination,
+        pneumatics,
+        rightAscension,
+        controller,
+        controller,
         aimer);
   }
 
   public static Command getAutoCommand() {
     return autoCommand;
   }
-
 
   public static void registerCommands(
       SwerveDrive swerveDrive,
@@ -202,23 +192,18 @@ public class AutonomousScheme implements ControlScheme {
       RightAscensionSubsystem rightAscension,
       CommandXboxController controller,
       CommandXboxController controller2,
-      AimSimulator aimer) {
+      AimSimulator aimer) {}
 
+  /* Helper Methods */
 
-      }
-
-
-    /* Helper Methods */
-
-
-    /**
-    * Default end state of 0 mps and 0 degrees
-    *
-    * @param poses an array of poses to have on the path
-    * @return A PathPlannerPath following given poses
-    */
-    public PathPlannerPath onTheFlyPath(Pose2d[] poses) {
-        List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
+  /**
+   * Default end state of 0 mps and 0 degrees
+   *
+   * @param poses an array of poses to have on the path
+   * @return A PathPlannerPath following given poses
+   */
+  public PathPlannerPath onTheFlyPath(Pose2d[] poses) {
+    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
 
     // Create the path using the bezier points created above
     PathPlannerPath path =
@@ -302,10 +287,4 @@ public class AutonomousScheme implements ControlScheme {
     return AutoBuilder.pathfindThenFollowPath(
         path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), 0);
   }
-
-
-  
-
-    
-
 }

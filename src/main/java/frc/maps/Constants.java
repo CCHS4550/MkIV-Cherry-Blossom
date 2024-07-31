@@ -172,6 +172,10 @@ public class Constants {
 
     // /* TODO SysId these values */
 
+    public static final double INDEX_KS = 0.16328;
+    public static final double INDEX_KV = 0.0029191;
+    public static final double INDEX_KA = 0.0016397;
+
     // conversion by 0.25 (Not Ideal)
     public static final double DECLINATION_KS = 0.16328;
     public static final double DECLINATION_KV = 0.0029191;

@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.commands.defaultcommands.DeclinationDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
@@ -127,8 +126,6 @@ public class DeclinationSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State();
 
     setSetpoint(new State(0, 0));
-
-    setDefaultCommand(new DeclinationDefault(this));
   }
 
   public void declinationSetUpDown(boolean isUp) {
@@ -297,6 +294,7 @@ public class DeclinationSubsystem extends SubsystemBase {
     // System.out.println();
     SmartDashboard.putNumber("Y Goal", getGoal().position);
     SmartDashboard.putNumber("Y Actual", declination1.getPosition());
-    declinationToPointRepeatable(aimer.yAngle);
+    // declinationToPointRepeatable(aimer.yAngle);
+
   }
 }

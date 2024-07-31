@@ -21,13 +21,15 @@ public class MechanismScheme {
       CommandXboxController secondaryController,
       AimSimulator aimer) {
 
-        RunCommand defaultDeclination = new RunCommand(() -> declination.declinationToPointRepeatable(aimer.yAngle));
-        RunCommand defaultRightAscension = new RunCommand(() -> rightAscension.rightAscensionToPointRepeatable(aimer.xAngle));
-        RunCommand defaultIndex = new RunCommand(() -> indexer.indexToPointRepeatable(aimer.xPos));
+    RunCommand defaultDeclination =
+        new RunCommand(() -> declination.declinationToPointRepeatable(aimer.yAngle));
+    RunCommand defaultRightAscension =
+        new RunCommand(() -> rightAscension.rightAscensionToPointRepeatable(aimer.xAngle));
+    RunCommand defaultIndex = new RunCommand(() -> indexer.indexToPointRepeatable(aimer.xPos));
 
-        declination.setDefaultCommand(defaultDeclination);
-        rightAscension.setDefaultCommand(defaultRightAscension);
-        indexer.setDefaultCommand(defaultIndex);
+    declination.setDefaultCommand(defaultDeclination);
+    rightAscension.setDefaultCommand(defaultRightAscension);
+    indexer.setDefaultCommand(defaultIndex);
 
     configureButtons(
         indexer,
@@ -122,8 +124,6 @@ public class MechanismScheme {
     //   controller.povLeft().onTrue(rightAscension.rightAscensionToPoint(-5));
     //   controller.povRight().whileTrue(rightAscension.rightAscensionToPoint(5));
   }
-  public static void configureTeleopPeriodic() {
-    
 
-  }
+  public static void configureTeleopPeriodic() {}
 }

@@ -4,14 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.controlschemes.*;
 import frc.maps.Constants;
@@ -31,8 +23,6 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-  
 
   /*
    * Initialize controllers.
@@ -93,20 +83,14 @@ public class RobotContainer {
      * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
      */
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    MechanismScheme.configure(
+        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
-    AutonomousScheme.configurePathPlannerBuilder(swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
+    AutonomousScheme.configurePathPlannerBuilder(
+        swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
-    // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
-
-
-    
-
+    // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1,
+    // aimer);
 
   }
-
-
 }
-
-

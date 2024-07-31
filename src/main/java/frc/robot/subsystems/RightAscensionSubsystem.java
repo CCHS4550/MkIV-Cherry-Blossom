@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.commands.defaultcommands.RightAscensionDefault;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
@@ -115,8 +114,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State();
 
     setSetpoint(new State(rightAscensionMotor.getPosition(), 0));
-
-    setDefaultCommand(new RightAscensionDefault(this));
   }
 
   public void rightAscensionDefaultMethod(AimSimulator aimer) {}
@@ -247,6 +244,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
     this.checkHallSensor();
     SmartDashboard.putNumber("X Goal", getGoal().position);
     SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
-    rightAscensionToPointRepeatable(aimer.xAngle);
+    // rightAscensionToPointRepeatable(aimer.xAngle);
+
   }
 }
