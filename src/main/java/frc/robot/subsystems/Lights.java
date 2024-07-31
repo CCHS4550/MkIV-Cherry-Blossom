@@ -17,7 +17,7 @@ public class Lights extends SubsystemBase {
   }
 
   AddressableLED leds = new AddressableLED(0);
-  AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(98);
+  AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(175);
   int rainbowFirstPixelHue = 1;
 
   /** Creates a new Lights. */

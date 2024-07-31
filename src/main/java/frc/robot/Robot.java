@@ -116,8 +116,6 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    Logger.recordOutput("blehh", "what");
-
     // Initialize auto chooser
     chooser.addDefaultOption("Default Auto", defaultAuto);
     chooser.addOption("My Auto", customAuto);
