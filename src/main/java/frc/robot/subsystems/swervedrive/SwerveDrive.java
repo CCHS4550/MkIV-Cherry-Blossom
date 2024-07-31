@@ -159,7 +159,7 @@ public class SwerveDrive extends SubsystemBase {
   // SwerveDriveOdometry odometer;
   SwerveDrivePoseEstimator poseEstimator;
   PhotonPoseEstimator photonPoseEstimator;
-  PIDController xPID, yPID;
+  public PIDController xPID, yPID;
   public PIDController turnPID;
   ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
