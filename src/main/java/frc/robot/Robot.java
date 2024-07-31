@@ -127,9 +127,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
 
-    if (Robot.isSimulation()) {
-      DriverStation.silenceJoystickConnectionWarning(true);
-    }
+    // if (Robot.isSimulation()) {
+    DriverStation.silenceJoystickConnectionWarning(true);
+    // }
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
