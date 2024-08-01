@@ -22,10 +22,12 @@ public class MechanismScheme {
       AimSimulator aimer) {
 
     RunCommand defaultDeclination =
-        new RunCommand(() -> declination.declinationToPointRepeatable(aimer.yAngle));
+        new RunCommand(() -> declination.declinationToPointRepeatable(aimer.yAngle), declination);
     RunCommand defaultRightAscension =
-        new RunCommand(() -> rightAscension.rightAscensionToPointRepeatable(aimer.xAngle));
-    RunCommand defaultIndex = new RunCommand(() -> indexer.indexToPointRepeatable(aimer.xPos));
+        new RunCommand(
+            () -> rightAscension.rightAscensionToPointRepeatable(aimer.xAngle), rightAscension);
+    RunCommand defaultIndex =
+        new RunCommand(() -> indexer.indexToPointRepeatable(aimer.xPos), indexer);
 
     declination.setDefaultCommand(defaultDeclination);
     rightAscension.setDefaultCommand(defaultRightAscension);

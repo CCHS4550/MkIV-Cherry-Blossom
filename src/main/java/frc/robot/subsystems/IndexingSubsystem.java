@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -13,6 +15,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -83,6 +86,13 @@ public class IndexingSubsystem extends SubsystemBase {
   /** Creates a new IndexingSubsystem. */
   public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
+
+    constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
+    profile = new TrapezoidProfile(constraints);
+    setPoint = new TrapezoidProfile.State();
+    goal = new TrapezoidProfile.State();
+
+    setSetpoint(new State(0, 0));
   }
 
   /**

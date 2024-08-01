@@ -78,7 +78,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
     // Set to slow mode for recreation
     // setSlowMode();
-    setNormalMode();
+    setFastMode();
 
     // Sends this command into the command scheduler on repeat! Very important!
     swerveDrive.setDefaultCommand(

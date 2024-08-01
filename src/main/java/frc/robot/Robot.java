@@ -15,11 +15,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.controlschemes.AutonomousScheme;
 import frc.maps.Constants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -34,12 +34,6 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
-
-  private static final String defaultAuto = "Default";
-  private static final String customAuto = "My Auto";
-  private String autoSelected;
-  private final LoggedDashboardChooser<String> chooser =
-      new LoggedDashboardChooser<>("Auto Choices");
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -116,10 +110,6 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    // Initialize auto chooser
-    chooser.addDefaultOption("Default Auto", defaultAuto);
-    chooser.addOption("My Auto", customAuto);
-
     m_robotContainer = new RobotContainer();
   }
 
@@ -144,23 +134,13 @@ public class Robot extends LoggedRobot {
   /** This function is called once when autonomous is enabled. */
   @Override
   public void autonomousInit() {
-    autoSelected = chooser.get();
-    System.out.println("Auto selected: " + autoSelected);
+
+    AutonomousScheme.getAutoCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    switch (autoSelected) {
-      case customAuto:
-        // Put custom auto code here
-        break;
-      case defaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
-  }
+  public void autonomousPeriodic() {}
 
   /** This function is called once when teleop is enabled. */
   @Override

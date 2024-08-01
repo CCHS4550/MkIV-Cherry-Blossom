@@ -56,11 +56,6 @@ public class AutonomousScheme implements ControlScheme {
 
     System.out.println("Configuring Pathplanner...");
 
-    /** Command List for autos in SmartDashBoard */
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    autoCommand = autoChooser.getSelected();
-
     AutoBuilder.configureHolonomic(
         swerveDrive::getPose, // Robot pose supplier
         swerveDrive
@@ -71,14 +66,16 @@ public class AutonomousScheme implements ControlScheme {
         // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
             // your Constants class
-            new PIDConstants(
-                swerveDrive.xPID.getP(),
-                swerveDrive.xPID.getI(),
-                swerveDrive.xPID.getD()), // Translation PID constants
-            new PIDConstants(
-                swerveDrive.turnPID.getP(),
-                swerveDrive.turnPID.getI(),
-                swerveDrive.turnPID.getD()), // Rotation PID constants
+            // new PIDConstants(
+            //     swerveDrive.xPID.getP(),
+            //     swerveDrive.xPID.getI(),
+            //     swerveDrive.xPID.getD()), // Translation PID constants
+            // new PIDConstants(
+            //     swerveDrive.turnPID.getP(),
+            //     swerveDrive.turnPID.getI(),
+            //     swerveDrive.turnPID.getD()), // Rotation PID constants
+            new PIDConstants(1, 0, 0), // Translation PID constants
+            new PIDConstants(1, 0, 0),
             Constants.SwerveConstants
                 .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
             0.44, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -98,6 +95,12 @@ public class AutonomousScheme implements ControlScheme {
         },
         swerveDrive // Reference to this subsystem to set requirements
         );
+
+    /** Command List for autos in SmartDashBoard */
+    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoCommand = autoChooser.getSelected();
+    System.out.println("Configured! Command is " + autoCommand.getName());
 
     registerCommands(
         swerveDrive,
@@ -181,6 +184,7 @@ public class AutonomousScheme implements ControlScheme {
   }
 
   public static Command getAutoCommand() {
+    System.out.println("Recieved Auto Command: " + autoCommand.getName());
     return autoCommand;
   }
 
