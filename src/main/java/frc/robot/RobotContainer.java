@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.controlschemes.*;
 import frc.maps.Constants;
@@ -26,8 +24,8 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  static SendableChooser<Command> autoChooser;
-  static Command autoCommand;
+
+  // static SendableChooser<Command> autoChooser;
 
   /*
    * Initialize controllers.
@@ -94,6 +92,9 @@ public class RobotContainer {
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
+
     // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1,
     // aimer);
 
@@ -103,6 +104,11 @@ public class RobotContainer {
 
     Shuffleboard.getTab("Subsystems").add("SwerveDrive", swerveDrive);
   }
+
+  // public static Command getAutoCommand() {
+  //   // System.out.println("Recieved Auto Command: " + autoCommand.getName());
+  //   return autoChooser.getSelected();
+  // }
 
   // public static Command getAutoCommand() {
   //   System.out.println("Recieved Auto Command: " + autoCommand.getName());

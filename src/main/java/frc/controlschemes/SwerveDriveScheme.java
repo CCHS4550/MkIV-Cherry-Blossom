@@ -18,6 +18,7 @@ import frc.maps.Constants;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Control scheme for swerve drive. Includes movement, the toggle between field centric and robot
@@ -60,12 +61,12 @@ public class SwerveDriveScheme implements ControlScheme {
 
     SlewRateLimiter xRateLimiter =
         new SlewRateLimiter(
-            Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
+            Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             0);
     SlewRateLimiter yRateLimiter =
         new SlewRateLimiter(
-            Constants.SwerveConstants.DRIVE_RATE_LIMIT * 4,
+            Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             0);
     // SlewRateLimiter turnRateLimiter =
@@ -87,12 +88,12 @@ public class SwerveDriveScheme implements ControlScheme {
 
                   // Set x, y, and turn speed based on joystick inputs
                   double xSpeed =
-                      MathUtil.applyDeadband(-controller.getLeftY(), 0.07)
+                      MathUtil.applyDeadband(-controller.getLeftY(), 0.01)
                           * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND
                           * driveSpeedModifier.getAsDouble();
 
                   double ySpeed =
-                      MathUtil.applyDeadband(-controller.getLeftX(), 0.07)
+                      MathUtil.applyDeadband(-controller.getLeftX(), 0.01)
                           * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND
                           * driveSpeedModifier.getAsDouble();
 
@@ -101,7 +102,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
                   if (!orientationLocked) {
                     orientationLockAngle = swerveDrive.getRotation2d().getRadians();
-                    turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.07);
+                    turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
 
                   } else {
                     turnSpeed =
@@ -131,10 +132,10 @@ public class SwerveDriveScheme implements ControlScheme {
                     // Relative to field
                     chassisSpeeds =
                         ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, turnSpeed, swerveDrive.getRotation2d());
+                            xSpeed, ySpeed, -turnSpeed, swerveDrive.getRotation2d());
                   } else {
                     // Relative to robot
-                    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+                    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, -turnSpeed);
                   }
                   // chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
@@ -143,6 +144,8 @@ public class SwerveDriveScheme implements ControlScheme {
                   moduleStates =
                       Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
                           chassisSpeeds);
+
+                  Logger.recordOutput("Teleoperated set moduleStates", moduleStates);
 
                   swerveDrive.setModuleStates(moduleStates);
                 },
@@ -188,14 +191,14 @@ public class SwerveDriveScheme implements ControlScheme {
     // 0.3)));
     // controller.leftBumper().onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getAmpPose()));
 
-    controller
-        .leftTrigger()
-        .onTrue(runOnce(() -> setFastMode()))
-        .onFalse(runOnce(() -> setNormalMode()));
-    controller
-        .rightTrigger()
-        .onTrue(runOnce(() -> setSlowMode()))
-        .onFalse(runOnce(() -> setNormalMode()));
+    // controller
+    //     .leftTrigger()
+    //     .onTrue(runOnce(() -> setFastMode()))
+    //     .onFalse(runOnce(() -> setNormalMode()));
+    // controller
+    //     .rightTrigger()
+    //     .onTrue(runOnce(() -> setSlowMode()))
+    //     .onFalse(runOnce(() -> setNormalMode()));
   }
 
   /** Toggle field centric and robot centric driving. */

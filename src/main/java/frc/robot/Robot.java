@@ -138,6 +138,7 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
 
     AutonomousScheme.getAutoCommand().schedule();
+    // m_robotContainer.getAutoCommand().schedule();
     System.out.println("Autonomous Routine Scheduled!");
   }
 

@@ -5,10 +5,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
@@ -16,7 +12,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -39,8 +34,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import java.util.List;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
@@ -361,8 +356,9 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
 
     // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
-    org.littletonrobotics.junction.Logger.recordOutput(
-        "SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
+
+    Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
+    Logger.recordOutput("Angle Rotation2d", getRotation2d());
 
     poseEstimator.update(getRotation2d(), swerveModulePositions);
 
@@ -415,6 +411,7 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setDesiredState(desiredStates[3], openLoop);
   }
 
+  /* Returns the actual moduleStates */
   public SwerveModuleState[] getCurrentModuleStates() {
     SwerveModuleState[] states =
         new SwerveModuleState[] {
@@ -425,7 +422,7 @@ public class SwerveDrive extends SubsystemBase {
 
   /**
    * Resets the odometer readings using the gyro, SwerveModulePositions (defined in constructor),
-   * and Pose2d.
+   * and Pose2d. Also used in AutonomousScheme.java
    */
   public void setOdometry() {
     poseEstimator.resetPosition(getRotation2d(), swerveModulePositions, getPose());
@@ -433,7 +430,7 @@ public class SwerveDrive extends SubsystemBase {
 
   /**
    * Resets the odometer readings using the gyro, SwerveModulePositions (defined in constructor),
-   * and Pose2d.
+   * and Pose2d. Also used in AutonomousScheme.java
    *
    * @param pos the Pose2d to set the odometry
    */
@@ -471,6 +468,7 @@ public class SwerveDrive extends SubsystemBase {
     return photonPoseEstimator.update();
   }
 
+  /* Called in periodic */
   public void updateOdometer() {
     updateModulePositions();
 
@@ -505,24 +503,10 @@ public class SwerveDrive extends SubsystemBase {
     // Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
 
   }
-  // public double getAutoWristAngle(){
-  //          int tagId = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 7 : 4;
-  //         Pose2d middleSubwoofer;
-  //         if (tagId ==4){
 
-  //                  middleSubwoofer = RedFieldPositionConstants.SPEAKER_FRONT;
-
-  //         }
-  //         else{
-  //                 middleSubwoofer = BlueFieldPositionConstants.SPEAKER_FRONT;
-
-  //         }
-  //         //   double distanceFromMiddleSubwoofer = PhotonUtils.getDistanceToPose(estPose,
-  // middleSubwoofer);
-  //         //   double wristAngleToShoot = 15.619040489196777*(1-
-  // (distanceFromMiddleSubwoofer/Units.feetToMeters(1)));
-  // }
-  // }
+  /*
+   * Used for Autobuilder in AutonomousScheme.java
+   */
   public ChassisSpeeds getRobotRelativeSpeeds() {
 
     return ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -530,107 +514,19 @@ public class SwerveDrive extends SubsystemBase {
         getRotation2d());
   }
 
+  /*
+   * Used for Autobuilder in AutonomousScheme.java
+   */
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+    Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
     setModuleStates(moduleStates);
-  }
-
-  /**
-   * Default end state of 0 mps and 0 degrees
-   *
-   * @param poses an array of poses to have on the path
-   * @return A PathPlannerPath following given poses
-   */
-  public PathPlannerPath onTheFlyPath(Pose2d[] poses) {
-    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
-
-    // Create the path using the bezier points created above
-    PathPlannerPath path =
-        new PathPlannerPath(
-            bezierPoints,
-            new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this
-            // path. If using a
-            // differential drivetrain, the
-            // angular constraints have no
-            // effect.
-            new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a
-            // holonomic rotation here. If using
-            // a differential drivetrain, the
-            // rotation will have no effect.
-            );
-
-    // Prevent the path from being flipped if the coordinates are already correct
-    path.preventFlipping = true;
-    return path;
-  }
-
-  /**
-   * @param poses an array of poses to have on the path
-   * @param desiredEndState the desired end state of the path in mps and degrees
-   * @return an on the fly PathPlannerPath
-   */
-  public PathPlannerPath onTheFlyPathFromPoses(Pose2d[] poses, GoalEndState desiredEndState) {
-    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
-
-    // Create the path using the bezier points created above
-    PathPlannerPath path =
-        new PathPlannerPath(
-            bezierPoints,
-            Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS, // The constraints for this
-            // path. If using a
-            // differential drivetrain, the
-            // angular constraints have no
-            // effect.
-            desiredEndState // Goal end state. You can set a
-            // holonomic rotation here. If using
-            // a differential drivetrain, the
-            // rotation will have no effect.
-            );
-
-    // Prevent the path from being flipped if the coordinates are already correct
-    path.preventFlipping = true;
-    return path;
   }
 
   public Rotation2d getAngleBetweenCurrentAndTargetPose(Pose2d targetPose) {
     Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose(), targetPose);
     return targetYaw;
-  }
-
-  /**
-   * Follows a single PathPlannerPath
-   *
-   * @param path the PathPlannerPath to be followed
-   * @return The Command to follow the path
-   */
-  public Command followPathPlannerPath(PathPlannerPath path) {
-    return AutoBuilder.followPath(path);
-  }
-
-  /**
-   * Generates a path to go to target pose
-   *
-   * @param targetPose the pose that you want to go to. Position and Rotation
-   * @return An auto built command to get from current pose to target pose
-   */
-  /** TODO add rumble */
-  public Command generatePathFindToPose(Pose2d targetPose) {
-    Command pathfindingCommand =
-        AutoBuilder.pathfindToPose(
-            targetPose,
-            Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS,
-            0.0, // Goal end velocity in meters/sec
-            0.0 // Rotation delay distance in meters. This is how far the robot should travel
-            // before attempting to rotate.
-            );
-    return pathfindingCommand;
-  }
-
-  public Command pathFindToPathThenFollow(String pathName) {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    return AutoBuilder.pathfindThenFollowPath(
-        path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), 0);
   }
 
   public void initShuffleBoardEncoders() {
@@ -723,6 +619,7 @@ public class SwerveDrive extends SubsystemBase {
     return gyro.getPitch() - 1.14;
   }
 
+  /* SysID Factory Methods */
   /**
    * Used only in characterizing. Don't touch this.
    *

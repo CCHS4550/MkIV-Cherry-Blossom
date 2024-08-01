@@ -40,7 +40,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class AutonomousScheme implements ControlScheme {
 
   static SendableChooser<Command> autoChooser;
-  static Command autoCommand;
+  // static Command autoCommand;
 
   /**
    * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to
@@ -96,9 +96,9 @@ public class AutonomousScheme implements ControlScheme {
         );
 
     /** Command List for autos in SmartDashBoard */
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
-    autoCommand = autoChooser.getSelected();
+    // autoCommand = autoChooser.getSelected();
 
     registerCommands(
         swerveDrive,
@@ -111,6 +111,7 @@ public class AutonomousScheme implements ControlScheme {
         aimer);
   }
 
+  /* String Array with the names of all the files in the deploy directory without the .chor ending (change as needed) */
   static String[] allAutos =
       Arrays.stream(Filesystem.getDeployDirectory().list())
           .map(s -> s.endsWith(".chor") ? s.substring(0, s.length() - 5) : s)
@@ -182,8 +183,8 @@ public class AutonomousScheme implements ControlScheme {
   }
 
   public static Command getAutoCommand() {
-    System.out.println("Recieved Auto Command: " + autoCommand.getName());
-    return autoCommand;
+    // System.out.println("Recieved Auto Command: " + autoCommand.getName());
+    return autoChooser.getSelected();
   }
 
   public static void registerCommands(
