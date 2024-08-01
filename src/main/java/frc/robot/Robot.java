@@ -14,8 +14,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.controlschemes.AutonomousScheme;
 import frc.maps.Constants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -41,6 +41,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    SmartDashboard.putData(CommandScheduler.getInstance());
 
     // Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
     // if (isReal()) {
@@ -135,7 +136,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    AutonomousScheme.getAutoCommand().schedule();
+    m_robotContainer.getAutoCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */

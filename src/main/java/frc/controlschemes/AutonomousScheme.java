@@ -20,8 +20,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
@@ -39,7 +37,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 /** Add your docs here. */
 public class AutonomousScheme implements ControlScheme {
 
-  static Command autoCommand;
+  // static SendableChooser<Command> autoChooser;
+  // static Command autoCommand;
 
   /**
    * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to
@@ -97,10 +96,10 @@ public class AutonomousScheme implements ControlScheme {
         );
 
     /** Command List for autos in SmartDashBoard */
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    autoCommand = autoChooser.getSelected();
-    System.out.println("Configured! Command is " + autoCommand.getName());
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
+    // autoCommand = autoChooser.getSelected();
+    System.out.println("Configured!");
 
     registerCommands(
         swerveDrive,
@@ -132,7 +131,7 @@ public class AutonomousScheme implements ControlScheme {
       CommandXboxController controller,
       AimSimulator aimer) {
 
-    LoggedDashboardChooser<String> chooser = new LoggedDashboardChooser<>("Auto Choices");
+    LoggedDashboardChooser<String> chooser = new LoggedDashboardChooser<>("Choreo Auto Choices");
     String autoSelected = chooser.get();
 
     for (String autonomous : allAutos) {
@@ -183,10 +182,10 @@ public class AutonomousScheme implements ControlScheme {
         aimer);
   }
 
-  public static Command getAutoCommand() {
-    System.out.println("Recieved Auto Command: " + autoCommand.getName());
-    return autoCommand;
-  }
+  // public static Command getAutoCommand() {
+  //   System.out.println("Recieved Auto Command: " + autoCommand.getName());
+  //   return autoCommand;
+  // }
 
   public static void registerCommands(
       SwerveDrive swerveDrive,

@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.controlschemes.*;
 import frc.maps.Constants;
@@ -23,6 +27,8 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  static SendableChooser<Command> autoChooser;
+  static Command autoCommand;
 
   /*
    * Initialize controllers.
@@ -82,9 +88,9 @@ public class RobotContainer {
      * These configure the controller bindings.
      * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
      */
-    SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    // SwerveDriveScheme.configure(swerveDrive, controller1);
+    // MechanismScheme.configure(
+    // indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
@@ -92,5 +98,13 @@ public class RobotContainer {
     // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1,
     // aimer);
 
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
+    autoCommand = autoChooser.getSelected();
+  }
+
+  public static Command getAutoCommand() {
+    System.out.println("Recieved Auto Command: " + autoCommand.getName());
+    return autoCommand;
   }
 }
