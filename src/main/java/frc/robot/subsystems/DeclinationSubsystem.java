@@ -294,7 +294,6 @@ public class DeclinationSubsystem extends SubsystemBase {
     // System.out.println();
     SmartDashboard.putNumber("Y Goal", getGoal().position);
     SmartDashboard.putNumber("Y Actual", declination1.getPosition());
-    // declinationToPointRepeatable(aimer.yAngle);
-
+    declinationToPointRepeatable(aimer.yAngle);
   }
 }

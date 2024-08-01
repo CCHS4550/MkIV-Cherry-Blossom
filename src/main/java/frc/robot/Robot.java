@@ -16,6 +16,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.controlschemes.AutonomousScheme;
 import frc.maps.Constants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -136,7 +137,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    m_robotContainer.getAutoCommand().schedule();
+    AutonomousScheme.getAutoCommand().schedule();
+    System.out.println("Autonomous Routine Scheduled!");
   }
 
   /** This function is called periodically during autonomous. */

@@ -275,66 +275,55 @@ public class SwerveDrive extends SubsystemBase {
               }
             })
         .start();
+
+    /** The autobuilder for Path Planner Autos */
+    // AutoBuilder.configureHolonomic(
+    //     this::getPose, // Robot pose supplier
+    //     this::setOdometry, // Method to reset odometry (will be called if your auto has a
+    // starting
+    //     // pose)
+    //     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     this::driveRobotRelative,
+    //     // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    //     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+    // in
+    //         // your Constants class
+    //         // new PIDConstants(
+    //         //     swerveDrive.xPID.getP(),
+    //         //     swerveDrive.xPID.getI(),
+    //         //     swerveDrive.xPID.getD()), // Translation PID constants
+    //         // new PIDConstants(
+    //         //     swerveDrive.turnPID.getP(),
+    //         //     swerveDrive.turnPID.getI(),
+    //         //     swerveDrive.turnPID.getD()), // Rotation PID constants
+    //         new PIDConstants(1, 0, 0), // Translation PID constants
+    //         new PIDConstants(1, 0, 0),
+    //         Constants.SwerveConstants
+    //             .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+    //         0.44, // Drive base radius in meters. Distance from robot center to furthest module.
+    //         // (0.444522677)
+    //         new ReplanningConfig() // Default path replanning config. See the API for the options
+    //         // here
+    //         ),
+    //     () -> {
+    //       // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //       // This will flip the path being followed to the red side of the field.
+    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //       var alliance = DriverStation.getAlliance();
+    //       if (alliance.isPresent()) {
+    //         return alliance.get() == DriverStation.Alliance.Red;
+    //       }
+    //       return false;
+    //     },
+    //     this // Reference to this subsystem to set requirements
+    //     );
+    //         if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) ==
+    // DriverStation.Alliance.Red) {
+    //                 speakerPoses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
+    //         } else {
+    //                 speakerPoses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
+    //         }
   }
-
-  /** The autobuilder for Path Planner Autos */
-  //         AutoBuilder.configureHolonomic(
-  //                         this::getPose, // Robot pose supplier
-  //                         this::setOdometry, // Method to reset odometry (will be called if your
-  // auto has a
-  //                                            // starting pose)
-  //                         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT
-  // RELATIVE
-  //                         this::driveRobotRelative, // Method that will drive the robot given
-  // ROBOT RELATIVE
-  //                                                   // ChassisSpeeds
-  //                         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this
-  // should likely live
-  //                                                          // in your Constants class
-  //                                         new PIDConstants(1, 0, 0.0), // Translation PID
-  // constants
-  //                                         new PIDConstants(1, 0.0, 0.0), // Rotation PID
-  // constants
-  //
-  // Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
-  //
-  //                  // module
-  //
-  //                  // speed,
-  //
-  //                  // in
-  //
-  //                  // m/s
-  //                                         0.43105, // Drive base radius in meters. Distance from
-  // robot center to
-  //                                                  // furthest module.
-  //                                         new ReplanningConfig() // Default path replanning
-  // config. See the API
-  //                                                                // for the options here
-  //                         ),
-  //                         () -> {
-  //                                 // Boolean supplier that controls when the path will be
-  // mirrored for the red
-  //                                 // alliance
-  //                                 // This will flip the path being followed to the red side of
-  // the field.
-  //                                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-  //                                 var alliance = DriverStation.getAlliance();
-  //                                 if (alliance.isPresent()) {
-  //                                         return alliance.get() == DriverStation.Alliance.Red;
-  //                                 }
-  //                                 return false;
-  //                         },
-  //                         this // Reference to this subsystem to set requirements
-  //         );
-  //         if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) ==
-  // DriverStation.Alliance.Red) {
-  //                 speakerPoses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
-  //         } else {
-  //                 speakerPoses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
-  //         }
-  // }
 
   /**
    * Resets chassis gyro to 0. For all gyro purposes, "heading" refers to the facing direction of
@@ -535,6 +524,7 @@ public class SwerveDrive extends SubsystemBase {
   // }
   // }
   public ChassisSpeeds getRobotRelativeSpeeds() {
+
     return ChassisSpeeds.fromRobotRelativeSpeeds(
         Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
         getRotation2d());

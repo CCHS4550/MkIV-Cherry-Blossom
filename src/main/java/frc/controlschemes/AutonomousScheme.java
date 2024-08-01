@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
@@ -37,8 +39,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 /** Add your docs here. */
 public class AutonomousScheme implements ControlScheme {
 
-  // static SendableChooser<Command> autoChooser;
-  // static Command autoCommand;
+  static SendableChooser<Command> autoChooser;
+  static Command autoCommand;
 
   /**
    * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to
@@ -53,16 +55,14 @@ public class AutonomousScheme implements ControlScheme {
       CommandXboxController controller,
       AimSimulator aimer) {
 
-    System.out.println("Configuring Pathplanner...");
-
     AutoBuilder.configureHolonomic(
         swerveDrive::getPose, // Robot pose supplier
         swerveDrive
             ::setOdometry, // Method to reset odometry (will be called if your auto has a starting
         // pose)
         swerveDrive::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        swerveDrive::driveRobotRelative,
-        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        swerveDrive::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
+        // ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
             // your Constants class
             // new PIDConstants(
@@ -96,10 +96,9 @@ public class AutonomousScheme implements ControlScheme {
         );
 
     /** Command List for autos in SmartDashBoard */
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
-    // autoCommand = autoChooser.getSelected();
-    System.out.println("Configured!");
+    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
+    autoCommand = autoChooser.getSelected();
 
     registerCommands(
         swerveDrive,
@@ -182,10 +181,10 @@ public class AutonomousScheme implements ControlScheme {
         aimer);
   }
 
-  // public static Command getAutoCommand() {
-  //   System.out.println("Recieved Auto Command: " + autoCommand.getName());
-  //   return autoCommand;
-  // }
+  public static Command getAutoCommand() {
+    System.out.println("Recieved Auto Command: " + autoCommand.getName());
+    return autoCommand;
+  }
 
   public static void registerCommands(
       SwerveDrive swerveDrive,

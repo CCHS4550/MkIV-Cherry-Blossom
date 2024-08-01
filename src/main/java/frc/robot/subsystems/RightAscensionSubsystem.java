@@ -244,7 +244,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
     this.checkHallSensor();
     SmartDashboard.putNumber("X Goal", getGoal().position);
     SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
-    // rightAscensionToPointRepeatable(aimer.xAngle);
-
+    rightAscensionToPointRepeatable(aimer.xAngle);
   }
 }
