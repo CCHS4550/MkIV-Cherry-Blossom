@@ -25,6 +25,7 @@ import org.littletonrobotics.junction.Logger;
  * centric, and a button to zero the gyro.
  */
 public class SwerveDriveScheme implements ControlScheme {
+
   // private static CommandXboxController controller;
   private static boolean fieldCentric = true;
   private static boolean orientationLocked = false;
@@ -107,8 +108,7 @@ public class SwerveDriveScheme implements ControlScheme {
                   } else {
                     turnSpeed =
                         orientationLockPID.calculate(
-                                swerveDrive.getRotation2d().getRadians() + Math.PI,
-                                orientationLockAngle)
+                                swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                             * 2;
                   }
 
@@ -186,6 +186,8 @@ public class SwerveDriveScheme implements ControlScheme {
         .x()
         .onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
         .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
+    // controller.a().onTrue(runOnce(() -> swerveDrive.test2(12), swerveDrive));
+    // controller.y().onTrue(runOnce(() -> swerveDrive.test2(0), swerveDrive));
 
     // controller.rightBumper().whileTrue(parallel(shooter.shoot(() -> 0.2), indexer.index(() ->
     // 0.3)));

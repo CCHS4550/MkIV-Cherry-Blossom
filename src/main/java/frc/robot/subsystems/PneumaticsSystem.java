@@ -59,6 +59,7 @@ public class PneumaticsSystem extends SubsystemBase {
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
+    solenoidValve.set(false);
     airCompressorStatus = false;
     compressorFan.disable();
     pressureSealStatus = pressureSeal.get();

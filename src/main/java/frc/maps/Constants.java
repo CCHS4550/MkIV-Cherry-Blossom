@@ -57,28 +57,28 @@ public class Constants {
 
     // Swerve Drive Base Motor & CAN ID Constants
     public static final int FRONT_RIGHT_DRIVE = 3;
-    public static final boolean FRONT_RIGHT_DRIVE_REVERSE = false;
+    public static final boolean FRONT_RIGHT_DRIVE_REVERSE = true;
     public static final double FRONT_RIGHT_DRIVE_ENCODER = 1;
     public static final int FRONT_RIGHT_TURN = 4;
     public static final boolean FRONT_RIGHT_TURN_REVERSE = true;
     public static final double FRONT_RIGHT_TURN_ENCODER = 1;
 
     public static final int FRONT_LEFT_DRIVE = 7;
-    public static final boolean FRONT_LEFT_DRIVE_REVERSE = false;
+    public static final boolean FRONT_LEFT_DRIVE_REVERSE = true;
     public static final double FRONT_LEFT_DRIVE_ENCODER = 1;
     public static final int FRONT_LEFT_TURN = 6;
     public static final boolean FRONT_LEFT_TURN_REVERSE = true;
     public static final double FRONT_LEFT_TURN_ENCODER = 1;
 
     public static final int BACK_RIGHT_DRIVE = 2;
-    public static final boolean BACK_RIGHT_DRIVE_REVERSE = false;
+    public static final boolean BACK_RIGHT_DRIVE_REVERSE = true;
     public static final double BACK_RIGHT_DRIVE_ENCODER = 1;
     public static final int BACK_RIGHT_TURN = 1;
     public static final boolean BACK_RIGHT_TURN_REVERSE = true;
     public static final double BACK_RIGHT_TURN_ENCODER = 1;
 
     public static final int BACK_LEFT_DRIVE = 9;
-    public static final boolean BACK_LEFT_DRIVE_REVERSE = false;
+    public static final boolean BACK_LEFT_DRIVE_REVERSE = true;
     public static final double BACK_LEFT_DRIVE_ENCODER = 1;
     public static final int BACK_LEFT_TURN = 8;
     public static final boolean BACK_LEFT_TURN_REVERSE = true;

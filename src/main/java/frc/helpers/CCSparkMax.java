@@ -62,9 +62,9 @@ public class CCSparkMax extends CANSparkMax {
 
     this.encoder = super.getEncoder();
     // Will return a value in Radians
-    this.setPositionConversionFactor(2 * Math.PI);
-    // Will return a value in Radians per Second
-    this.setVelocityConversionFactor(2 * Math.PI / 60);
+    // this.setPositionConversionFactor(2 * Math.PI);
+    // // Will return a value in Radians per Second
+    // this.setVelocityConversionFactor(2 * Math.PI / 60);
     voltageConversionFactor = 12;
   }
 
@@ -86,9 +86,9 @@ public class CCSparkMax extends CANSparkMax {
     this.encoder = super.getEncoder();
 
     // Will return a value in Radians
-    this.setPositionConversionFactor(2 * Math.PI);
-    // Will return a value in Radians per Second
-    this.setVelocityConversionFactor(2 * Math.PI / 60);
+    // this.setPositionConversionFactor(2 * Math.PI);
+    // // Will return a value in Radians per Second
+    // this.setVelocityConversionFactor(2 * Math.PI / 60);
     voltageConversionFactor = 12;
   }
 

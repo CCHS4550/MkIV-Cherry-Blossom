@@ -13,7 +13,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -234,7 +233,7 @@ public class SwerveDrive extends SubsystemBase {
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.SwerveConstants.DRIVE_KINEMATICS,
-            Rotation2d.fromDegrees(gyro.getAngle()).unaryMinus(),
+            Rotation2d.fromDegrees(gyro.getAngle() + 180).unaryMinus(),
             swerveModulePositions,
             new Pose2d(0, 0, new Rotation2d(0)));
 
@@ -348,7 +347,8 @@ public class SwerveDrive extends SubsystemBase {
    * @return The facing direction of the robot in Rotation2d format.
    */
   public Rotation2d getRotation2d() {
-    return gyro.getRotation2d().plus(Rotation2d.fromRadians(Math.PI));
+    return gyro.getRotation2d();
+    // .plus(Rotation2d.fromRadians(Math.PI));
   }
 
   /** Returns the nearest speaker pose for for alliance color */
@@ -402,8 +402,8 @@ public class SwerveDrive extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     // currentSwerveModuleStates = desiredStates;
     boolean openLoop = false;
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
+    // SwerveDriveKinematics.desaturateWheelSpeeds(
+    //     desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
     // Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
     frontRight.setDesiredState(desiredStates[0], openLoop);
     frontLeft.setDesiredState(desiredStates[1], openLoop);
@@ -656,6 +656,18 @@ public class SwerveDrive extends SubsystemBase {
   public void test(double driveSpeed, double turnSpeed) {
     backRight.driveAndTurn(driveSpeed, turnSpeed);
     backRight.printEncoders();
+  }
+
+  public void test2(double volt) {
+    frontRight.setDriveVoltage(volt);
+    frontLeft.setDriveVoltage(volt);
+    backRight.setDriveVoltage(volt);
+    backLeft.setDriveVoltage(volt);
+
+    frontRight.setTurnPosition(() -> Math.PI / 2);
+    frontLeft.setTurnPosition(() -> Math.PI / 2);
+    backRight.setTurnPosition(() -> Math.PI / 2);
+    backLeft.setTurnPosition(() -> Math.PI / 2);
   }
 
   public void printPos2d() {
