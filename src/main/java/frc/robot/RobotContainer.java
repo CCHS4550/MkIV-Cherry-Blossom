@@ -80,8 +80,7 @@ public class RobotContainer {
      * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
      */
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    MechanismScheme.configure(swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);

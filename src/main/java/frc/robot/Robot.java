@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -36,7 +37,7 @@ import org.littletonrobotics.urcl.URCL;
  */
 public class Robot extends LoggedRobot {
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
   public Lights lights = new Lights();
 
   /**
@@ -106,6 +107,8 @@ public class Robot extends LoggedRobot {
         break;
     }
 
+    PortForwarder.add(5800, "photonvision.local", 5800);
+
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.disableDeterministicTimestamps()
 
@@ -115,7 +118,7 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   /** This function is called periodically during all modes. */

@@ -44,9 +44,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double middlePoint = leftBound + rightBound / 2;
   double range = Math.abs(leftBound - middlePoint);
 
-  double kS = 0;
-  double kV = 72.552;
-  double kA = 41.245;
+ 
 
   SimpleMotorFeedforward rightAscensionFeedForward =
       new SimpleMotorFeedforward(
