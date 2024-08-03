@@ -195,8 +195,8 @@ public class SwerveDrive extends SubsystemBase {
       new SysIdRoutine(
           new SysIdRoutine.Config(
               VoltsPerSecond.of(1),
-              Volts.of(5),
-              Seconds.of(5),
+              Volts.of(3),
+              Seconds.of(3),
               (state) ->
                   org.littletonrobotics.junction.Logger.recordOutput(
                       "SysIdTestState", state.toString())),

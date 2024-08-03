@@ -163,9 +163,9 @@ public class Constants {
   public class FeedForwardConstants {
 
     // TODO Do sysid to get values
-    public static final double DRIVE_KS = 0;
-    public static final double DRIVE_KV = 0;
-    public static final double DRIVE_KA = 0;
+    public static final double DRIVE_KS = 0.16681;
+    public static final double DRIVE_KV = 2.609;
+    public static final double DRIVE_KA = 0.51582;
 
     public static final double TURNKS = 0;
     public static final double TURNKV = 0;

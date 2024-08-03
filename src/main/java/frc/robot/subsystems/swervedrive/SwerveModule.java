@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 // import org.littletonrobotics.junction.Logger;
@@ -69,7 +68,7 @@ public class SwerveModule extends SubsystemBase {
     // turningPIDController = new SparkPIDController(.5, 0, 0);
     // turningPIDController = new SparkPIDController();
 
-    turningPIDController = new PIDController(0.5, 0, 0);
+    turningPIDController = new PIDController(0.2, 0, 0);
     turningPIDController.enableContinuousInput(0, 2 * Math.PI);
     drivingPidController = new PIDController(1, 0, 0);
 
@@ -183,7 +182,6 @@ public class SwerveModule extends SubsystemBase {
       stop();
       return;
     }
-    
 
     Rotation2d encoderRotation = new Rotation2d(getState().angle.getRadians());
 
@@ -202,14 +200,13 @@ public class SwerveModule extends SubsystemBase {
     // These are both in m/s
     double driveOutput =
         drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
-        Logger.recordOutput("drivePID Output", driveOutput);
+    Logger.recordOutput("drivePID Output", driveOutput);
     // Feed forward
     double driveFF = driveFeedforward.calculate(velocity);
     Logger.recordOutput("driveFF Output", driveFF);
 
     driveMotor.setVoltage(driveOutput + driveFF);
     Logger.recordOutput("drivePID + driveFF Output", driveOutput + driveFF);
-    
   }
 
   public void setTurnPosition(DoubleSupplier angle) {

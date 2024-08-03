@@ -35,7 +35,7 @@ public class SwerveDriveScheme implements ControlScheme {
         return fieldCentric;
       };
 
-  private static DoubleSupplier driveSpeedModifier = () -> 0.75;
+  private static DoubleSupplier driveSpeedModifier = () -> 1.00;
 
   private static double turnSpeedModifier = 1.00;
 
@@ -70,8 +70,8 @@ public class SwerveDriveScheme implements ControlScheme {
             Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
             0);
-    // SlewRateLimiter turnRateLimiter =
-    //     new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
+    SlewRateLimiter turnRateLimiter =
+        new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
     PIDController orientationLockPID = new PIDController(.5, 0, 0);
 
@@ -119,7 +119,7 @@ public class SwerveDriveScheme implements ControlScheme {
                   // function)
                   xSpeed = xRateLimiter.calculate(xSpeed);
                   ySpeed = yRateLimiter.calculate(ySpeed);
-                  // turnSpeed = turnRateLimiter.calculate(turnSpeed);
+                  turnSpeed = turnRateLimiter.calculate(turnSpeed);
 
                   // SmartDashboard.putNumber("xSpeed", xSpeed);
                   // SmartDashboard.putNumber("ySpeed", ySpeed);
@@ -152,12 +152,12 @@ public class SwerveDriveScheme implements ControlScheme {
                 swerveDrive)
             .withName("Swerve Controller Command"));
 
-    configureButtons(
-        swerveDrive,
-        //  shooter,
-        //   indexer,
-        //    port
-        controller);
+    // configureButtons(
+    //     swerveDrive,
+    //     //  shooter,
+    //     //   indexer,
+    //     //    port
+    //     controller);
   }
 
   /**

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
 
-  record led(int point, int magnitude){}
+  record led(int point, int magnitude) {}
 
   public enum LEDState {
     rainbow,
@@ -39,33 +39,41 @@ public class Lights extends SubsystemBase {
 
     switch (state) {
       case rainbow:
-        RunCommand rainbowCommand = new RunCommand(() -> {
-          // For every pixel
-          for (var i = 0; i < ledBuffer.getLength(); i++) {
-          // Calculate the hue - hue is easier for rainbows because the color
-          // shape is a circle so only one value needs to precess
-          final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
-          // Set the value
-          ledBuffer.setHSV(i, hue, 255, 128);
-          }
-          // Increase by to make the rainbow "move"
-          rainbowFirstPixelHue += 1;
-          // System.out.println(rainbowFirstPixelHue);
-          // Check bounds
-          rainbowFirstPixelHue %= 180;
-          }, this);
+        RunCommand rainbowCommand =
+            new RunCommand(
+                () -> {
+                  // For every pixel
+                  for (var i = 0; i < ledBuffer.getLength(); i++) {
+                    // Calculate the hue - hue is easier for rainbows because the color
+                    // shape is a circle so only one value needs to precess
+                    final var hue =
+                        (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
+                    // Set the value
+                    ledBuffer.setHSV(i, hue, 255, 128);
+                  }
+                  // Increase by to make the rainbow "move"
+                  rainbowFirstPixelHue += 1;
+                  // System.out.println(rainbowFirstPixelHue);
+                  // Check bounds
+                  rainbowFirstPixelHue %= 180;
+                  leds.setData(ledBuffer);
+                },
+                this);
 
         rainbowCommand.schedule();
-        leds.setData(ledBuffer);
-        
+        System.out.println("rainbow!");
+
         break;
 
       case pinkSolid:
-        RunCommand pinkSolidCommand = new RunCommand(() -> {
-          for (var i = 0; i < ledBuffer.getLength(); i++) {
-          ledBuffer.setLED(i, Color.kLightPink);
-          }
-          }, this);
+        RunCommand pinkSolidCommand =
+            new RunCommand(
+                () -> {
+                  for (var i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setLED(i, Color.kLightPink);
+                  }
+                },
+                this);
 
         pinkSolidCommand.schedule();
         leds.setData(ledBuffer);
@@ -73,62 +81,53 @@ public class Lights extends SubsystemBase {
         break;
 
       case pinkWhiteGradient:
-        RunCommand pinkWhiteGradientCommand = new RunCommand(() -> {
-          // For every pixel
-          for (var i = 0; i < ledBuffer.getLength(); i++) {
-          // Calculate the hue - hue is easier for rainbows because the color
-          // shape is a circle so only one value needs to precess
-          final var saturation = (rainbowFirstPixelHue + (i * 255 / ledBuffer.getLength())) % 255;
-          // Set the value
-          ledBuffer.setHSV(i, 180, saturation, 128);
-          }
-          // Increase by to make the rainbow "move"
-          pinkWhiteGradientFirstPixelHue += 1;
-          // System.out.println(rainbowFirstPixelHue);
-          // Check bounds
-          pinkWhiteGradientFirstPixelHue %= 255;
-          }, this);
+        RunCommand pinkWhiteGradientCommand =
+            new RunCommand(
+                () -> {
+                  // For every pixel
+                  for (var i = 0; i < ledBuffer.getLength(); i++) {
+                    // Calculate the hue - hue is easier for rainbows because the color
+                    // shape is a circle so only one value needs to precess
+                    final var saturation =
+                        (pinkWhiteGradientFirstPixelHue + (i * 210 / ledBuffer.getLength())) % 210;
+                    // Set the value
+                    ledBuffer.setHSV(i, 180, 225, saturation);
+                  }
+                  // Increase by to make the rainbow "move"
+                  pinkWhiteGradientFirstPixelHue += 1;
+                  // System.out.println(rainbowFirstPixelHue);
+                  // Check bounds
+                  pinkWhiteGradientFirstPixelHue %= 210;
+
+                  leds.setData(ledBuffer);
+                },
+                this);
 
         pinkWhiteGradientCommand.schedule();
-        leds.setData(ledBuffer);
+        System.out.println("Pink White Gradient!");
 
         break;
-      
-            
     }
   }
 
   private void pinkPulse() {
 
-    int randomLED = (int)(Math.random() * ledBuffer.getLength());
-    
+    int randomLED = (int) (Math.random() * ledBuffer.getLength());
+
     int r = 255;
     int g = 220;
     int b = 255;
-    while (g > 0) {
-
-    }
-
+    while (g > 0) {}
   }
 
   private void spread(int mainPoint) {
 
-
-    for(int i = 0; i < 5; i++) {
-
-
-    }
-    
-
-
-
+    for (int i = 0; i < 5; i++) {}
   }
-
-
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+
   }
 }

@@ -11,11 +11,13 @@ import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 /** Add your docs here. */
 public class CharacterizingScheme {
 
   public static void configure(
+      SwerveDrive swerveDrive,
       IndexingSubsystem indexer,
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
@@ -24,10 +26,18 @@ public class CharacterizingScheme {
       AimSimulator aimer) {
 
     configureButtons(
-        indexer, declination, pneumatics, rightAscension, controller, controller, aimer);
+        swerveDrive,
+        indexer,
+        declination,
+        pneumatics,
+        rightAscension,
+        controller,
+        controller,
+        aimer);
   }
 
   public static void configureButtons(
+      SwerveDrive swerveDrive,
       IndexingSubsystem reloading,
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
@@ -41,9 +51,14 @@ public class CharacterizingScheme {
     // controller.x().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // controller.y().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    controller.a().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    controller.b().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    controller.x().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    controller.y().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // controller.a().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // controller.b().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // controller.x().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // controller.y().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    controller.a().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    controller.b().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    controller.x().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    controller.y().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 }

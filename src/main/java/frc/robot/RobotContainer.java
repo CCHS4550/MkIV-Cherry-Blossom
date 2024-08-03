@@ -11,7 +11,6 @@ import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
-import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.Superstructure;
@@ -43,8 +42,6 @@ public class RobotContainer {
 
   Superstructure superstructure;
 
-  Lights lights;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -57,8 +54,6 @@ public class RobotContainer {
         pneumatics = new PneumaticsSystem();
         indexer = new IndexingSubsystem(pneumatics);
 
-        lights = new Lights();
-
         break;
 
       case SIM:
@@ -69,14 +64,13 @@ public class RobotContainer {
         pneumatics = new PneumaticsSystem();
         indexer = new IndexingSubsystem(pneumatics);
 
-        lights = new Lights();
         break;
 
       case REPLAY:
         break;
     }
 
-    superstructure = new Superstructure(declination, indexer, lights, pneumatics, rightAscension);
+    // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
     RobotState.getInstance();
 
@@ -98,8 +92,8 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
 
-    // CharacterizingScheme.configure(indexer, declination, pneumatics, rightAscension, controller1,
-    // aimer);
+    // CharacterizingScheme.configure(
+    //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);

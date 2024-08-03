@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.controlschemes.AutonomousScheme;
 import frc.maps.Constants;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Lights.LEDState;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -35,6 +37,7 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
+  public Lights lights = new Lights();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -148,7 +151,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    lights.changeLEDState(LEDState.pinkWhiteGradient);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
