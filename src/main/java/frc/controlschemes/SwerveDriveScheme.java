@@ -80,7 +80,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
     // Set to slow mode for recreation
     // setSlowMode();
-    setFastMode();
+    // setFastMode();
 
     // Sends this command into the command scheduler on repeat! Very important!
     swerveDrive.setDefaultCommand(
@@ -152,12 +152,12 @@ public class SwerveDriveScheme implements ControlScheme {
                 swerveDrive)
             .withName("Swerve Controller Command"));
 
-    // configureButtons(
-    //     swerveDrive,
-    //     //  shooter,
-    //     //   indexer,
-    //     //    port
-    //     controller);
+    configureButtons(
+        swerveDrive,
+        //  shooter,
+        //   indexer,
+        //    port
+        controller);
   }
 
   /**

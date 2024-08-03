@@ -68,7 +68,7 @@ public class SwerveModule extends SubsystemBase {
     // turningPIDController = new SparkPIDController(.5, 0, 0);
     // turningPIDController = new SparkPIDController();
 
-    turningPIDController = new PIDController(0.2, 0, 0);
+    turningPIDController = new PIDController(0.4, 0, 0);
     turningPIDController.enableContinuousInput(0, 2 * Math.PI);
     drivingPidController = new PIDController(1, 0, 0);
 
