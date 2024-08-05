@@ -9,10 +9,12 @@ import frc.robot.subsystems.IndexingSubsystem;
 // import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 public class MechanismScheme {
 
   public static void configure(
+      SwerveDrive swerveDrive,
       IndexingSubsystem indexer,
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
@@ -34,6 +36,7 @@ public class MechanismScheme {
     indexer.setDefaultCommand(defaultIndex);
 
     configureButtons(
+        swerveDrive,
         indexer,
         declination,
         pneumatics,
@@ -44,6 +47,7 @@ public class MechanismScheme {
   }
 
   public static void configureButtons(
+      SwerveDrive swerveDrive,
       IndexingSubsystem indexer,
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,

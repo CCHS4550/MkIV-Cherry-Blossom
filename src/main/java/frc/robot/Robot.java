@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -36,7 +37,7 @@ import org.littletonrobotics.urcl.URCL;
  */
 public class Robot extends LoggedRobot {
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
   public Lights lights = new Lights();
 
   /**
@@ -45,42 +46,9 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    SmartDashboard.putData(CommandScheduler.getInstance());
+    
 
-    // Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
-    // if (isReal()) {
-    //   Logger.addDataReceiver(new WPILOGWriter("/U/logs")); // Log to a USB stick
-    //   Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTablesc
-    //   // logging
-    // } else {
-    //   setUseTiming(false); // Run as fast as possible
-    //   String logPath =
-    //       LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the
-    //   // user)
-    //   Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-    //   Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-    //   Logger.addDataReceiver(new NT4Publisher()); // Save outputs to a
-    //   // new log
-    // }
-
-    // // Record metadata
-    // Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    // Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    // Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    // Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    // Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    // switch (BuildConstants.DIRTY) {
-    //   case 0:
-    //     Logger.recordMetadata("GitDirty", "All changes committed");
-    //     break;
-    //   case 1:
-    //     Logger.recordMetadata("GitDirty", "Uncomitted changes");
-    //     break;
-    //   default:
-    //     Logger.recordMetadata("GitDirty", "Unknown");
-    //     break;
-    // }
-
+    
     // // Set up data receivers & replay source
 
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
@@ -106,6 +74,8 @@ public class Robot extends LoggedRobot {
         break;
     }
 
+    PortForwarder.add(5800, "photonvision.local", 5800);
+
     // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
     // Logger.disableDeterministicTimestamps()
 
@@ -115,7 +85,7 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   /** This function is called periodically during all modes. */
@@ -125,6 +95,10 @@ public class Robot extends LoggedRobot {
     // if (Robot.isSimulation()) {
     DriverStation.silenceJoystickConnectionWarning(true);
     // }
+
+
+    RobotState.getInstance().updatePose();
+    RobotState.getInstance().updateDashboard();
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled

@@ -105,7 +105,6 @@ public class PneumaticsSystem extends SubsystemBase {
   }
 
   public Command shoot() {
-    System.out.println("Test");
     return new InstantCommand(() -> solenoidValve.toggle());
   }
 

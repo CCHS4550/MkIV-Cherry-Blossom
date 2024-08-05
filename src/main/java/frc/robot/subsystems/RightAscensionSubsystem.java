@@ -44,9 +44,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double middlePoint = leftBound + rightBound / 2;
   double range = Math.abs(leftBound - middlePoint);
 
-  double kS = 0;
-  double kV = 72.552;
-  double kA = 41.245;
+ 
 
   SimpleMotorFeedforward rightAscensionFeedForward =
       new SimpleMotorFeedforward(
@@ -75,10 +73,10 @@ public class RightAscensionSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kBrake,
           false,
-          // ((2 * Math.PI) / 50),
-          // ((2 * Math.PI) / 50) / 60);
-          1,
-          1);
+          ((2 * Math.PI) / 50),
+          ((2 * Math.PI) / 50) / 60);
+          // 1,
+          // 1);
 
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
@@ -140,12 +138,12 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
     // The Feed Forward Calculation, calculating the voltage for the motor using the position and
     // velocity of the next setpoint.
-    double feedForwardPower =
-        rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
-    SmartDashboard.putNumber("feedForwardPower", feedForwardPower);
+    double feedForwardPower = 0;
+    //     rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    // SmartDashboard.putNumber("feedForwardPower", feedForwardPower);
 
     // The Pid Calculation, calculating a voltage using the current position and the goal position.
-    double feedBackPower =
+    double feedBackPower = 
         rightAscensionFeedback.calculate(rightAscensionMotor.getPosition(), targetPosition);
     SmartDashboard.putNumber("feedBackPower", feedBackPower);
 

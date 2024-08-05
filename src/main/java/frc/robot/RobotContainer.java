@@ -73,6 +73,8 @@ public class RobotContainer {
     // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
     RobotState.getInstance();
+    RobotState.getInstance().dashboardInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+    RobotState.getInstance().poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
 
     /*
      * Configure schemes.
@@ -80,14 +82,11 @@ public class RobotContainer {
      * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
      */
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(
-        indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    MechanismScheme.configure(swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
 
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
-    // controller1.x().onTrue(new RunCommand(() -> swerveDrive.test2(12), swerveDrive));
-    // controller1.y().onTrue(new RunCommand(() -> swerveDrive.test2(0), swerveDrive));
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
@@ -95,11 +94,7 @@ public class RobotContainer {
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
-    // autoCommand = autoChooser.getSelected();
-
-    Shuffleboard.getTab("Subsystems").add("SwerveDrive", swerveDrive);
+    
   }
 
   // public static Command getAutoCommand() {

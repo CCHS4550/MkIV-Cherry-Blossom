@@ -41,11 +41,14 @@ public class CCSparkMax extends CANSparkMax {
     this.shortName = shortName;
 
     super.setInverted(reverse);
+    super.setIdleMode(idleMode);
 
     this.encoder = super.getEncoder();
     this.setPositionConversionFactor(positionConversionFactor);
     this.setVelocityConversionFactor(velocityConversionFactor);
     voltageConversionFactor = 12;
+
+    super.burnFlash();
   }
 
   public CCSparkMax(
@@ -58,7 +61,9 @@ public class CCSparkMax extends CANSparkMax {
     super(deviceID, motorType);
     this.name = name;
     this.shortName = shortName;
+
     super.setInverted(reverse);
+    super.setIdleMode(idleMode);
 
     this.encoder = super.getEncoder();
     // Will return a value in Radians
@@ -66,6 +71,7 @@ public class CCSparkMax extends CANSparkMax {
     // // Will return a value in Radians per Second
     // this.setVelocityConversionFactor(2 * Math.PI / 60);
     voltageConversionFactor = 12;
+    super.burnFlash();
   }
 
   public CCSparkMax(
@@ -81,6 +87,7 @@ public class CCSparkMax extends CANSparkMax {
     this.shortName = shortName;
 
     super.setInverted(reverse);
+    super.setIdleMode(idleMode);
 
     if (encoder < 0) return;
     this.encoder = super.getEncoder();
@@ -90,6 +97,7 @@ public class CCSparkMax extends CANSparkMax {
     // // Will return a value in Radians per Second
     // this.setVelocityConversionFactor(2 * Math.PI / 60);
     voltageConversionFactor = 12;
+    super.burnFlash();
   }
 
   public CCSparkMax(
@@ -105,7 +113,10 @@ public class CCSparkMax extends CANSparkMax {
     this.shortName = shortName;
 
     super.setInverted(reverse);
+    super.setIdleMode(idleMode);
+
     voltageConversionFactor = 12;
+    super.burnFlash();
   }
 
   public void reset() {
