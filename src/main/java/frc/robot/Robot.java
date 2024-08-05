@@ -97,7 +97,7 @@ public class Robot extends LoggedRobot {
     // }
 
 
-    RobotState.getInstance().updatePoses();
+    RobotState.getInstance().updatePose();
     RobotState.getInstance().updateDashboard();
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
