@@ -73,6 +73,8 @@ public class RobotContainer {
     // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
     RobotState.getInstance();
+    RobotState.getInstance().dashboardInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+    RobotState.getInstance().poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
 
     /*
      * Configure schemes.
@@ -98,7 +100,7 @@ public class RobotContainer {
     // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
     // autoCommand = autoChooser.getSelected();
 
-    Shuffleboard.getTab("Subsystems").add("SwerveDrive", swerveDrive);
+    
   }
 
   // public static Command getAutoCommand() {

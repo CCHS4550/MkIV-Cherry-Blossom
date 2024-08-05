@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
+import frc.robot.RobotState;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -56,8 +57,8 @@ public class AutonomousScheme implements ControlScheme {
       AimSimulator aimer) {
 
     AutoBuilder.configureHolonomic(
-        swerveDrive::getPose, // Robot pose supplier
-        swerveDrive
+        RobotState::getPose, // Robot pose supplier
+        RobotState
             ::setOdometry, // Method to reset odometry (will be called if your auto has a starting
         // pose)
         swerveDrive::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -184,7 +185,8 @@ public class AutonomousScheme implements ControlScheme {
 
   public static Command getAutoCommand() {
     // System.out.println("Recieved Auto Command: " + autoCommand.getName());
-    return autoChooser.getSelected();
+    return autoChooser.getSelected()
+    .withName(autoChooser.getSelected().getName());
   }
 
   public static void registerCommands(
