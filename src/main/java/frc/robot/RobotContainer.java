@@ -87,18 +87,12 @@ public class RobotContainer {
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
-    // controller1.x().onTrue(new RunCommand(() -> swerveDrive.test2(12), swerveDrive));
-    // controller1.y().onTrue(new RunCommand(() -> swerveDrive.test2(0), swerveDrive));
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
 
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("PathPlanner Auto Chooser", autoChooser);
-    // autoCommand = autoChooser.getSelected();
 
     
   }

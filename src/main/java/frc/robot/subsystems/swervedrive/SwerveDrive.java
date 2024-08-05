@@ -218,14 +218,8 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  /**
-   * Resets chassis gyro to 0. For all gyro purposes, "heading" refers to the facing direction of
-   * the gyro.
-   */
-  public void spinMotor(double speed) {
-    frontRight.setDriveVelocity(speed);
-    frontRight.setTurnPosition(() -> speed);
-  }
+
+
 
 
 
@@ -233,15 +227,11 @@ public class SwerveDrive extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
-
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
   
     RobotState.getInstance().updateModuleEncoders(this);
-    
-
     
     updateModulePositions();
 
@@ -288,7 +278,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
 
-
   public void updateModulePositions() {
     swerveModulePositions[0] =
         new SwerveModulePosition(
@@ -329,9 +318,7 @@ public class SwerveDrive extends SubsystemBase {
 
 
 
-  public void printWorld() {
-    System.out.println("Hello World!");
-  }
+
 
 
 
@@ -356,7 +343,8 @@ public class SwerveDrive extends SubsystemBase {
     return sysIdRoutine.dynamic(direction);
   }
 
-  /**
+
+    /**
    * Used only in Characterizing. Don't touch this. Sets the provided voltages and locks the wheels
    * to 0 radians.
    *
@@ -369,9 +357,20 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
+    public void spinMotor(double speed) {
+    frontRight.setDriveVelocity(speed);
+    frontRight.setTurnPosition(() -> speed);
+  }
+
+
+  
+
   public void test(double driveSpeed, double turnSpeed) {
     backRight.driveAndTurn(driveSpeed, turnSpeed);
     backRight.printEncoders();
+  }
+    public void printWorld() {
+    System.out.println("Hello World!");
   }
 
   public void setRawDriveVolts(double volt) {
@@ -398,7 +397,8 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setDriveVelocity(speed);
   }
 
-  public void setInitialAngle() {}
 
+  
 }
+
 

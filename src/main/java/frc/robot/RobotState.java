@@ -76,7 +76,7 @@ public class RobotState {
     
   }
 
-  public void updatePoses() {
+  public void updatePose() {
 
     m_field_poseestimator.setRobotPose(poseEstimator.getEstimatedPosition());
     m_field_getPose.setRobotPose(getPose());
@@ -152,7 +152,7 @@ public class RobotState {
           .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
           .withSize(2, 2);
 
-  public void shuffleBoardEncodersInit(SwerveDrive swerveDrive) {
+  public void moduleEncodersInit(SwerveDrive swerveDrive) {
     abs_Enc_FR_Offset_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_offset_list.getTitle())
