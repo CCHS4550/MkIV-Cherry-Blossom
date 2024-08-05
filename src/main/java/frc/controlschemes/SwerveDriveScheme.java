@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 // import frc.helpers.OI;
 import frc.maps.Constants;
+import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -102,13 +103,13 @@ public class SwerveDriveScheme implements ControlScheme {
                   // || Math.abs(controller.getRightX()) > 0.15
 
                   if (!orientationLocked) {
-                    orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+                    orientationLockAngle = RobotState.getInstance().getRotation2d().getRadians();
                     turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
 
                   } else {
                     turnSpeed =
                         orientationLockPID.calculate(
-                                swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
+                                RobotState.getInstance().getRotation2d().getRadians(), orientationLockAngle)
                             * 2;
                   }
 
@@ -132,7 +133,7 @@ public class SwerveDriveScheme implements ControlScheme {
                     // Relative to field
                     chassisSpeeds =
                         ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, -turnSpeed, swerveDrive.getRotation2d());
+                            xSpeed, ySpeed, -turnSpeed, RobotState.getInstance().getRotation2d());
                   } else {
                     // Relative to robot
                     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, -turnSpeed);
@@ -174,7 +175,7 @@ public class SwerveDriveScheme implements ControlScheme {
       CommandXboxController controller) {
 
     controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
-    controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
+    controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
     // controller.y().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
     //         runOnce(() -> OI.setRumble(0, 0.5))));
 
@@ -212,7 +213,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
     orientationLocked = !orientationLocked;
     if (orientationLocked) {
-      orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+      orientationLockAngle = RobotState.getInstance().getRotation2d().getRadians();
     }
   }
 
