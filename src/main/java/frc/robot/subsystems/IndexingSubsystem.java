@@ -20,7 +20,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,7 +44,7 @@ public class IndexingSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController indexFeedBack = new PIDController(.9, 0, 0.00);
+  PIDController indexFeedBack = new PIDController(3, 0, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -73,8 +72,10 @@ public class IndexingSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           false,
-          ((2 * Math.PI) * 0.004545),
-          ((2 * Math.PI) * 0.004545 * 0.0166));
+          ((2 * Math.PI) * (1 / 35.166)),
+          ((2 * Math.PI) * (1 / 35.166) * 0.0166));
+  // 1,
+  // 1);
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
@@ -104,7 +105,8 @@ public class IndexingSubsystem extends SubsystemBase {
 
     setSetpoint(new State(0, 0));
 
-    Shuffleboard.getTab("Aimer").add("Indexer: PID Controller", indexFeedBack);
+    // Shuffleboard.getTab("Aimer").add("Indexer: PID Controller", indexFeedBack);
+    SmartDashboard.putData("Indexer: PID Controller", indexFeedBack);
   }
 
   /**
@@ -238,5 +240,6 @@ public class IndexingSubsystem extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // System.out.println("Indexing: " + hallEffectSensor.get());
+    SmartDashboard.putNumber("barrel Actual", indexMotor.getPosition());
   }
 }

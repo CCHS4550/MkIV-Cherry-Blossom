@@ -42,7 +42,7 @@ public class AimSimulator extends SubsystemBase {
 
   public double changeYAngle(double rad) {
     yAngle += rad;
-    yAngle = OI.normalize(yAngle, 0, 11);
+    yAngle = OI.normalize(yAngle, 0, 1);
     return yAngle;
   }
 
@@ -101,6 +101,7 @@ public class AimSimulator extends SubsystemBase {
   @Override
   public void periodic() {
     // printXY();
-    printXYAngle();
+    // printXYAngle();
+    SmartDashboard.putNumber("barrel Goal", barrelAngle);
   }
 }

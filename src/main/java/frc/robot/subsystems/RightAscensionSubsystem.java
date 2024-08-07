@@ -22,7 +22,6 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,7 +51,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KV_TEST,
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KA_TEST);
 
-  PIDController rightAscensionFeedback = new PIDController(1, 0, 0);
+  PIDController rightAscensionFeedback = new PIDController(9, 0, 0);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -113,7 +112,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
     setSetpoint(new State(rightAscensionMotor.getPosition(), 0));
 
-    Shuffleboard.getTab("Aimer").add("RightAscension: PID Controller", rightAscensionFeedback);
+    // Shuffleboard.getTab("Aimer").add("RightAscension: PID Controller", rightAscensionFeedback);
+    SmartDashboard.putData("RightAscension: PID Controller", rightAscensionFeedback);
 
     // Shuffleboard.getTab("Aimer").add("X Goal", getGoal().position);
     // Shuffleboard.getTab("Aimer").add("X Actual", rightAscensionMotor.getPosition());
@@ -259,6 +259,9 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // printEncoders();
     // System.out.println("RightAscension: " + hallEffectSensor.get());
     this.checkHallSensor();
+
+    SmartDashboard.putNumber("X Goal", getGoal().position);
+    SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
 
     // rightAscensionToPointRepeatable(aimer.xAngle);
   }

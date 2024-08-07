@@ -20,7 +20,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,7 +44,7 @@ public class DeclinationSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController declinationFeedBack = new PIDController(.9, 0.2, 0.00);
+  PIDController declinationFeedBack = new PIDController(12, 0, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -129,7 +128,8 @@ public class DeclinationSubsystem extends SubsystemBase {
 
     setSetpoint(new State(0, 0));
 
-    Shuffleboard.getTab("Aimer").add("Declination: PID Controller", declinationFeedBack);
+    // Shuffleboard.getTab("Aimer").add("Declination: PID Controller", declinationFeedBack);
+    SmartDashboard.putData("Declination: PID Controller", declinationFeedBack);
   }
 
   public void declinationSetUpDown(boolean isUp) {
@@ -302,5 +302,7 @@ public class DeclinationSubsystem extends SubsystemBase {
 
     // declinationToPointRepeatable(aimer.yAngle);
 
+    SmartDashboard.putNumber("Y Goal", getGoal().position);
+    SmartDashboard.putNumber("Y Actual", declination1.getPosition());
   }
 }

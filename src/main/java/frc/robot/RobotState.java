@@ -221,30 +221,36 @@ public class RobotState {
                 swerveDrive.backLeft.getName(),
                 swerveDrive.backLeft.getAbsoluteEncoderRadiansNoOffset())
             .getEntry();
+  }
 
-    // yActual =
-    //     Shuffleboard.getTab("Aimer")
-    //         .add("Y Actual", declination.declination1.getPosition())
-    //         .getEntry();
+  public void aimerShuffleBoardInit(
+      IndexingSubsystem indexer,
+      DeclinationSubsystem declination,
+      PneumaticsSystem pneumatics,
+      RightAscensionSubsystem rightAscension,
+      AimSimulator aimer) {
+    yActual =
+        Shuffleboard.getTab("Aimer")
+            .add("Y Actual", declination.declination1.getPosition())
+            .getEntry();
 
-    // yGoal = Shuffleboard.getTab("Aimer").add("Y Goal",
-    // declination.getGoal().position).getEntry();
+    yGoal = Shuffleboard.getTab("Aimer").add("Y Goal", declination.getGoal().position).getEntry();
 
-    // xActual =
-    //     Shuffleboard.getTab("Aimer")
-    //         .add("X Actual", rightAscension.rightAscensionMotor.getPosition())
-    //         .getEntry();
+    xActual =
+        Shuffleboard.getTab("Aimer")
+            .add("X Actual", rightAscension.rightAscensionMotor.getPosition())
+            .getEntry();
 
-    // xGoal =
-    //     Shuffleboard.getTab("Aimer").add("X Goal", rightAscension.getGoal().position).getEntry();
+    xGoal =
+        Shuffleboard.getTab("Aimer").add("X Goal", rightAscension.getGoal().position).getEntry();
 
-    // barrelActual =
-    //     Shuffleboard.getTab("Aimer")
-    //         .add("Actual Barrel Angle", indexer.indexMotor.getPosition())
-    //         .getEntry();
+    barrelActual =
+        Shuffleboard.getTab("Aimer")
+            .add("Actual Barrel Angle", indexer.indexMotor.getPosition())
+            .getEntry();
 
-    // barrelGoal =
-    //     Shuffleboard.getTab("Aimer").add("Goal Barrel Angle", aimer.barrelAngle).getEntry();
+    barrelGoal =
+        Shuffleboard.getTab("Aimer").add("Goal Barrel Angle", aimer.barrelAngle).getEntry();
   }
 
   public void updateModuleEncoders(SwerveDrive swerveDrive) {
