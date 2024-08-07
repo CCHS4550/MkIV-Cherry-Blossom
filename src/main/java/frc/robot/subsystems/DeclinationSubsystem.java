@@ -20,11 +20,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
 import frc.maps.Constants;
 
 public class DeclinationSubsystem extends SubsystemBase {
@@ -62,7 +64,7 @@ public class DeclinationSubsystem extends SubsystemBase {
   private DigitalInput pitchLimitSwitch =
       new DigitalInput(Constants.SensorMiscConstants.PITCH_LIMIT_SWITCH);
 
-  private CCSparkMax declination1 =
+  public CCSparkMax declination1 =
       new CCSparkMax(
           "pitchMotor1",
           "pM1",
@@ -73,12 +75,12 @@ public class DeclinationSubsystem extends SubsystemBase {
           // 4:1 Gearbox
           // 200:10 Rack
           // For some reason, only works in decimal form!
-          // (2 * Math.PI) * 0.0125,
-          // ((2 * Math.PI) * 0.0125 * 0.0166));
-          1,
-          1);
+          ((2 * Math.PI) * 0.0125),
+          ((2 * Math.PI) * 0.0125 * 0.0166));
+  // 1,
+  // 1);
 
-  private CCSparkMax declination2 =
+  public CCSparkMax declination2 =
       new CCSparkMax(
           "pitchMotor2",
           "pM2",
@@ -86,10 +88,10 @@ public class DeclinationSubsystem extends SubsystemBase {
           MotorType.kBrushless,
           IdleMode.kCoast,
           true,
-          // ((Math.PI * 2) * 0.0125),
-          // ((Math.PI * 2) * 0.0125 * 0.0166));
-          1,
-          1);
+          ((Math.PI * 2) * 0.0125),
+          ((Math.PI * 2) * 0.0125 * 0.0166));
+  // 1,
+  // 1);
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
@@ -126,6 +128,8 @@ public class DeclinationSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State();
 
     setSetpoint(new State(0, 0));
+
+    Shuffleboard.getTab("Aimer").add("Declination: PID Controller", declinationFeedBack);
   }
 
   public void declinationSetUpDown(boolean isUp) {
@@ -182,9 +186,12 @@ public class DeclinationSubsystem extends SubsystemBase {
     double feedBackPower =
         declinationFeedBack.calculate(declination1.getPosition(), targetPosition);
 
-    declination1.setVoltage(feedForwardPower + feedBackPower);
-    declination2.setVoltage(feedForwardPower + feedBackPower);
-    SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
+    double totalPower = feedForwardPower + feedBackPower;
+    totalPower = OI.normalize(totalPower, -3, 3);
+
+    declination1.setVoltage(totalPower);
+    declination2.setVoltage(totalPower);
+    SmartDashboard.putNumber("Declination: totalPower", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare
     // for the next time
     // targetPosition() is called.
@@ -201,9 +208,9 @@ public class DeclinationSubsystem extends SubsystemBase {
   public void declinationToPointRepeatable(double goalPosition) {
     if (!((Math.abs(goalPosition - declination1.getPosition())) < 0.01)) {
       this.targetPosition(goalPosition);
-      SmartDashboard.putBoolean("Moving", true);
+      // SmartDashboard.putBoolean("Moving", true);
     } else {
-      SmartDashboard.putBoolean("Moving", false);
+      // SmartDashboard.putBoolean("Moving", false);
     }
     if (declination1.getSpeed() > 0) {
       setPitchSpeed(0);
@@ -292,8 +299,8 @@ public class DeclinationSubsystem extends SubsystemBase {
     // System.out.println("2:" + declination2.getPosition());
     // System.out.println(pitchLimitSwitch.get());
     // System.out.println();
-    SmartDashboard.putNumber("Y Goal", getGoal().position);
-    SmartDashboard.putNumber("Y Actual", declination1.getPosition());
-    declinationToPointRepeatable(aimer.yAngle);
+
+    // declinationToPointRepeatable(aimer.yAngle);
+
   }
 }

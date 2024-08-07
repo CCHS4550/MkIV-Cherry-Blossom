@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.controlschemes.AutonomousScheme;
 import frc.maps.Constants;
@@ -46,9 +45,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    
 
-    
     // // Set up data receivers & replay source
 
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
@@ -95,7 +92,6 @@ public class Robot extends LoggedRobot {
     // if (Robot.isSimulation()) {
     DriverStation.silenceJoystickConnectionWarning(true);
     // }
-
 
     RobotState.getInstance().updatePose();
     RobotState.getInstance().updateDashboard();

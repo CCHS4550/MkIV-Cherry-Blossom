@@ -4,19 +4,16 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
@@ -28,12 +25,12 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.robot.RobotState;
-
 import org.littletonrobotics.junction.Logger;
-
 
 /** Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and a gyro. */
 public class SwerveDrive extends SubsystemBase {
+
+  private boolean test = false;
 
   // Initializing swerve modules. Must include full CCSparkMax object
   // declarations.
@@ -62,7 +59,7 @@ public class SwerveDrive extends SubsystemBase {
           Constants.SwerveConstants.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET,
           "Front Right");
 
-  public final SwerveModule frontLeft =
+  public static final SwerveModule frontLeft =
       new SwerveModule(
           new CCSparkMax(
               "Front Left Drive",
@@ -86,7 +83,7 @@ public class SwerveDrive extends SubsystemBase {
           Constants.SwerveConstants.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET,
           "Front Left");
 
-  public final SwerveModule backRight =
+  public static final SwerveModule backRight =
       new SwerveModule(
           new CCSparkMax(
               "Back Right Drive",
@@ -110,7 +107,7 @@ public class SwerveDrive extends SubsystemBase {
           Constants.SwerveConstants.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET,
           "Back Right");
 
-  public final SwerveModule backLeft =
+  public static final SwerveModule backLeft =
       new SwerveModule(
           new CCSparkMax(
               "Back Left Drive",
@@ -141,15 +138,11 @@ public class SwerveDrive extends SubsystemBase {
   /** Module positions used for odometry */
   public static SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
 
-  
   /* PID Controllers */
   public PIDController xPID, yPID;
   public PIDController turnPID;
   ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
-
-  
-
 
   private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
@@ -182,7 +175,7 @@ public class SwerveDrive extends SubsystemBase {
     System.out.println("backLeft:" + backLeft.getAbsoluteEncoderRadiansNoOffset());
   }
 
-  /** Constructor for the Swerve Drive Subsystem.  */
+  /** Constructor for the Swerve Drive Subsystem. */
   public SwerveDrive() {
     swerveModulePositions[0] =
         new SwerveModulePosition(0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset()));
@@ -192,8 +185,6 @@ public class SwerveDrive extends SubsystemBase {
         new SwerveModulePosition(0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset()));
     swerveModulePositions[3] =
         new SwerveModulePosition(0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
-
-    
 
     xPID = new PIDController(1, .1, 0);
     yPID = new PIDController(1, .1, 0);
@@ -215,13 +206,7 @@ public class SwerveDrive extends SubsystemBase {
     turnPID.enableContinuousInput(-Math.PI, Math.PI);
 
     RobotState.getInstance().moduleEncodersInit(this);
-
   }
-
-
-
-
-
 
   /** Returns the nearest speaker pose for for alliance color */
   @Override
@@ -230,12 +215,9 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
-  
     RobotState.getInstance().updateModuleEncoders(this);
-    
-    updateModulePositions();
 
-    
+    updateModulePositions();
   }
 
   /** Sets all 4 modules' drive and turn speeds to 0. */
@@ -277,7 +259,6 @@ public class SwerveDrive extends SubsystemBase {
     return states;
   }
 
-
   public void updateModulePositions() {
     swerveModulePositions[0] =
         new SwerveModulePosition(
@@ -293,8 +274,6 @@ public class SwerveDrive extends SubsystemBase {
             backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurnPosition()));
   }
 
-
-  
   /*
    * Used for Autobuilder in AutonomousScheme.java
    */
@@ -314,13 +293,6 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
     setModuleStates(moduleStates);
   }
-
-
-
-
-
-
-
 
   /* SysID Factory Methods */
   /**
@@ -343,8 +315,7 @@ public class SwerveDrive extends SubsystemBase {
     return sysIdRoutine.dynamic(direction);
   }
 
-
-    /**
+  /**
    * Used only in Characterizing. Don't touch this. Sets the provided voltages and locks the wheels
    * to 0 radians.
    *
@@ -357,19 +328,17 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
-    public void spinMotor(double speed) {
+  public void spinMotor(double speed) {
     frontRight.setDriveVelocity(speed);
     frontRight.setTurnPosition(() -> speed);
   }
-
-
-  
 
   public void test(double driveSpeed, double turnSpeed) {
     backRight.driveAndTurn(driveSpeed, turnSpeed);
     backRight.printEncoders();
   }
-    public void printWorld() {
+
+  public void printWorld() {
     System.out.println("Hello World!");
   }
 
@@ -385,7 +354,6 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setTurnPosition(() -> Math.PI / 2);
   }
 
-
   public Command halt() {
     return Commands.runOnce(() -> {}, this);
   }
@@ -396,9 +364,4 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setDriveVelocity(speed);
     backLeft.setDriveVelocity(speed);
   }
-
-
-  
 }
-
-

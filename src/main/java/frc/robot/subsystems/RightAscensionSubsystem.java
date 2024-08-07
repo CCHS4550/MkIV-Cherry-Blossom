@@ -22,11 +22,13 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
 import frc.maps.Constants;
 
 public class RightAscensionSubsystem extends SubsystemBase {
@@ -44,15 +46,13 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double middlePoint = leftBound + rightBound / 2;
   double range = Math.abs(leftBound - middlePoint);
 
- 
-
   SimpleMotorFeedforward rightAscensionFeedForward =
       new SimpleMotorFeedforward(
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KS_TEST,
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KV_TEST,
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KA_TEST);
 
-  PIDController rightAscensionFeedback = new PIDController(0.08, 0, 0);
+  PIDController rightAscensionFeedback = new PIDController(1, 0, 0);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -65,7 +65,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
   // Ex. "goal" is our desired final position at a velocity of 0 (See setGoal method!)
   private TrapezoidProfile.State setPoint, goal;
 
-  private CCSparkMax rightAscensionMotor =
+  public CCSparkMax rightAscensionMotor =
       new CCSparkMax(
           "yawMotor",
           "yM",
@@ -75,8 +75,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
           false,
           ((2 * Math.PI) / 50),
           ((2 * Math.PI) / 50) / 60);
-          // 1,
-          // 1);
+  // 1,
+  // 1);
 
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.YAW_SENSOR);
@@ -112,6 +112,11 @@ public class RightAscensionSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State();
 
     setSetpoint(new State(rightAscensionMotor.getPosition(), 0));
+
+    Shuffleboard.getTab("Aimer").add("RightAscension: PID Controller", rightAscensionFeedback);
+
+    // Shuffleboard.getTab("Aimer").add("X Goal", getGoal().position);
+    // Shuffleboard.getTab("Aimer").add("X Actual", rightAscensionMotor.getPosition());
   }
 
   public void rightAscensionDefaultMethod(AimSimulator aimer) {}
@@ -143,12 +148,14 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("feedForwardPower", feedForwardPower);
 
     // The Pid Calculation, calculating a voltage using the current position and the goal position.
-    double feedBackPower = 
+    double feedBackPower =
         rightAscensionFeedback.calculate(rightAscensionMotor.getPosition(), targetPosition);
-    SmartDashboard.putNumber("feedBackPower", feedBackPower);
+    SmartDashboard.putNumber("RightAscension: feedBackPower", feedBackPower);
 
-    rightAscensionMotor.setVoltage(feedForwardPower + feedBackPower);
-    SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
+    double totalPower = feedForwardPower + feedBackPower;
+    totalPower = OI.normalize(totalPower, -3, 3);
+    rightAscensionMotor.setVoltage(totalPower);
+    SmartDashboard.putNumber("RightAscension: totalPower", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare for the next time
     // targetPosition() is called.
     setSetpoint(nextSetpoint);
@@ -162,12 +169,13 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
   // Repeatable version of Main Command
   public void rightAscensionToPointRepeatable(double goalPosition) {
-    if (!((Math.abs(goalPosition - rightAscensionMotor.getPosition())) < 0.03)) {
+    if (true) {
+      // if (!((Math.abs(goalPosition - rightAscensionMotor.getPosition())) < 0.03)) {
       this.targetPosition(goalPosition);
     }
-    if (rightAscensionMotor.getSpeed() > 0) {
-      setTurretSpeed(0);
-    }
+    // if (rightAscensionMotor.getSpeed() > 0) {
+    //   setTurretSpeed(0);
+    // }
   }
 
   public void setTurretVoltage(Measure<Voltage> volts) {
@@ -214,6 +222,17 @@ public class RightAscensionSubsystem extends SubsystemBase {
     return goal;
   }
 
+  public static double convertRightAscension(double degree) {
+
+    // convert to a percentage
+    degree /= 360;
+    // 4:1 gearbox
+    // 20:1 rack
+    degree *= 50;
+
+    return degree;
+  }
+
   /**
    * Used only in characterizing. Don't touch this.
    *
@@ -240,8 +259,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // printEncoders();
     // System.out.println("RightAscension: " + hallEffectSensor.get());
     this.checkHallSensor();
-    SmartDashboard.putNumber("X Goal", getGoal().position);
-    SmartDashboard.putNumber("X Actual", rightAscensionMotor.getPosition());
-    rightAscensionToPointRepeatable(aimer.xAngle);
+
+    // rightAscensionToPointRepeatable(aimer.xAngle);
   }
 }

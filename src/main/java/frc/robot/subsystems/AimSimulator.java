@@ -12,11 +12,14 @@ public class AimSimulator extends SubsystemBase {
   public double xAngle;
   public double yAngle;
 
+  public double barrelAngle;
+
   public AimSimulator() {
     xPos = 0;
     yPos = 0;
     xAngle = 0;
     yAngle = 0;
+    barrelAngle = 0;
   }
 
   public double changeXPos(double val) {
@@ -83,6 +86,16 @@ public class AimSimulator extends SubsystemBase {
 
   public Command continuousYAngleChange(double increment) {
     return this.run(() -> changeYAngle(increment));
+  }
+
+  public double changeBarrelAngle(double rad) {
+    barrelAngle += rad;
+    // barrelAngle = OI.normalize(barrelAngle, 0, 11);
+    return barrelAngle;
+  }
+
+  public Command continuousBarrelChange(double increment) {
+    return this.run(() -> changeBarrelAngle(increment));
   }
 
   @Override

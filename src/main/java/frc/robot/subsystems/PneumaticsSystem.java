@@ -25,7 +25,7 @@ public class PneumaticsSystem extends SubsystemBase {
   // SparkAnalogSensor transducer = getDriveAnalog();
 
   private boolean airCompressorStatus;
-  public DoubleSolenoid.Value pressureSealStatus;
+  public boolean pressureSealStatus;
 
   private CCSparkMax airCompressors =
       new CCSparkMax("aircompressors", "ac", 5, MotorType.kBrushed, IdleMode.kBrake, false, false);
@@ -46,23 +46,14 @@ public class PneumaticsSystem extends SubsystemBase {
 
   SparkAnalogSensor transducer = airCompressors.getAnalog();
 
-  // The pressure transducer is a physical component on the robot that returns a
-  // voltage, 0-5V, that represents a PSI from 0-150 PSI.
-  // The voltage returned is directly proportional to the PSI, so the constants
-  // defined below help derive that.
-  // "slope" is the ratio of the PSI to the Voltage.
-  // ps. Couldn't be bothered to understand the math, but I used this
-  // https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
-  private double slope = ((150 - 0) / (5 - 0));
-  private double input;
-  private double psi;
+  private int psi;
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
     solenoidValve.set(false);
     airCompressorStatus = false;
     compressorFan.disable();
-    pressureSealStatus = pressureSeal.get();
+    pressureSealStatus = false;
   }
 
   // Takes a percentage of 1.0 and sets the air compressors to that percentage
@@ -101,23 +92,38 @@ public class PneumaticsSystem extends SubsystemBase {
   }
 
   public Command togglePressureSeal() {
-    return new InstantCommand(() -> pressureSeal.toggle());
+    return new InstantCommand(
+        () -> {
+          if (!pressureSealStatus) pressureSeal.set(DoubleSolenoid.Value.kForward);
+          else {
+            pressureSeal.set(DoubleSolenoid.Value.kReverse);
+          }
+          pressureSealStatus = !pressureSealStatus;
+        },
+        this);
   }
 
   public Command shoot() {
     return new InstantCommand(() -> solenoidValve.toggle());
   }
 
-  private void checkPressure() {
-    input = transducer.getVoltage();
-    psi = (0 + slope * (input - 0));
-    SmartDashboard.putNumber("Tank Pressure", psi);
+  private int checkPressure() {
+
+    /* Found by graphing the transducer voltage against the read psi on the pressure gauge. Graph and find the Linear regression. Courtesy of Dr. Harrison's Physics Class */
+    psi = (int) ((54 * transducer.getVoltage()) - 12.2);
+    return psi;
+    // SmartDashboard.putNumber("Transducer Voltage", transducer.getVoltage());
+
   }
 
   @Override
   public void periodic() {
     // System.out.println(transducer.getVoltage());
     checkPressure();
+    SmartDashboard.putNumber("Tank Pressure", psi);
+    SmartDashboard.putString("DoubleSolenoid.Value", pressureSeal.get().toString());
+    SmartDashboard.putBoolean("pressureSealStatus", pressureSealStatus);
+
     // SmartDashboard.putBoolean("solenoid", solenoidValve.get());
     // System.out.println(pressureSeal.get());
     // System.out.println(solenoidValve.get());

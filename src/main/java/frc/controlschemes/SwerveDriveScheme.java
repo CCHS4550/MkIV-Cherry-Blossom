@@ -109,7 +109,8 @@ public class SwerveDriveScheme implements ControlScheme {
                   } else {
                     turnSpeed =
                         orientationLockPID.calculate(
-                                RobotState.getInstance().getRotation2d().getRadians(), orientationLockAngle)
+                                RobotState.getInstance().getRotation2d().getRadians(),
+                                orientationLockAngle)
                             * 2;
                   }
 
@@ -120,7 +121,7 @@ public class SwerveDriveScheme implements ControlScheme {
                   // function)
                   xSpeed = xRateLimiter.calculate(xSpeed);
                   ySpeed = yRateLimiter.calculate(ySpeed);
-                  turnSpeed = turnRateLimiter.calculate(turnSpeed);
+                  // turnSpeed = turnRateLimiter.calculate(turnSpeed);
 
                   // SmartDashboard.putNumber("xSpeed", xSpeed);
                   // SmartDashboard.putNumber("ySpeed", ySpeed);
@@ -148,6 +149,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
                   Logger.recordOutput("Teleoperated set moduleStates", moduleStates);
 
+                  // swerveDrive.setRawDriveVolts(1);
                   swerveDrive.setModuleStates(moduleStates);
                 },
                 swerveDrive)
@@ -175,7 +177,8 @@ public class SwerveDriveScheme implements ControlScheme {
       CommandXboxController controller) {
 
     controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
-    controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
+    // controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
+    // controller.a().onTrue(runOnce(() -> swerveDrive.);
     // controller.y().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
     //         runOnce(() -> OI.setRumble(0, 0.5))));
 

@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.controlschemes.*;
 import frc.maps.Constants;
@@ -70,11 +69,13 @@ public class RobotContainer {
         break;
     }
 
-    // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
-
     RobotState.getInstance();
-    RobotState.getInstance().dashboardInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
-    RobotState.getInstance().poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+    RobotState.getInstance()
+        .dashboardInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+    RobotState.getInstance()
+        .poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+
+    // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
     /*
      * Configure schemes.
@@ -82,11 +83,18 @@ public class RobotContainer {
      * Be careful that if you are using the same controller for both schemes, that the controls don't overlap.
      */
     SwerveDriveScheme.configure(swerveDrive, controller1);
-    MechanismScheme.configure(swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, controller2, aimer);
+    MechanismScheme.configure(
+        swerveDrive,
+        indexer,
+        declination,
+        pneumatics,
+        rightAscension,
+        controller1,
+        controller2,
+        aimer);
 
     AutonomousScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
@@ -94,7 +102,6 @@ public class RobotContainer {
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
-    
   }
 
   // public static Command getAutoCommand() {

@@ -20,18 +20,20 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
+import frc.helpers.OI;
 import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
 
 public class IndexingSubsystem extends SubsystemBase {
+
   PneumaticsSystem pneumatics;
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
-  Double barrelAngle;
 
   SimpleMotorFeedforward indexFeedForward =
       new SimpleMotorFeedforward(
@@ -43,7 +45,7 @@ public class IndexingSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController indexFeedBack = new PIDController(.9, 0.2, 0.00);
+  PIDController indexFeedBack = new PIDController(.9, 0, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -62,9 +64,17 @@ public class IndexingSubsystem extends SubsystemBase {
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.BARREL_SENSOR);
 
-  CCSparkMax indexMotor =
+  /* 220:1 Gear Reduction */
+  public CCSparkMax indexMotor =
       new CCSparkMax(
-          "barrelRotationMotor", "bRM", 13, MotorType.kBrushless, IdleMode.kBrake, false);
+          "barrelRotationMotor",
+          "bRM",
+          Constants.MotorConstants.BARREL_ROTATION,
+          MotorType.kBrushless,
+          IdleMode.kCoast,
+          false,
+          ((2 * Math.PI) * 0.004545),
+          ((2 * Math.PI) * 0.004545 * 0.0166));
 
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
@@ -93,6 +103,8 @@ public class IndexingSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State();
 
     setSetpoint(new State(0, 0));
+
+    Shuffleboard.getTab("Aimer").add("Indexer: PID Controller", indexFeedBack);
   }
 
   /**
@@ -122,8 +134,11 @@ public class IndexingSubsystem extends SubsystemBase {
     // goal position.
     double feedBackPower = indexFeedBack.calculate(indexMotor.getPosition(), targetPosition);
 
-    indexMotor.setVoltage(feedForwardPower + feedBackPower);
-    SmartDashboard.putNumber("feedForward + feedBack", (feedForwardPower + feedBackPower));
+    double totalPower = feedForwardPower + feedBackPower;
+    totalPower = OI.normalize(totalPower, -3, 3);
+
+    indexMotor.setVoltage(totalPower);
+    SmartDashboard.putNumber("Indexer: Total Power", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare
     // for the next time
     // targetPosition() is called.
@@ -220,6 +235,7 @@ public class IndexingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
     // System.out.println("Indexing: " + hallEffectSensor.get());
   }
