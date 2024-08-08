@@ -32,12 +32,20 @@ public class PneumaticsSystem extends SubsystemBase {
   private Compressor compressorFan =
       new Compressor(Constants.PneumaticsConstants.COMPRESSOR_FAN, PneumaticsModuleType.REVPH);
 
+  /*
+   * pressureSeal.get().toString() Value.kReverse - The pressureSeal is enabled and ready to fire.
+   * pressureSeal.get().toString() Value.kForward - The pressureSeal is disabled and the indexer can move.
+   */
   private DoubleSolenoid pressureSeal =
       new DoubleSolenoid(
           Constants.PneumaticsConstants.COMPRESSOR_FAN,
           PneumaticsModuleType.REVPH,
           Constants.PneumaticsConstants.PRESSURE_SEAL[0],
           Constants.PneumaticsConstants.PRESSURE_SEAL[1]);
+  /*
+   * solenoidValve.get() = false - The shooting valve is closed.
+   * solenoidValve.get() = true - The shooting valve is open.
+   */
   private Solenoid solenoidValve =
       new Solenoid(
           Constants.PneumaticsConstants.COMPRESSOR_FAN,
@@ -46,10 +54,11 @@ public class PneumaticsSystem extends SubsystemBase {
 
   SparkAnalogSensor transducer = airCompressors.getAnalog();
 
-  private int psi;
+  public int psi;
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
+    pressureSeal.set(Value.kForward);
     solenoidValve.set(false);
     airCompressorStatus = false;
     compressorFan.disable();
@@ -83,27 +92,38 @@ public class PneumaticsSystem extends SubsystemBase {
     }
   }
 
-  public Command disablePressureSeal() {
-    return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
-  }
-
-  public Command enablePressureSeal() {
+  public Command disablePressureSealCommand() {
     return new InstantCommand(() -> pressureSeal.set(Value.kForward));
   }
 
-  public Command togglePressureSeal() {
-    return new InstantCommand(
-        () -> {
-          if (!pressureSealStatus) pressureSeal.set(DoubleSolenoid.Value.kForward);
-          else {
-            pressureSeal.set(DoubleSolenoid.Value.kReverse);
-          }
-          pressureSealStatus = !pressureSealStatus;
-        },
-        this);
+  public Command enablePressureSealCommand() {
+    return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
   }
 
-  public Command shoot() {
+  public void disablePressureSeal() {
+    pressureSeal.set(Value.kForward);
+  }
+
+  public void enablePressureSeal() {
+    pressureSeal.set(Value.kReverse);
+  }
+
+  // public Command togglePressureSeal() {
+  //   return new InstantCommand(
+  //       () -> {
+  //         if (!pressureSealStatus) pressureSeal.set(DoubleSolenoid.Value.kForward);
+  //         else {
+  //           pressureSeal.set(DoubleSolenoid.Value.kReverse);
+  //         }
+  //         pressureSealStatus = !pressureSealStatus;
+  //       },
+  //       this);
+  // }
+  public void togglePressureSeal() {
+    pressureSeal.toggle();
+  }
+
+  public Command toggleShoot() {
     return new InstantCommand(() -> solenoidValve.toggle());
   }
 
@@ -121,8 +141,8 @@ public class PneumaticsSystem extends SubsystemBase {
     // System.out.println(transducer.getVoltage());
     checkPressure();
     SmartDashboard.putNumber("Tank Pressure", psi);
-    SmartDashboard.putString("DoubleSolenoid.Value", pressureSeal.get().toString());
-    SmartDashboard.putBoolean("pressureSealStatus", pressureSealStatus);
+    SmartDashboard.putString("pressureSeal Status", pressureSeal.get().toString());
+    SmartDashboard.putBoolean("shootingSolenoid Status", solenoidValve.get());
 
     // SmartDashboard.putBoolean("solenoid", solenoidValve.get());
     // System.out.println(pressureSeal.get());

@@ -20,6 +20,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
@@ -356,6 +357,16 @@ public class SwerveDrive extends SubsystemBase {
 
   public Command halt() {
     return Commands.runOnce(() -> {}, this);
+  }
+
+  public Command resetTurnEncoders() {
+    return new InstantCommand(
+        () -> {
+          frontRight.resetTurnEncoder();
+          frontLeft.resetTurnEncoder();
+          backRight.resetTurnEncoder();
+          backLeft.resetTurnEncoder();
+        });
   }
 
   public void setspeeds(double speed) {

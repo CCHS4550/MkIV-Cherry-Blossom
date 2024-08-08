@@ -20,6 +20,7 @@ import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
@@ -79,7 +80,8 @@ public class RobotState {
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
       RightAscensionSubsystem rightAscension,
-      AimSimulator aimer) {
+      AimSimulator aimer,
+      Lights lights) {
 
     /* Put the Command Scheduler on SmartDashboard */
     SmartDashboard.putData(CommandScheduler.getInstance());
@@ -91,6 +93,8 @@ public class RobotState {
     Shuffleboard.getTab("Subsystems").add("Pneumatics System", pneumatics);
     Shuffleboard.getTab("Subsystems").add("Right Ascension Subsystem", rightAscension);
     Shuffleboard.getTab("Subsystems").add("Aim Simulator", aimer);
+
+    Shuffleboard.getTab("Subsystems").add("Lights", lights);
 
     /* Put the Pose Estimators on Dashboards */
     SmartDashboard.putData("Field", m_field_poseestimator);

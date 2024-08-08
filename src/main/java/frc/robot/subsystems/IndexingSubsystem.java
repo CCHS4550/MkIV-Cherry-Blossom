@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -22,7 +23,9 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
@@ -98,6 +101,8 @@ public class IndexingSubsystem extends SubsystemBase {
   public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
 
+    indexMotor.setSmartCurrentLimit(5);
+
     constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
     profile = new TrapezoidProfile(constraints);
     setPoint = new TrapezoidProfile.State();
@@ -107,6 +112,14 @@ public class IndexingSubsystem extends SubsystemBase {
 
     // Shuffleboard.getTab("Aimer").add("Indexer: PID Controller", indexFeedBack);
     SmartDashboard.putData("Indexer: PID Controller", indexFeedBack);
+  }
+
+  public Command indexTshirt() {
+    return sequence(
+        disablePressureSeal(),
+        // dislodgeIndexer(),
+        indexToPoint(indexMotor.getPosition() + (Math.PI / 3)),
+        enablePressureSeal());
   }
 
   /**
@@ -139,7 +152,9 @@ public class IndexingSubsystem extends SubsystemBase {
     double totalPower = feedForwardPower + feedBackPower;
     totalPower = OI.normalize(totalPower, -3, 3);
 
-    indexMotor.setVoltage(totalPower);
+    if (pneumatics.psi > 40) {
+      indexMotor.setVoltage(totalPower, 10);
+    }
     SmartDashboard.putNumber("Indexer: Total Power", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare
     // for the next time
@@ -164,6 +179,16 @@ public class IndexingSubsystem extends SubsystemBase {
     if (indexMotor.getSpeed() > 0) {
       setIndexSpeed(0);
     }
+  }
+
+  public Command dislodgeIndexer() {
+    // if (Math.abs(indexMotor.getOutputCurrent()) > 10) {
+    return sequence(
+        new InstantCommand(() -> indexMotor.setVoltage(-6)),
+        new WaitCommand(0.2),
+        new InstantCommand(() -> indexMotor.setVoltage(0)));
+
+    // }
   }
 
   public Command continuousIndex() {
@@ -215,6 +240,15 @@ public class IndexingSubsystem extends SubsystemBase {
     return goal;
   }
 
+  private Command disablePressureSeal() {
+    pneumatics.disablePressureSeal();
+    return new WaitCommand(0.2);
+  }
+
+  private Command enablePressureSeal() {
+    pneumatics.enablePressureSeal();
+    return new WaitCommand(0.2);
+  }
   /**
    * Used only in characterizing. Don't touch this.
    *

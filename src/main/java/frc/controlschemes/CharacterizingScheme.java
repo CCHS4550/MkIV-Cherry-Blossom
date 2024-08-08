@@ -38,7 +38,7 @@ public class CharacterizingScheme {
 
   public static void configureButtons(
       SwerveDrive swerveDrive,
-      IndexingSubsystem reloading,
+      IndexingSubsystem indexer,
       DeclinationSubsystem declination,
       PneumaticsSystem pneumatics,
       RightAscensionSubsystem rightAscension,
@@ -56,9 +56,14 @@ public class CharacterizingScheme {
     // controller.x().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // controller.y().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    controller.a().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    controller.b().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    controller.x().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    controller.y().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    controller.a().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    controller.b().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    controller.x().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    controller.y().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // controller.a().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // controller.b().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // controller.x().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // controller.y().onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 }

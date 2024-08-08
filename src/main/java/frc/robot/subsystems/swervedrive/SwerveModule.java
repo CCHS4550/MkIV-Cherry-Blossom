@@ -102,7 +102,8 @@ public class SwerveModule extends SubsystemBase {
    * @return The encoder value of the turn motor.
    */
   public double getTurnPosition() {
-    return turnMotor.getPosition() % (2 * Math.PI); // should be in radians?
+    // return turnMotor.getPosition() % (2 * Math.PI); // should be in radians?
+    return getAbsoluteEncoderRadiansOffset();
   }
 
   public double getDriveVoltagee() {
@@ -160,6 +161,10 @@ public class SwerveModule extends SubsystemBase {
    */
   public void resetEncoders() {
     driveMotor.reset();
+    turnMotor.setPosition(getAbsoluteEncoderRadiansOffset());
+  }
+
+  public void resetTurnEncoder() {
     turnMotor.setPosition(getAbsoluteEncoderRadiansOffset());
   }
 

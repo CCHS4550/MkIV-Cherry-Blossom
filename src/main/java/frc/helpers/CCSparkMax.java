@@ -136,6 +136,14 @@ public class CCSparkMax extends CANSparkMax {
     super.setVoltage(volts);
   }
 
+  public void setVoltage(double volts, double currentlimit) {
+    if (super.getOutputCurrent() <= currentlimit) {
+      super.setVoltage(volts);
+    } else {
+      super.setVoltage(0);
+    }
+  }
+
   public void setVoltageFromSpeed(double speed) {
     super.setVoltage(speed * voltageConversionFactor);
   }

@@ -1,7 +1,10 @@
 package frc.controlschemes;
 
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
@@ -12,6 +15,8 @@ import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 public class MechanismScheme {
+  CommandXboxController primaryController;
+  CommandXboxController sencondaryController;
 
   public static void configure(
       SwerveDrive swerveDrive,
@@ -33,7 +38,7 @@ public class MechanismScheme {
 
     declination.setDefaultCommand(defaultDeclination);
     rightAscension.setDefaultCommand(defaultRightAscension);
-    indexer.setDefaultCommand(defaultIndex);
+    // indexer.setDefaultCommand(defaultIndex);
 
     configureButtons(
         swerveDrive,
@@ -80,13 +85,17 @@ public class MechanismScheme {
     /*
      * Continuously rotates the barrels. (FUNCTIONAL)
      */
-    controller.rightTrigger().whileTrue(aimer.continuousBarrelChange(Math.toRadians(1)));
+    // controller.rightTrigger().whileTrue(aimer.continuousBarrelChange(Math.toRadians(1)));
+    controller.rightTrigger().onTrue(indexer.indexTshirt());
 
     /*
      * TODO make this work
      */
-    controller.leftBumper().onTrue(pneumatics.togglePressureSeal());
-    // controller.rightBumper().and(controller.rightBumper()).onTrue(pneumatics.shoot());
+    controller.y().onTrue(new InstantCommand(() -> pneumatics.togglePressureSeal()));
+    controller
+        .rightBumper()
+        .and(controller.leftBumper())
+        .onTrue(sequence(pneumatics.toggleShoot(), new WaitCommand(.7), pneumatics.toggleShoot()));
 
     // controller.leftBumper().onTrue(new InstantCommand(() -> System.out.println("ajdsfdlgkfh")));
     // controller.a().onTrue(new InstantCommand(() -> rightAscension.zeroEncoders()));

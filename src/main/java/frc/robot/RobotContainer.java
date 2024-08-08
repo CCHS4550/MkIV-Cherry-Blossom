@@ -10,6 +10,7 @@ import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.Superstructure;
@@ -39,6 +40,8 @@ public class RobotContainer {
   PneumaticsSystem pneumatics;
   IndexingSubsystem indexer;
 
+  Lights lights;
+
   Superstructure superstructure;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -53,6 +56,8 @@ public class RobotContainer {
         pneumatics = new PneumaticsSystem();
         indexer = new IndexingSubsystem(pneumatics);
 
+        lights = new Lights(pneumatics);
+
         break;
 
       case SIM:
@@ -63,6 +68,8 @@ public class RobotContainer {
         pneumatics = new PneumaticsSystem();
         indexer = new IndexingSubsystem(pneumatics);
 
+        lights = new Lights(pneumatics);
+
         break;
 
       case REPLAY:
@@ -71,7 +78,8 @@ public class RobotContainer {
 
     RobotState.getInstance();
     RobotState.getInstance()
-        .dashboardInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+        .dashboardInit(
+            swerveDrive, indexer, declination, pneumatics, rightAscension, aimer, lights);
     RobotState.getInstance()
         .poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
 
