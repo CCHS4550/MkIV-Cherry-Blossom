@@ -145,8 +145,8 @@ public class IndexingSubsystem extends SubsystemBase {
     // position and
     // velocity of the next setpoint.
     // Feedforward doesn't seem necessarily necessary?
-    double feedForwardPower =
-        indexFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    double feedForwardPower = 0;
+        // indexFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
