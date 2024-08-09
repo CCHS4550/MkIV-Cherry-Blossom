@@ -131,6 +131,12 @@ public class PneumaticsSystem extends SubsystemBase {
     return new InstantCommand(() -> solenoidValve.toggle());
   }
 
+  public Command quickShoot() {
+    return this.startEnd(() -> solenoidValve.set(true), () -> solenoidValve.set(false))
+        .withTimeout(0.1)
+        .withName("Shooting!");
+  }
+
   private int checkPressure() {
 
     /* Found by graphing the transducer voltage against the read psi on the pressure gauge. Graph and find the Linear regression. Courtesy of Dr. Harrison's Physics Class */
@@ -146,8 +152,8 @@ public class PneumaticsSystem extends SubsystemBase {
     // System.out.println(transducer.getVoltage());
     checkPressure();
     SmartDashboard.putNumber("Tank Pressure", psi);
-    SmartDashboard.putString("pressureSeal Status", pressureSeal.get().toString());
-    SmartDashboard.putBoolean("shootingSolenoid Status", solenoidValve.get());
+    // SmartDashboard.putString("pressureSeal Status", pressureSeal.get().toString());
+    // SmartDashboard.putBoolean("shootingSolenoid Status", solenoidValve.get());
 
     // SmartDashboard.putBoolean("solenoid", solenoidValve.get());
     // System.out.println(pressureSeal.get());

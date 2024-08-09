@@ -198,7 +198,13 @@ public class DeclinationSubsystem extends SubsystemBase {
     setSetpoint(nextSetpoint);
   }
 
-  // Main command called
+  /**
+   * Main Command that utilizes the targetposition method to bring the mechanism to a point.
+   *
+   * @param goalPosition The ideal final end position
+   * @return A runCommand that runs periodically to bring the mechanism to the goalPosition until
+   *     within 0.01. Then sets the speed to 0 oncee.
+   */
   public Command declinationToPoint(double goalPosition) {
     return this.runEnd(() -> this.targetPosition(goalPosition), () -> setPitchSpeed(0));
     // .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
@@ -243,6 +249,10 @@ public class DeclinationSubsystem extends SubsystemBase {
     declination1.set(0);
     declination2.set(0);
   }
+
+  /* Helper Methods for targetPosition(), ___toPoint(), ___toPointRepeatable()
+   * Utilizes trapezoid profiles.
+   */
 
   public void setSetpoint(TrapezoidProfile.State setPoint) {
     this.setPoint = setPoint;

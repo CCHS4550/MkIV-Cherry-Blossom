@@ -4,17 +4,13 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.wpilibj2.command.Commands.parallel;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WrapperCommand;
 
 public class Lights extends SubsystemBase {
 
@@ -54,131 +50,126 @@ public class Lights extends SubsystemBase {
     leds.start();
   }
 
-  public WrapperCommand getLEDStateCommand(LEDState state) {
+  public void getLEDStateCommand(LEDState state) {
 
     switch (state) {
       default:
-        return new InstantCommand(() -> System.out.println("None!")).withName("Null");
+        // return new InstantCommand(() -> System.out.println("None!")).withName("Null");
       case rainbow:
-        WrapperCommand rainbowCommand =
-            new RunCommand(
-                    () -> {
-                      // For every pixel
-                      for (var i = 0; i < 93; i++) {
-                        // Calculate the hue - hue is easier for rainbows because the color
-                        // shape is a circle so only one value needs to precess
-                        final var hue1 =
-                            (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
-                        // Set the value
-                        ledBuffer.setHSV(i, hue1, 255, 128);
-                      }
-                      // Increase by to make the rainbow "move"
-                      rainbowFirstPixelHue += 1;
-                      // System.out.println(rainbowFirstPixelHue);
-                      // Check bounds
-                      rainbowFirstPixelHue %= 180;
-                      leds.setData(ledBuffer);
-                    },
-                    this)
-                .withName("Rainbow Lights");
+        // WrapperCommand rainbowCommand =
+        //     new RunCommand(
+        //             () -> {
+        // For every pixel
+        for (var i = 0; i < 93; i++) {
+          // Calculate the hue - hue is easier for rainbows because the color
+          // shape is a circle so only one value needs to precess
+          final var hue1 = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
+          // Set the value
+          ledBuffer.setHSV(i, hue1, 255, 128);
+        }
+        // Increase by to make the rainbow "move"
+        rainbowFirstPixelHue += 1;
+        // System.out.println(rainbowFirstPixelHue);
+        // Check bounds
+        rainbowFirstPixelHue %= 180;
+        leds.setData(ledBuffer);
+        //             },
+        //             this)
+        //         .withName("Rainbow Lights");
 
-        return rainbowCommand;
+        // return rainbowCommand;
         // rainbowCommand.schedule();
         // System.out.println("rainbow!");
 
       case pinkSolid:
-        WrapperCommand pinkSolidCommand =
-            new RunCommand(
-                    () -> {
-                      for (var i = 0; i < ledBuffer.getLength(); i++) {
-                        ledBuffer.setLED(i, Color.kLightPink);
-                      }
-                    },
-                    this)
-                .withName("Solid Pink Lights");
+        // WrapperCommand pinkSolidCommand =
+        //     new RunCommand(
+        //             () -> {
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+          ledBuffer.setLED(i, Color.kLightPink);
+        }
+        //             },
+        //             this)
+        //         .withName("Solid Pink Lights");
 
-        return pinkSolidCommand;
+        // return pinkSolidCommand;
 
         // pinkSolidCommand.schedule();
         // leds.setData(ledBuffer);
 
       case pinkWhiteGradient:
-        WrapperCommand pinkWhiteGradientCommand =
-            new RunCommand(
-                    () -> {
-                      var saturation1 = 0;
-                      // For every pixel
-                      for (var i = 0; i < 93; i++) {
-                        // Calculate the hue - hue is easier for rainbows because the color
-                        // shape is a circle so only one value needs to precess
-                        saturation1 =
-                            (pinkWhiteGradientFirstPixelSaturation
-                                    + (i * 255 / ledBuffer.getLength()))
-                                % 255;
-                        // Set the value
-                        ledBuffer.setHSV(i, outputHue, 225, saturation1);
-                      }
-                      // Increase by to make the rainbow "move"
+        // WrapperCommand pinkWhiteGradientCommand =
+        //     new RunCommand(
+        //             () -> {
+        var saturation1 = 0;
+        // For every pixel
+        for (var i = 0; i < 93; i++) {
+          // Calculate the hue - hue is easier for rainbows because the color
+          // shape is a circle so only one value needs to precess
+          saturation1 =
+              (pinkWhiteGradientFirstPixelSaturation + (i * 255 / ledBuffer.getLength())) % 255;
+          // Set the value
+          ledBuffer.setHSV(i, outputHue, 225, saturation1);
+        }
+        // Increase by to make the rainbow "move"
 
-                      // System.out.println(rainbowFirstPixelHue);
-                      // Check bounds
-                      pinkWhiteGradientFirstPixelSaturation %= 255;
+        // System.out.println(rainbowFirstPixelHue);
+        // Check bounds
+        pinkWhiteGradientFirstPixelSaturation %= 255;
 
-                      leds.setData(ledBuffer);
-                    },
-                    this)
-                .withName("Pink White Gradient Lights");
+        leds.setData(ledBuffer);
+        //             },
+        //             this)
+        //         .withName("Pink White Gradient Lights");
 
-        return pinkWhiteGradientCommand;
+        // return pinkWhiteGradientCommand;
 
         // pinkWhiteGradientCommand.schedule();
         // System.out.println("Pink White Gradient!");
 
       case pressureRedtoGreenGradient:
-        WrapperCommand pressureRedtoGreenGradientCommand =
-            new RunCommand(
-                    () -> {
-                      var saturation2 = 0;
-                      // For every pixel
-                      for (var i = 93; i < 169; i++) {
-                        // Calculate the hue - hue is easier for rainbows because the color
-                        // shape is a circle so only one value needs to precess
-                        // saturation2 =
-                        //     (pressureRedtoGreenGradientFirstPixelSaturation + (i * 255 / 169))
-                        //         % 255;
-                        // Set the value
+        // WrapperCommand pressureRedtoGreenGradientCommand =
+        //     new RunCommand(
+        //             () -> {
+        var saturation2 = 0;
+        // For every pixel
+        for (var i = 93; i < 169; i++) {
+          // Calculate the hue - hue is easier for rainbows because the color
+          // shape is a circle so only one value needs to precess
+          // saturation2 =
+          //     (pressureRedtoGreenGradientFirstPixelSaturation + (i * 255 / 169))
+          //         % 255;
+          // Set the value
 
-                        int testS = 255;
-                        int testV = 255;
+          int testS = 255;
+          int testV = 255;
 
-                        ledBuffer.setHSV(
-                            i, outputHue, testV, pressureRedtoGreenGradientFirstPixelSaturation);
+          ledBuffer.setHSV(i, outputHue, testV, pressureRedtoGreenGradientFirstPixelSaturation);
 
-                        if (pressureRedtoGreenGradientFirstPixelSaturation < 4) {
-                          brightening = true;
-                        } else if (pressureRedtoGreenGradientFirstPixelSaturation > 220)
-                          brightening = false;
-                      }
-                      if (brightening) {
-                        pressureRedtoGreenGradientFirstPixelSaturation += 3;
-                      } else {
-                        pressureRedtoGreenGradientFirstPixelSaturation -= 3;
-                      }
-                      SmartDashboard.putBoolean("Brightening", brightening);
-                      SmartDashboard.putNumber("Hue", outputHue);
-                      SmartDashboard.putNumber(
-                          "Saturation", pressureRedtoGreenGradientFirstPixelSaturation);
+          if (pressureRedtoGreenGradientFirstPixelSaturation < 4) {
+            brightening = true;
+          } else if (pressureRedtoGreenGradientFirstPixelSaturation > 220) brightening = false;
+        }
+        if (brightening) {
+          pressureRedtoGreenGradientFirstPixelSaturation += 3;
+        } else {
+          pressureRedtoGreenGradientFirstPixelSaturation -= 3;
+        }
+        // SmartDashboard.putBoolean("Brightening", brightening);
+        // SmartDashboard.putNumber("Hue", outputHue);
+        // SmartDashboard.putNumber(
+        //     "Saturation", pressureRedtoGreenGradientFirstPixelSaturation);
 
-                      // System.out.println(rainbowFirstPixelHue);
-                      // Check bounds
-                      // pressureRedtoGreenGradientFirstPixelSaturation %= 255;
+        // System.out.println(rainbowFirstPixelHue);
+        // Check bounds
+        // pressureRedtoGreenGradientFirstPixelSaturation %= 255;
 
-                      leds.setData(ledBuffer);
-                    },
-                    this)
-                .withName("Pressure Red to Green Gradient Lights");
+        leds.setData(ledBuffer);
+        //             },
+        //             this)
+        //         .withName("Pressure Red to Green Gradient Lights");
 
-        return pressureRedtoGreenGradientCommand;
+        // return pressureRedtoGreenGradientCommand;
         // pressureRedtoGreenGradientCommand.schedule();
         // System.out.println("Pressure Red to Green Gradient!");
 
@@ -201,17 +192,21 @@ public class Lights extends SubsystemBase {
   }
 
   public Command multipleLightCommands(LEDState one, LEDState two) {
-    return parallel(getLEDStateCommand(one), getLEDStateCommand(two));
+    return new RunCommand(
+        () -> {
+          getLEDStateCommand(one);
+          getLEDStateCommand(two);
+        });
   }
 
   private void convertHSV() {
     inputPSI = pneumatics.psi;
-    SmartDashboard.putNumber("Pressure Proportional Input", inputPSI);
+    // SmartDashboard.putNumber("Pressure Proportional Input", inputPSI);
     outputHue = Math.round(((0 + slope) * (inputPSI - 3)));
     if (outputHue < 0) {
       outputHue = 0;
     }
-    SmartDashboard.putNumber("Pressure Proportional Hue", outputHue);
+    // SmartDashboard.putNumber("Pressure Proportional Hue", outputHue);
   }
 
   private Command setLights() {

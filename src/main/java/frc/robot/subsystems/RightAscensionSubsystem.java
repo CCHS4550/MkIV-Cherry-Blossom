@@ -40,11 +40,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
   double turretLocation;
   double turretOffset;
 
-  double leftBound = -10;
-  double rightBound = 10;
-  double middlePoint = leftBound + rightBound / 2;
-  double range = Math.abs(leftBound - middlePoint);
-
   SimpleMotorFeedforward rightAscensionFeedForward =
       new SimpleMotorFeedforward(
           Constants.FeedForwardConstants.RIGHT_ASCENSION_KS,
@@ -150,18 +145,24 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // The Pid Calculation, calculating a voltage using the current position and the goal position.
     double feedBackPower =
         rightAscensionFeedback.calculate(rightAscensionMotor.getPosition(), targetPosition);
-    SmartDashboard.putNumber("RightAscension: feedBackPower", feedBackPower);
+    // SmartDashboard.putNumber("RightAscension: feedBackPower", feedBackPower);
 
     double totalPower = feedForwardPower + feedBackPower;
     totalPower = OI.normalize(totalPower, -3, 3);
     rightAscensionMotor.setVoltage(totalPower);
-    SmartDashboard.putNumber("RightAscension: totalPower", (totalPower));
+    // SmartDashboard.putNumber("RightAscension: totalPower", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare for the next time
     // targetPosition() is called.
     setSetpoint(nextSetpoint);
   }
 
-  // Main command called
+  /**
+   * Main Command that utilizes the targetposition method to bring the mechanism to a point.
+   *
+   * @param goalPosition The ideal final end position
+   * @return A runCommand that runs periodically to bring the mechanism to the goalPosition until
+   *     within 0.01. Then sets the speed to 0 oncee.
+   */
   public Command rightAscensionToPoint(double goalPosition) {
     return this.runEnd(() -> this.targetPosition(goalPosition), () -> setTurretSpeed(0))
         .until(() -> ((Math.abs(goalPosition - rightAscensionMotor.getPosition())) < 0.3));
@@ -206,6 +207,9 @@ public class RightAscensionSubsystem extends SubsystemBase {
     }
   }
 
+  /* Helper Methods for targetPosition(), ___toPoint(), ___toPointRepeatable()
+   * Utilizes trapezoid profiles.
+   */
   public void setSetpoint(TrapezoidProfile.State setPoint) {
     this.setPoint = setPoint;
   }
@@ -220,17 +224,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
   public State getGoal() {
     return goal;
-  }
-
-  public static double convertRightAscension(double degree) {
-
-    // convert to a percentage
-    degree /= 360;
-    // 4:1 gearbox
-    // 20:1 rack
-    degree *= 50;
-
-    return degree;
   }
 
   /**

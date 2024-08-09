@@ -120,7 +120,10 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    robotContainer.lights.getLEDStateCommand(LEDState.pressureRedtoGreenGradient).schedule();
+    robotContainer
+        .lights
+        .multipleLightCommands(LEDState.rainbow, LEDState.pressureRedtoGreenGradient)
+        .schedule();
   }
 
   /** This function is called periodically during operator control. */

@@ -37,6 +37,7 @@ public class IndexingSubsystem extends SubsystemBase {
 
   PneumaticsSystem pneumatics;
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
+  double nextBarrel;
 
   SimpleMotorFeedforward indexFeedForward =
       new SimpleMotorFeedforward(
@@ -67,7 +68,7 @@ public class IndexingSubsystem extends SubsystemBase {
   private DigitalInput hallEffectSensor =
       new DigitalInput(Constants.SensorMiscConstants.BARREL_SENSOR);
 
-  /* 220:1 Gear Reduction */
+  /* 35.166:1 Gear Reduction or something similar; I forgot what gear ratio it really is and instead took some experimental measurements. */
   public CCSparkMax indexMotor =
       new CCSparkMax(
           "barrelRotationMotor",
@@ -81,8 +82,7 @@ public class IndexingSubsystem extends SubsystemBase {
   // 1,
   // 1);
 
-  double nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0067;
-
+  // Configure Sysid
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -100,7 +100,11 @@ public class IndexingSubsystem extends SubsystemBase {
   // Will not work because PWM is only an output!
   // private PWM hallEffectSensor = new PWM(0);
 
-  /** Creates a new IndexingSubsystem. */
+  /**
+   * Creates a new IndexingSubsystem.
+   *
+   * @param pneumatics - Needs information about the pneumatics system to work well.
+   */
   public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
 
@@ -117,16 +121,39 @@ public class IndexingSubsystem extends SubsystemBase {
     SmartDashboard.putData("Indexer: PID Controller", indexFeedBack);
   }
 
-  public Command indexTshirt() {
+  public Command shootAll() {
+    return new SequentialCommandGroup(
+        // Shoot current round
+        pneumatics.enablePressureSealCommand(),
+        pneumatics.quickShoot(),
+        // Shoot 2nd round
+        indexShoot(),
+        // Shoot 3rd round
+        indexShoot(),
+        // Shoot 4th round
+        indexShoot(),
+        // Shoot 5th round
+        indexShoot(),
+        // Shoot 6th round
+        indexShoot());
+  }
+
+  public Command indexShoot() {
+    return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
+  }
+
+  public Command indexOne() {
     return new SequentialCommandGroup(
         pneumatics.disablePressureSealCommand(),
+        new WaitCommand(0.01),
         indexBarrel(),
         pneumatics.enablePressureSealCommand());
     // .withTimeout(3);
   }
 
   /**
-   * Helper method called repeatedly for indexToPoint() Method.
+   * Helper method called repeatedly for indexToPoint() Method. This method will not be used outside
+   * of this subsystem!
    *
    * @param targetPosition the end goal position.
    */
@@ -146,7 +173,7 @@ public class IndexingSubsystem extends SubsystemBase {
     // velocity of the next setpoint.
     // Feedforward doesn't seem necessarily necessary?
     double feedForwardPower = 0;
-        // indexFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    // indexFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
@@ -158,19 +185,25 @@ public class IndexingSubsystem extends SubsystemBase {
     // if (pneumatics.psi > 40) {
     indexMotor.setVoltage(totalPower);
     // }
-    SmartDashboard.putNumber("Indexer: Total Power", (totalPower));
+    // SmartDashboard.putNumber("Indexer: Total Power", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare
     // for the next time
     // targetPosition() is called.
     setSetpoint(nextSetpoint);
   }
 
-  // Main command called
+  /**
+   * Main Command that utilizes the targetposition method to bring the mechanism to a point.
+   *
+   * @param goalPosition The ideal final end position
+   * @return A runCommand that runs periodically to bring the mechanism to the goalPosition until
+   *     within 0.01. Then sets the speed to 0 oncee.
+   */
   public Command indexToPoint(double goalPosition) {
     return this.runEnd(
             () -> {
               this.targetPosition(goalPosition);
-              SmartDashboard.putNumber("Index: GoalPosition", goalPosition);
+              // SmartDashboard.putNumber("Index: GoalPosition", goalPosition);
             },
             () -> {
               setIndexSpeed(0);
@@ -179,8 +212,14 @@ public class IndexingSubsystem extends SubsystemBase {
         .until(() -> ((Math.abs(goalPosition - indexMotor.getPosition())) < 0.01));
   }
 
-  // Main command called
+  /**
+   * Same method as indexToPoint() except configured specifically to move about Pi/3 radians such
+   * that the indexer indexes to the next barrel.
+   *
+   * @return A command that will index the next t-shirt.
+   */
   public Command indexBarrel() {
+    nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0063;
     return this.runEnd(
             () -> {
               this.targetPosition(nextBarrel);
@@ -188,12 +227,17 @@ public class IndexingSubsystem extends SubsystemBase {
             },
             () -> {
               setIndexSpeed(0);
-              nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0067;
             })
         .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.01));
   }
 
-  // Repeatable version of Main Command
+  /**
+   * This is very similar to indexToPoint() but was configured to work as a method simply called
+   * periodically instead of a Command that is scheduled. We used this initially in this subsystem's
+   * periodic() method so that it would always follow a specific point.
+   *
+   * @param goalPosition
+   */
   public void indexToPointRepeatable(double goalPosition) {
     if (!((Math.abs(goalPosition - indexMotor.getPosition())) < 0.01)) {
       this.targetPosition(goalPosition);
@@ -217,7 +261,6 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command continuousIndex() {
-
     return this.startEnd(() -> spinBarrels(), () -> stop());
   }
 
@@ -249,6 +292,9 @@ public class IndexingSubsystem extends SubsystemBase {
     indexMotor.set(0);
   }
 
+  /* Helper Methods for targetPosition(), ___toPoint(), ___toPointRepeatable()
+   * Utilizes trapezoid profiles.
+   */
   public void setSetpoint(TrapezoidProfile.State setPoint) {
     this.setPoint = setPoint;
   }
@@ -265,15 +311,6 @@ public class IndexingSubsystem extends SubsystemBase {
     return goal;
   }
 
-  private Command disablePressureSeal() {
-    pneumatics.disablePressureSeal();
-    return new WaitCommand(0.01);
-  }
-
-  private Command enablePressureSeal() {
-    pneumatics.enablePressureSeal();
-    return new WaitCommand(0.01);
-  }
   /**
    * Used only in characterizing. Don't touch this.
    *
@@ -300,7 +337,7 @@ public class IndexingSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // System.out.println("Indexing: " + hallEffectSensor.get());
     SmartDashboard.putNumber("barrel Actual", indexMotor.getPosition());
-    SmartDashboard.putNumber("barrel Goal (runEnd)", getGoal().position);
-    SmartDashboard.putNumber("next Barrel", nextBarrel);
+    SmartDashboard.putNumber("barrel Goal", getGoal().position);
+    // SmartDashboard.putNumber("next Barrel", nextBarrel);
   }
 }
