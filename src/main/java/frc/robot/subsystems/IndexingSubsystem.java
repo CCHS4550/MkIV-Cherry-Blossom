@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -47,7 +48,7 @@ public class IndexingSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController indexFeedBack = new PIDController(3, 0, 0.00);
+  PIDController indexFeedBack = new PIDController(4, 7, 0.4);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -74,18 +75,20 @@ public class IndexingSubsystem extends SubsystemBase {
           Constants.MotorConstants.BARREL_ROTATION,
           MotorType.kBrushless,
           IdleMode.kCoast,
-          false,
+          true,
           ((2 * Math.PI) * (1 / 35.166)),
           ((2 * Math.PI) * (1 / 35.166) * 0.0166));
   // 1,
   // 1);
 
+  double nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0067;
+
   SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.per(Second).of(0.5),
-              Volts.of(0.5),
-              Seconds.of(1.25),
+              Volts.per(Second).of(2),
+              Volts.of(2),
+              Seconds.of(3),
               (state) ->
                   org.littletonrobotics.junction.Logger.recordOutput(
                       "SysIdTestState", state.toString())),
@@ -101,7 +104,7 @@ public class IndexingSubsystem extends SubsystemBase {
   public IndexingSubsystem(PneumaticsSystem pneumatics) {
     this.pneumatics = pneumatics;
 
-    indexMotor.setSmartCurrentLimit(5);
+    // indexMotor.setSmartCurrentLimit(5);
 
     constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
     profile = new TrapezoidProfile(constraints);
@@ -115,15 +118,15 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command indexTshirt() {
-    return sequence(
-        disablePressureSeal(),
-        // dislodgeIndexer(),
-        indexToPoint(indexMotor.getPosition() + (Math.PI / 3)),
-        enablePressureSeal());
+    return new SequentialCommandGroup(
+        pneumatics.disablePressureSealCommand(),
+        indexBarrel(),
+        pneumatics.enablePressureSealCommand());
+    // .withTimeout(3);
   }
 
   /**
-   * Helper method called repeatedly for declinationToPoint() Method.
+   * Helper method called repeatedly for indexToPoint() Method.
    *
    * @param targetPosition the end goal position.
    */
@@ -142,19 +145,19 @@ public class IndexingSubsystem extends SubsystemBase {
     // position and
     // velocity of the next setpoint.
     // Feedforward doesn't seem necessarily necessary?
-    double feedForwardPower = 0;
-    // declinationFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    double feedForwardPower =
+        indexFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
 
     // The Pid Calculation, calculating a voltage using the current position and the
     // goal position.
     double feedBackPower = indexFeedBack.calculate(indexMotor.getPosition(), targetPosition);
 
     double totalPower = feedForwardPower + feedBackPower;
-    totalPower = OI.normalize(totalPower, -3, 3);
+    totalPower = OI.normalize(totalPower, -4, 4);
 
-    if (pneumatics.psi > 40) {
-      indexMotor.setVoltage(totalPower, 10);
-    }
+    // if (pneumatics.psi > 40) {
+    indexMotor.setVoltage(totalPower);
+    // }
     SmartDashboard.putNumber("Indexer: Total Power", (totalPower));
     // Sets the current setpoint to the point it will be in the future to prepare
     // for the next time
@@ -164,17 +167,39 @@ public class IndexingSubsystem extends SubsystemBase {
 
   // Main command called
   public Command indexToPoint(double goalPosition) {
-    return this.runEnd(() -> this.targetPosition(goalPosition), () -> setIndexSpeed(0));
-    // .until(() -> ((Math.abs(goalPosition - declination1.getPosition())) < 0.01));
+    return this.runEnd(
+            () -> {
+              this.targetPosition(goalPosition);
+              SmartDashboard.putNumber("Index: GoalPosition", goalPosition);
+            },
+            () -> {
+              setIndexSpeed(0);
+              // nextBarrel = indexMotor.getPosition() + (Math.PI / 3);
+            })
+        .until(() -> ((Math.abs(goalPosition - indexMotor.getPosition())) < 0.01));
+  }
+
+  // Main command called
+  public Command indexBarrel() {
+    return this.runEnd(
+            () -> {
+              this.targetPosition(nextBarrel);
+              // SmartDashboard.putNumber("Index: GoalPosition", goalPosition);
+            },
+            () -> {
+              setIndexSpeed(0);
+              nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0067;
+            })
+        .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.01));
   }
 
   // Repeatable version of Main Command
   public void indexToPointRepeatable(double goalPosition) {
     if (!((Math.abs(goalPosition - indexMotor.getPosition())) < 0.01)) {
       this.targetPosition(goalPosition);
-      SmartDashboard.putBoolean("Moving", true);
+      // SmartDashboard.putBoolean("Moving", true);
     } else {
-      SmartDashboard.putBoolean("Moving", false);
+      // SmartDashboard.putBoolean("Moving", false);
     }
     if (indexMotor.getSpeed() > 0) {
       setIndexSpeed(0);
@@ -242,12 +267,12 @@ public class IndexingSubsystem extends SubsystemBase {
 
   private Command disablePressureSeal() {
     pneumatics.disablePressureSeal();
-    return new WaitCommand(0.2);
+    return new WaitCommand(0.01);
   }
 
   private Command enablePressureSeal() {
     pneumatics.enablePressureSeal();
-    return new WaitCommand(0.2);
+    return new WaitCommand(0.01);
   }
   /**
    * Used only in characterizing. Don't touch this.
@@ -275,5 +300,7 @@ public class IndexingSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // System.out.println("Indexing: " + hallEffectSensor.get());
     SmartDashboard.putNumber("barrel Actual", indexMotor.getPosition());
+    SmartDashboard.putNumber("barrel Goal (runEnd)", getGoal().position);
+    SmartDashboard.putNumber("next Barrel", nextBarrel);
   }
 }

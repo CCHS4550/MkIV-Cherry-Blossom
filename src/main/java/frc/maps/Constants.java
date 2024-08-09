@@ -172,9 +172,11 @@ public class Constants {
 
     // /* TODO SysId these values */
 
-    public static final double INDEX_KS = 0.16328;
-    public static final double INDEX_KV = 0.0029191;
-    public static final double INDEX_KA = 0.0016397;
+    // KS should be >= 0, so we'll override it to 0.
+    public static final double INDEX_KS = 0;
+    //  -10.806;
+    public static final double INDEX_KV = 2.0129;
+    public static final double INDEX_KA = 4.5878;
 
     // conversion by 0.25 (Not Ideal)
     public static final double DECLINATION_KS = 0.16328;
@@ -189,10 +191,10 @@ public class Constants {
     // public static final double DECLINATION_KA = 0.015231;
     // public static final double DECLINATION_KG = 0.79476;
 
-    public static final double RIGHT_ASCENSION_KS = .5;
-    public static final double RIGHT_ASCENSION_KV = .5;
-    public static final double RIGHT_ASCENSION_KA = .5;
-    public static final double RIGHT_ASCENSION_KG = .5;
+    public static final double RIGHT_ASCENSION_KS = 0;
+    // -0.081946;
+    public static final double RIGHT_ASCENSION_KV = 1.2324;
+    public static final double RIGHT_ASCENSION_KA = 0.63117;
 
     // Free Running Motor
     public static final double RIGHT_ASCENSION_KS_TEST = 0.076895;

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAnalogSensor;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -33,8 +34,8 @@ public class PneumaticsSystem extends SubsystemBase {
       new Compressor(Constants.PneumaticsConstants.COMPRESSOR_FAN, PneumaticsModuleType.REVPH);
 
   /*
-   * pressureSeal.get().toString() Value.kReverse - The pressureSeal is enabled and ready to fire.
-   * pressureSeal.get().toString() Value.kForward - The pressureSeal is disabled and the indexer can move.
+   * pressureSeal.get().toString() Value.kReverse - The pressureSeal is disabled and the indexer can move.
+   * pressureSeal.get().toString() Value.kForward - The pressureSeal is enabled and ready to fire.
    */
   private DoubleSolenoid pressureSeal =
       new DoubleSolenoid(
@@ -55,10 +56,11 @@ public class PneumaticsSystem extends SubsystemBase {
   SparkAnalogSensor transducer = airCompressors.getAnalog();
 
   public int psi;
+  LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
-    pressureSeal.set(Value.kForward);
+    pressureSeal.set(Value.kReverse);
     solenoidValve.set(false);
     airCompressorStatus = false;
     compressorFan.disable();
@@ -93,19 +95,21 @@ public class PneumaticsSystem extends SubsystemBase {
   }
 
   public Command disablePressureSealCommand() {
-    return new InstantCommand(() -> pressureSeal.set(Value.kForward));
+    return new InstantCommand(() -> pressureSeal.set(Value.kReverse), this);
   }
 
   public Command enablePressureSealCommand() {
-    return new InstantCommand(() -> pressureSeal.set(Value.kReverse));
+    return new InstantCommand(() -> pressureSeal.set(Value.kForward), this);
   }
 
   public void disablePressureSeal() {
     pressureSeal.set(Value.kForward);
+    System.out.println("Disabled!");
   }
 
   public void enablePressureSeal() {
     pressureSeal.set(Value.kReverse);
+    System.out.println("Enabled!");
   }
 
   // public Command togglePressureSeal() {
@@ -131,6 +135,7 @@ public class PneumaticsSystem extends SubsystemBase {
 
     /* Found by graphing the transducer voltage against the read psi on the pressure gauge. Graph and find the Linear regression. Courtesy of Dr. Harrison's Physics Class */
     psi = (int) ((54 * transducer.getVoltage()) - 12.2);
+    psi = (int) filter.calculate(psi);
     return psi;
     // SmartDashboard.putNumber("Transducer Voltage", transducer.getVoltage());
 

@@ -47,11 +47,11 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
   SimpleMotorFeedforward rightAscensionFeedForward =
       new SimpleMotorFeedforward(
-          Constants.FeedForwardConstants.RIGHT_ASCENSION_KS_TEST,
-          Constants.FeedForwardConstants.RIGHT_ASCENSION_KV_TEST,
-          Constants.FeedForwardConstants.RIGHT_ASCENSION_KA_TEST);
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KS,
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KV,
+          Constants.FeedForwardConstants.RIGHT_ASCENSION_KA);
 
-  PIDController rightAscensionFeedback = new PIDController(9, 0, 0);
+  PIDController rightAscensionFeedback = new PIDController(9, 1.5, 1.25);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -85,7 +85,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
           new SysIdRoutine.Config(
               Volts.per(Second).of(1),
               Volts.of(1),
-              Seconds.of(4),
+              Seconds.of(2),
               (state) ->
                   org.littletonrobotics.junction.Logger.recordOutput(
                       "SysIdTestState", state.toString())),
@@ -143,8 +143,8 @@ public class RightAscensionSubsystem extends SubsystemBase {
 
     // The Feed Forward Calculation, calculating the voltage for the motor using the position and
     // velocity of the next setpoint.
-    double feedForwardPower = 0;
-    //     rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
+    double feedForwardPower =
+        rightAscensionFeedForward.calculate(nextSetpoint.position, nextSetpoint.velocity);
     // SmartDashboard.putNumber("feedForwardPower", feedForwardPower);
 
     // The Pid Calculation, calculating a voltage using the current position and the goal position.

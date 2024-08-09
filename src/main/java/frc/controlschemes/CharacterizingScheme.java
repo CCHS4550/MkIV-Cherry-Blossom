@@ -46,20 +46,20 @@ public class CharacterizingScheme {
       CommandXboxController controller2,
       AimSimulator aimer) {
 
-    // controller.a().onTrue(rightAscension.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // controller.b().onTrue(rightAscension.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // controller.x().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // controller.y().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    controller.a().onTrue(rightAscension.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    controller.b().onTrue(rightAscension.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    controller.x().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    controller.y().onTrue(rightAscension.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // controller.a().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // controller.b().onTrue(declination.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // controller.x().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // controller.y().onTrue(declination.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    controller.a().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    controller.b().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    controller.x().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    controller.y().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // controller.a().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // controller.b().onTrue(indexer.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // controller.x().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // controller.y().onTrue(indexer.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // controller.a().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // controller.b().onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));

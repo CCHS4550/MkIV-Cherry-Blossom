@@ -109,7 +109,6 @@ public class RobotContainer {
 
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
   }
 
   // public static Command getAutoCommand() {
