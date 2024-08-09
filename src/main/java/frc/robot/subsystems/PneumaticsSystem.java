@@ -133,7 +133,7 @@ public class PneumaticsSystem extends SubsystemBase {
 
   public Command quickShoot() {
     return this.startEnd(() -> solenoidValve.set(true), () -> solenoidValve.set(false))
-        .withTimeout(0.1)
+        .withTimeout(0.2)
         .withName("Shooting!");
   }
 

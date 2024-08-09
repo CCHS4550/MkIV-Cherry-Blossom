@@ -122,7 +122,7 @@ public class Robot extends LoggedRobot {
   public void teleopInit() {
     robotContainer
         .lights
-        .multipleLightCommands(LEDState.rainbow, LEDState.pressureRedtoGreenGradient)
+        .multipleLightCommands(LEDState.pinkWhiteGradient, LEDState.pressureRedtoGreenGradient)
         .schedule();
   }
 

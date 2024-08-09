@@ -106,18 +106,17 @@ public class Lights extends SubsystemBase {
         for (var i = 0; i < 93; i++) {
           // Calculate the hue - hue is easier for rainbows because the color
           // shape is a circle so only one value needs to precess
-          saturation1 =
-              (pinkWhiteGradientFirstPixelSaturation + (i * 255 / ledBuffer.getLength())) % 255;
+          final var saturation =
+              (pinkWhiteGradientFirstPixelSaturation + (i * 210 / ledBuffer.getLength())) % 210;
           // Set the value
-          ledBuffer.setHSV(i, outputHue, 225, saturation1);
+          ledBuffer.setHSV(i, 180, 225, saturation);
         }
         // Increase by to make the rainbow "move"
-
+        pinkWhiteGradientFirstPixelSaturation += 1;
         // System.out.println(rainbowFirstPixelHue);
         // Check bounds
-        pinkWhiteGradientFirstPixelSaturation %= 255;
+        pinkWhiteGradientFirstPixelSaturation %= 210;
 
-        leds.setData(ledBuffer);
         //             },
         //             this)
         //         .withName("Pink White Gradient Lights");

@@ -37,7 +37,6 @@ public class IndexingSubsystem extends SubsystemBase {
 
   PneumaticsSystem pneumatics;
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
-  double nextBarrel;
 
   SimpleMotorFeedforward indexFeedForward =
       new SimpleMotorFeedforward(
@@ -49,7 +48,7 @@ public class IndexingSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController indexFeedBack = new PIDController(4, 7, 0.4);
+  PIDController indexFeedBack = new PIDController(15, .25, .7);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -81,6 +80,8 @@ public class IndexingSubsystem extends SubsystemBase {
           ((2 * Math.PI) * (1 / 35.166) * 0.0166));
   // 1,
   // 1);
+
+  double nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0051;
 
   // Configure Sysid
   SysIdRoutine sysIdRoutine =
@@ -125,7 +126,7 @@ public class IndexingSubsystem extends SubsystemBase {
     return new SequentialCommandGroup(
         // Shoot current round
         pneumatics.enablePressureSealCommand(),
-        pneumatics.quickShoot(),
+        // pneumatics.quickShoot(),
         // Shoot 2nd round
         indexShoot(),
         // Shoot 3rd round
@@ -139,7 +140,8 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command indexShoot() {
-    return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
+    return new SequentialCommandGroup(indexOne());
+    //  pneumatics.quickShoot());
   }
 
   public Command indexOne() {
@@ -147,7 +149,8 @@ public class IndexingSubsystem extends SubsystemBase {
         pneumatics.disablePressureSealCommand(),
         new WaitCommand(0.01),
         indexBarrel(),
-        pneumatics.enablePressureSealCommand());
+        pneumatics.enablePressureSealCommand(),
+        new WaitCommand(0.3));
     // .withTimeout(3);
   }
 
@@ -219,7 +222,7 @@ public class IndexingSubsystem extends SubsystemBase {
    * @return A command that will index the next t-shirt.
    */
   public Command indexBarrel() {
-    nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0063;
+    // nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0063;
     return this.runEnd(
             () -> {
               this.targetPosition(nextBarrel);
@@ -227,8 +230,9 @@ public class IndexingSubsystem extends SubsystemBase {
             },
             () -> {
               setIndexSpeed(0);
+              nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0051;
             })
-        .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.01));
+        .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.003));
   }
 
   /**
