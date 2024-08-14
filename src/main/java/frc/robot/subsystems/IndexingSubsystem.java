@@ -81,7 +81,8 @@ public class IndexingSubsystem extends SubsystemBase {
   // 1,
   // 1);
 
-  double nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0051;
+  double nextBarrel = indexMotor.getPosition() + (Math.PI / 3) - 0.005;
+  // + 0.0051;
 
   // Configure Sysid
   SysIdRoutine sysIdRoutine =
@@ -126,7 +127,7 @@ public class IndexingSubsystem extends SubsystemBase {
     return new SequentialCommandGroup(
         // Shoot current round
         pneumatics.enablePressureSealCommand(),
-        // pneumatics.quickShoot(),
+        pneumatics.quickShoot(),
         // Shoot 2nd round
         indexShoot(),
         // Shoot 3rd round
@@ -140,18 +141,17 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command indexShoot() {
-    return new SequentialCommandGroup(indexOne());
-    //  pneumatics.quickShoot());
+    return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
   }
 
   public Command indexOne() {
     return new SequentialCommandGroup(
-        pneumatics.disablePressureSealCommand(),
-        new WaitCommand(0.01),
-        indexBarrel(),
-        pneumatics.enablePressureSealCommand(),
-        new WaitCommand(0.3));
-    // .withTimeout(3);
+            pneumatics.disablePressureSealCommand(),
+            new WaitCommand(0.01),
+            indexBarrel(),
+            pneumatics.enablePressureSealCommand(),
+            new WaitCommand(0.3))
+        .withTimeout(5);
   }
 
   /**
@@ -230,9 +230,10 @@ public class IndexingSubsystem extends SubsystemBase {
             },
             () -> {
               setIndexSpeed(0);
-              nextBarrel = indexMotor.getPosition() + (Math.PI / 3) + 0.0051;
+              nextBarrel += (Math.PI / 3) - 0.005;
+              //  + 0.0051;
             })
-        .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.003));
+        .until(() -> ((Math.abs(nextBarrel - indexMotor.getPosition())) < 0.01));
   }
 
   /**
