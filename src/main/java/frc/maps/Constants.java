@@ -104,7 +104,7 @@ public class Constants {
 
     // Robot Constants (change with SysId)
     // max speed in free sprint: used in getting velocities of swerve modules
-    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL = 4.72;
+    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL = 3.71;
 
     // Velocity Limits
     public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND = 5;

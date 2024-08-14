@@ -42,6 +42,7 @@ public class AutonomousScheme implements ControlScheme {
 
   static SendableChooser<Command> autoChooser;
   // static Command autoCommand;
+  private static Command chosenAuto;
 
   /**
    * Main method called in RobotContainer INSTEAD of configureChoreoBuilder() to allow the robot to
@@ -66,16 +67,16 @@ public class AutonomousScheme implements ControlScheme {
         // ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
             // your Constants class
-            // new PIDConstants(
-            //     swerveDrive.xPID.getP(),
-            //     swerveDrive.xPID.getI(),
-            //     swerveDrive.xPID.getD()), // Translation PID constants
-            // new PIDConstants(
-            //     swerveDrive.turnPID.getP(),
-            //     swerveDrive.turnPID.getI(),
-            //     swerveDrive.turnPID.getD()), // Rotation PID constants
-            new PIDConstants(1, 0, 0), // Translation PID constants
-            new PIDConstants(1, 0, 0),
+            new PIDConstants(
+                swerveDrive.xPID.getP(),
+                swerveDrive.xPID.getI(),
+                swerveDrive.xPID.getD()), // Translation PID constants
+            new PIDConstants(
+                swerveDrive.turnPID.getP(),
+                swerveDrive.turnPID.getI(),
+                swerveDrive.turnPID.getD()), // Rotation PID constants
+            // new PIDConstants(1, 0, 0), // Translation PID constants
+            // new PIDConstants(1, 0, 0),
             Constants.SwerveConstants
                 .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
             0.44, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -184,8 +185,15 @@ public class AutonomousScheme implements ControlScheme {
   }
 
   public static Command getAutoCommand() {
+
+    try {
+      chosenAuto = autoChooser.getSelected().withName(autoChooser.getSelected().getName());
+      return chosenAuto;
+    } catch (Exception exception) {
+      return chosenAuto;
+    }
     // System.out.println("Recieved Auto Command: " + autoCommand.getName());
-    return autoChooser.getSelected().withName(autoChooser.getSelected().getName());
+
   }
 
   public static void registerCommands(
