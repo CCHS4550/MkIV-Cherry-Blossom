@@ -83,7 +83,7 @@ public class MechanismScheme {
      * Continuously rotates the barrels. (FUNCTIONAL)
      */
     // controller.rightTrigger().whileTrue(aimer.continuousBarrelChange(Math.toRadians(1)));
-    controller.rightTrigger().onTrue(indexer.shootAll());
+    controller.rightTrigger().onTrue(indexer.indexAllDemo());
 
     /*
      * TODO make this work

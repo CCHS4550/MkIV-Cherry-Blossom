@@ -140,6 +140,11 @@ public class IndexingSubsystem extends SubsystemBase {
         indexShoot());
   }
 
+  public Command indexAllDemo() {
+    return new SequentialCommandGroup(
+        indexOne(), indexOne(), indexOne(), indexOne(), indexOne(), indexOne());
+  }
+
   public Command indexShoot() {
     return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
   }

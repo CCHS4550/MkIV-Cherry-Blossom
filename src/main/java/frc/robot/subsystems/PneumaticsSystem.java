@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 // import frc.robot.subsystems.swervedrive.SwerveDrive;
+import org.littletonrobotics.junction.Logger;
 
 public class PneumaticsSystem extends SubsystemBase {
 
@@ -47,11 +48,11 @@ public class PneumaticsSystem extends SubsystemBase {
    * solenoidValve.get() = false - The shooting valve is closed.
    * solenoidValve.get() = true - The shooting valve is open.
    */
-  private Solenoid solenoidValve =
+  private Solenoid shootingValve =
       new Solenoid(
           Constants.PneumaticsConstants.COMPRESSOR_FAN,
           PneumaticsModuleType.REVPH,
-          Constants.PneumaticsConstants.SOLENOID_VALVE);
+          Constants.PneumaticsConstants.SHOOTING_VALVE);
 
   SparkAnalogSensor transducer = airCompressors.getAnalog();
 
@@ -61,7 +62,7 @@ public class PneumaticsSystem extends SubsystemBase {
   /** Creates a new Pneumatics. */
   public PneumaticsSystem() {
     pressureSeal.set(Value.kReverse);
-    solenoidValve.set(false);
+    shootingValve.set(false);
     airCompressorStatus = false;
     compressorFan.disable();
     pressureSealStatus = false;
@@ -127,12 +128,14 @@ public class PneumaticsSystem extends SubsystemBase {
     pressureSeal.toggle();
   }
 
+  // Don't Use
   public Command toggleShoot() {
-    return new InstantCommand(() -> solenoidValve.toggle());
+    return new InstantCommand(() -> shootingValve.toggle());
   }
 
+  /* Works Well  */
   public Command quickShoot() {
-    return this.startEnd(() -> solenoidValve.set(true), () -> solenoidValve.set(false))
+    return this.startEnd(() -> shootingValve.set(true), () -> shootingValve.set(false))
         .withTimeout(0.2)
         .withName("Shooting!");
   }
@@ -141,7 +144,10 @@ public class PneumaticsSystem extends SubsystemBase {
 
     /* Found by graphing the transducer voltage against the read psi on the pressure gauge. Graph and find the Linear regression. Courtesy of Dr. Harrison's Physics Class */
     psi = (int) ((54 * transducer.getVoltage()) - 12.2);
+    Logger.recordOutput("Transducer Voltage", transducer.getVoltage());
+    Logger.recordOutput("Unfiltered PSI", psi);
     psi = (int) filter.calculate(psi);
+    Logger.recordOutput("Filtered PSI", psi);
     return psi;
     // SmartDashboard.putNumber("Transducer Voltage", transducer.getVoltage());
 

@@ -147,7 +147,7 @@ public class Constants {
   public static class PneumaticsConstants {
     public static final int COMPRESSOR_FAN = 14;
     public static final int[] PRESSURE_SEAL = {9, 10};
-    public static final int SOLENOID_VALVE = 8;
+    public static final int SHOOTING_VALVE = 8;
   }
   /* To Do */
   public static final int LED_PORT = 0;
