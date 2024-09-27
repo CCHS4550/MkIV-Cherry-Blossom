@@ -198,10 +198,10 @@ public class SwerveDriveScheme implements ControlScheme {
     // 0.3)));
     // controller.leftBumper().onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getAmpPose()));
 
-    // controller
-    //     .leftTrigger()
-    //     .onTrue(runOnce(() -> setFastMode()))
-    //     .onFalse(runOnce(() -> setNormalMode()));
+    controller
+        .rightTrigger()
+        .onTrue(runOnce(() -> setFastMode()))
+        .onFalse(runOnce(() -> setSlowMode()));
     // controller
     //     .rightTrigger()
     //     .onTrue(runOnce(() -> setSlowMode()))
