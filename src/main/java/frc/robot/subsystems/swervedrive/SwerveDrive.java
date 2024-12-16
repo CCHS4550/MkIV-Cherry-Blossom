@@ -4,8 +4,11 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,10 +29,18 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.robot.RobotState;
-import org.littletonrobotics.junction.Logger;
 
 /** Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and a gyro. */
 public class SwerveDrive extends SubsystemBase {
+
+  public static SwerveDrive mInstance;
+
+	public static SwerveDrive getInstance() {
+		if (mInstance == null) {
+			mInstance = new SwerveDrive();
+		} 
+		return mInstance;
+	}
 
   private boolean test = false;
 
@@ -137,7 +148,7 @@ public class SwerveDrive extends SubsystemBase {
       new SwerveModule[] {frontRight, frontLeft, backRight, backLeft};
 
   /** Module positions used for odometry */
-  public static SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
+  public SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
 
   /* PID Controllers */
   public PIDController xPID, yPID;
@@ -216,9 +227,9 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
-    RobotState.getInstance().updateModuleEncoders(this);
+    RobotState.getInstance().updateModuleEncoders();
 
-    updateModulePositions();
+    RobotState.getInstance().updateModulePositions();
   }
 
   /** Sets all 4 modules' drive and turn speeds to 0. */
@@ -249,6 +260,7 @@ public class SwerveDrive extends SubsystemBase {
     frontLeft.setDesiredState(desiredStates[1], openLoop);
     backRight.setDesiredState(desiredStates[2], openLoop);
     backLeft.setDesiredState(desiredStates[3], openLoop);
+    Logger.recordOutput("Desired States", desiredStates);
   }
 
   /* Returns the actual moduleStates */
@@ -260,20 +272,6 @@ public class SwerveDrive extends SubsystemBase {
     return states;
   }
 
-  public void updateModulePositions() {
-    swerveModulePositions[0] =
-        new SwerveModulePosition(
-            frontRight.getDrivePosition(), new Rotation2d(frontRight.getTurnPosition()));
-    swerveModulePositions[1] =
-        new SwerveModulePosition(
-            frontLeft.getDrivePosition(), new Rotation2d(frontLeft.getTurnPosition()));
-    swerveModulePositions[2] =
-        new SwerveModulePosition(
-            backRight.getDrivePosition(), new Rotation2d(backRight.getTurnPosition()));
-    swerveModulePositions[3] =
-        new SwerveModulePosition(
-            backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurnPosition()));
-  }
 
   /*
    * Used for Autobuilder in AutonomousScheme.java

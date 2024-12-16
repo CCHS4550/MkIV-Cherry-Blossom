@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -50,19 +51,13 @@ public class RobotState {
     return instance;
   }
 
-  public void poseInit(
-      SwerveDrive swerveDrive,
-      IndexingSubsystem indexer,
-      DeclinationSubsystem declination,
-      PneumaticsSystem pneumatics,
-      RightAscensionSubsystem rightAscension,
-      AimSimulator aimer) {
+  public void poseInit() {
 
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.SwerveConstants.DRIVE_KINEMATICS,
             Rotation2d.fromDegrees(gyro.getAngle() + 180).unaryMinus(),
-            swerveDrive.swerveModulePositions,
+            SwerveDrive.getInstance().swerveModulePositions,
             new Pose2d(0, 0, new Rotation2d(0)));
   }
 
@@ -71,30 +66,23 @@ public class RobotState {
     m_field_poseestimator.setRobotPose(poseEstimator.getEstimatedPosition());
     m_field_getPose.setRobotPose(getPose());
 
-    poseEstimator.update(getRotation2d(), SwerveDrive.swerveModulePositions);
+    poseEstimator.update(getRotation2d(), SwerveDrive.getInstance().swerveModulePositions);
   }
 
-  public void dashboardInit(
-      SwerveDrive swerveDrive,
-      IndexingSubsystem indexer,
-      DeclinationSubsystem declination,
-      PneumaticsSystem pneumatics,
-      RightAscensionSubsystem rightAscension,
-      AimSimulator aimer,
-      Lights lights) {
+  public void dashboardInit() {
 
     /* Put the Command Scheduler on SmartDashboard */
     SmartDashboard.putData(CommandScheduler.getInstance());
 
     /* Put all the subsystems on ShuffleBoard in their own "Subsystems" tab. */
-    Shuffleboard.getTab("Subsystems").add("Swerve Drive", swerveDrive);
-    Shuffleboard.getTab("Subsystems").add("Indexing Subsystem", indexer);
-    Shuffleboard.getTab("Subsystems").add("Declination Subsystem", declination);
-    Shuffleboard.getTab("Subsystems").add("Pneumatics System", pneumatics);
-    Shuffleboard.getTab("Subsystems").add("Right Ascension Subsystem", rightAscension);
-    Shuffleboard.getTab("Subsystems").add("Aim Simulator", aimer);
+    Shuffleboard.getTab("Subsystems").add("Swerve Drive", SwerveDrive.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Indexing Subsystem", IndexingSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Declination Subsystem", DeclinationSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Pneumatics System", PneumaticsSystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Right Ascension Subsystem", RightAscensionSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Aim Simulator", AimSimulator.getInstance());
 
-    Shuffleboard.getTab("Subsystems").add("Lights", lights);
+    Shuffleboard.getTab("Subsystems").add("Lights", Lights.getInstance());
 
     /* Put the Pose Estimators on Dashboards */
     SmartDashboard.putData("Field", m_field_poseestimator);
@@ -257,21 +245,38 @@ public class RobotState {
         Shuffleboard.getTab("Aimer").add("Goal Barrel Angle", aimer.barrelAngle).getEntry();
   }
 
-  public void updateModuleEncoders(SwerveDrive swerveDrive) {
-    abs_Enc_FR_Offset_Entry.setDouble(swerveDrive.frontRight.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_FL_Offset_Entry.setDouble(swerveDrive.frontLeft.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_BR_Offset_Entry.setDouble(swerveDrive.backRight.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_BL_Offset_Entry.setDouble(swerveDrive.backLeft.getAbsoluteEncoderRadiansOffset());
+  public void updateModuleEncoders() {
+    abs_Enc_FR_Offset_Entry.setDouble(SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_FL_Offset_Entry.setDouble(SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_BR_Offset_Entry.setDouble(SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_BL_Offset_Entry.setDouble(SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansOffset());
 
-    abs_Enc_FR_Raw_Entry.setDouble(swerveDrive.frontRight.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_FL_Raw_Entry.setDouble(swerveDrive.frontLeft.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_BR_Raw_Entry.setDouble(swerveDrive.backRight.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_BL_Raw_Entry.setDouble(swerveDrive.backLeft.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_FR_Raw_Entry.setDouble(SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_FL_Raw_Entry.setDouble(SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_BR_Raw_Entry.setDouble(SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_BL_Raw_Entry.setDouble(SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansNoOffset());
 
-    enc_FR_pos_Entry.setDouble(swerveDrive.frontRight.getTurnPosition());
-    enc_FL_pos_Entry.setDouble(swerveDrive.frontLeft.getTurnPosition());
-    enc_BR_pos_Entry.setDouble(swerveDrive.backRight.getTurnPosition());
-    enc_BL_pos_Entry.setDouble(swerveDrive.backLeft.getTurnPosition());
+    enc_FR_pos_Entry.setDouble(SwerveDrive.getInstance().frontRight.getTurnPosition());
+    enc_FL_pos_Entry.setDouble(SwerveDrive.getInstance().frontLeft.getTurnPosition());
+    enc_BR_pos_Entry.setDouble(SwerveDrive.getInstance().backRight.getTurnPosition());
+    enc_BL_pos_Entry.setDouble(SwerveDrive.getInstance().backLeft.getTurnPosition());
+  }
+
+
+  
+  public void updateModulePositions() {
+    SwerveDrive.getInstance().swerveModulePositions[0] =
+        new SwerveModulePosition(
+            SwerveDrive.getInstance().frontRight.getDrivePosition(), new Rotation2d(SwerveDrive.getInstance().frontRight.getTurnPosition()));
+    SwerveDrive.getInstance().swerveModulePositions[1] =
+        new SwerveModulePosition(
+            SwerveDrive.getInstance().frontLeft.getDrivePosition(), new Rotation2d(SwerveDrive.getInstance().frontLeft.getTurnPosition()));
+    SwerveDrive.getInstance().swerveModulePositions[2] =
+        new SwerveModulePosition(
+            SwerveDrive.getInstance().backRight.getDrivePosition(), new Rotation2d(SwerveDrive.getInstance().backRight.getTurnPosition()));
+    SwerveDrive.getInstance().swerveModulePositions[3] =
+        new SwerveModulePosition(
+            SwerveDrive.getInstance().backLeft.getDrivePosition(), new Rotation2d(SwerveDrive.getInstance().backLeft.getTurnPosition()));
   }
 
   /** Pose Helper Methods */
@@ -286,6 +291,7 @@ public class RobotState {
     return poseEstimator.getEstimatedPosition();
   }
 
+  /** If Using REFERENCE POSE STRAT */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
     photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
     return photonPoseEstimator.update();
@@ -295,6 +301,8 @@ public class RobotState {
     System.out.println(poseEstimator.getEstimatedPosition());
   }
 
+
+  /** Can use this for turret. */
   public Rotation2d getAngleBetweenCurrentAndTargetPose(Pose2d targetPose) {
     Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose(), targetPose);
     return targetYaw;
@@ -307,7 +315,7 @@ public class RobotState {
    * and Pose2d. Also used in AutonomousScheme.java
    */
   public void setOdometry() {
-    poseEstimator.resetPosition(getRotation2d(), SwerveDrive.swerveModulePositions, getPose());
+    poseEstimator.resetPosition(getRotation2d(), SwerveDrive.getInstance().swerveModulePositions, getPose());
   }
 
   /**
@@ -317,7 +325,7 @@ public class RobotState {
    * @param pos the Pose2d to set the odometry
    */
   public void setOdometry(Pose2d pos) {
-    poseEstimator.resetPosition(getRotation2d(), SwerveDrive.swerveModulePositions, pos);
+    poseEstimator.resetPosition(getRotation2d(), SwerveDrive.getInstance().swerveModulePositions, pos);
   }
   /** Gyroscope Methods (NavX) */
   public void zeroHeading() {

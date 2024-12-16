@@ -49,26 +49,26 @@ public class RobotContainer {
 
     switch (Constants.currentMode) {
       case REAL:
-        aimer = new AimSimulator();
-        swerveDrive = new SwerveDrive();
-        rightAscension = new RightAscensionSubsystem(aimer);
-        declination = new DeclinationSubsystem(aimer);
-        pneumatics = new PneumaticsSystem();
-        indexer = new IndexingSubsystem(pneumatics);
+        aimer = AimSimulator.getInstance();
+        swerveDrive = SwerveDrive.getInstance();
+        rightAscension = RightAscensionSubsystem.getInstance();
+        declination = DeclinationSubsystem.getInstance();
+        pneumatics = PneumaticsSystem.getInstance();
+        indexer = IndexingSubsystem.getInstance();
 
-        lights = new Lights(pneumatics);
+        lights = Lights.getInstance();
 
         break;
 
       case SIM:
-        aimer = new AimSimulator();
-        swerveDrive = new SwerveDrive();
-        rightAscension = new RightAscensionSubsystem(aimer);
-        declination = new DeclinationSubsystem(aimer);
-        pneumatics = new PneumaticsSystem();
-        indexer = new IndexingSubsystem(pneumatics);
+        aimer = AimSimulator.getInstance();
+        swerveDrive = SwerveDrive.getInstance();
+        rightAscension = RightAscensionSubsystem.getInstance();
+        declination = DeclinationSubsystem.getInstance();
+        pneumatics = PneumaticsSystem.getInstance();
+        indexer = IndexingSubsystem.getInstance();
 
-        lights = new Lights(pneumatics);
+        lights = Lights.getInstance();
 
         break;
 
@@ -78,10 +78,9 @@ public class RobotContainer {
 
     RobotState.getInstance();
     RobotState.getInstance()
-        .dashboardInit(
-            swerveDrive, indexer, declination, pneumatics, rightAscension, aimer, lights);
+        .dashboardInit();
     RobotState.getInstance()
-        .poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+        .poseInit();
 
     // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
