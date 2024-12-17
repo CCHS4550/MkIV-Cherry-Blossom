@@ -59,7 +59,7 @@ public class RobotState {
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.SwerveConstants.DRIVE_KINEMATICS,
-            Rotation2d.fromDegrees(gyro.getAngle() + 180).unaryMinus(),
+            Rotation2d.fromDegrees(gyro.getAngle()).unaryMinus(),
             SwerveDrive.getInstance().swerveModulePositions,
             new Pose2d(0, 0, new Rotation2d(0)));
   }
@@ -69,13 +69,14 @@ public class RobotState {
     m_field_poseestimator.setRobotPose(poseEstimator.getEstimatedPosition());
     m_field_getPose.setRobotPose(getPose());
 
+    PhotonVision.getInstance().updateInputs(visionData, getPose());
+
     for (int i = 0; i < visionData.poseEstimates.size(); i++) {
       poseEstimator.addVisionMeasurement(visionData.poseEstimates.get(i), Timer.getFPGATimestamp());
     }
+
     poseEstimator.updateWithTime(
         Timer.getFPGATimestamp(), getRotation2d(), SwerveDrive.getInstance().swerveModulePositions);
-
-    PhotonVision.getInstance().updateInputs(visionData, getPose());
   }
 
   public void dashboardInit() {
@@ -352,6 +353,7 @@ public class RobotState {
   /** Gyroscope Methods (NavX) */
   public void zeroHeading() {
     gyro.reset();
+    setOdometry(new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(0)));
   }
 
   public double getPitch() {

@@ -56,7 +56,7 @@ public interface Vision {
 
       /** Check if single result has a target */
       if (result.hasTargets()) {
-        /** Update Pose Estimator for this single camera. */
+        /** Update Pose Estimator for this camera. */
         var est = photonEstimator[i].update();
         /** If the value exists and double checking if it has a target. */
         if (est.isPresent() && goodResult(result)) {

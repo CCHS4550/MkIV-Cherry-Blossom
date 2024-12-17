@@ -11,8 +11,10 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.Vision;
 import frc.maps.Constants;
+import frc.robot.RobotState;
 import java.util.ArrayList;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -42,13 +44,14 @@ public class PhotonVision extends SubsystemBase implements Vision {
   /** Creates a new Vision. */
   private PhotonVision() {
 
-    PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "limelight2.local", 5800);
 
     camera1 = new PhotonCamera(Constants.cameraOne.CAMERA_ONE_NAME);
     camera1_photonPoseEstimator =
         new PhotonPoseEstimator(
             aprilTagFieldLayout,
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            camera1,
             Constants.cameraOne.ROBOT_TO_CAM);
     camera1_photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
@@ -79,13 +82,14 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
     // Resetting the poseEstimates every period?
     visionData.poseEstimates = new ArrayList<Pose2d>();
-    visionData.poseEstimates.add(new Pose2d());
+    // visionData.poseEstimates.add(new Pose2d());
 
     visionData.timestamp = estimateLatestTimestamp(results);
 
     /** If you have a target, then update the poseEstimate ArrayList to equal that. */
     if (hasPoseEstimation(results)) {
       // inputs.results = results;
+
       visionData.poseEstimates = getPoseEstimatesArrayCondensed(results, photonEstimators);
       visionData.hasEstimate = true;
 
@@ -119,6 +123,8 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
   @Override
   public void periodic() {
+
+    Logger.recordOutput("VisionData/HasTarget?", RobotState.getInstance().visionData.hasEstimate);
 
     // This method will be called once per scheduler run
   }
