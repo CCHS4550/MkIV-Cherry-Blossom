@@ -115,7 +115,7 @@ public class IndexingSubsystem extends SubsystemBase {
    *
    * @param pneumatics - Needs information about the pneumatics system to work well.
    */
-  public IndexingSubsystem() {
+  private IndexingSubsystem() {
 
     // indexMotor.setSmartCurrentLimit(5);
 

@@ -40,7 +40,7 @@ public class PhotonVision extends SubsystemBase implements Vision {
   private Pose2d lastEstimate = new Pose2d();
 
   /** Creates a new Vision. */
-  public PhotonVision() {
+  private PhotonVision() {
 
     PortForwarder.add(5800, "photonvision.local", 5800);
 

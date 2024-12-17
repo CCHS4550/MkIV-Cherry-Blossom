@@ -115,7 +115,7 @@ public class DeclinationSubsystem extends SubsystemBase {
               this));
 
   /** Creates a new Declination. */
-  public DeclinationSubsystem() {
+  private DeclinationSubsystem() {
 
     declination1.setPosition(0);
     declination2.setPosition(0);

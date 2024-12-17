@@ -51,7 +51,7 @@ public class Lights extends SubsystemBase {
   int pressureRedtoGreenGradientFirstPixelSaturation = 1;
 
   /** Creates a new Lights. */
-  public Lights() {
+  private Lights() {
 
     leds.setLength(ledBuffer.getLength());
     leds.start();
@@ -190,11 +190,6 @@ public class Lights extends SubsystemBase {
     int g = 220;
     int b = 255;
     while (g > 0) {}
-  }
-
-  private void spread(int mainPoint) {
-
-    for (int i = 0; i < 5; i++) {}
   }
 
   public Command multipleLightCommands(LEDState one, LEDState two) {

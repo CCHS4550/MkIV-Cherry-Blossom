@@ -99,7 +99,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
               this));
 
   /** Creates a new RightAscension Subsystem. */
-  public RightAscensionSubsystem() {
+  private RightAscensionSubsystem() {
 
     turretLocation = 0.0;
     turretOffset = 0.0;

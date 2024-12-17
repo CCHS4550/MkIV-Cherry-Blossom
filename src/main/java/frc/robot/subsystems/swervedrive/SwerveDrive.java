@@ -186,7 +186,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   /** Constructor for the Swerve Drive Subsystem. */
-  public SwerveDrive() {
+  private SwerveDrive() {
     swerveModulePositions[0] =
         new SwerveModulePosition(0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset()));
     swerveModulePositions[1] =

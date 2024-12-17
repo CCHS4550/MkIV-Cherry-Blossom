@@ -8,15 +8,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 /** Add your docs here. */
+
+/** Helper Class! Well actually, helper interface. */
 public interface Vision {
 
-  @AutoLog
+  //   @AutoLog - for some reason autolog not working!
+
+  /** This is a container class to contain all the vision data. */
   public static class VisionData {
     public List<Pose2d> poseEstimates = new ArrayList<>();
     public double timestamp = 0;

@@ -381,7 +381,7 @@ public class RobotState {
     // .plus(Rotation2d.fromRadians(Math.PI));
   }
 
-  public RobotState() {
+  private RobotState() {
 
     new Thread(
             () -> {

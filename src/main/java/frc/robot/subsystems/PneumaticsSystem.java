@@ -69,7 +69,7 @@ public class PneumaticsSystem extends SubsystemBase {
   LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
   /** Creates a new Pneumatics. */
-  public PneumaticsSystem() {
+  private PneumaticsSystem() {
     pressureSeal.set(Value.kReverse);
     shootingValve.set(false);
     airCompressorStatus = false;

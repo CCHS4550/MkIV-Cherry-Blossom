@@ -23,7 +23,7 @@ public class AimSimulator extends SubsystemBase {
 
   public double barrelAngle;
 
-  public AimSimulator() {
+  private AimSimulator() {
     xPos = 0;
     yPos = 0;
     xAngle = 0;
