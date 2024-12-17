@@ -32,6 +32,15 @@ import frc.maps.Constants;
 
 public class RightAscensionSubsystem extends SubsystemBase {
 
+  public static RightAscensionSubsystem mInstance;
+
+  public static RightAscensionSubsystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new RightAscensionSubsystem();
+    }
+    return mInstance;
+  }
+
   private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   AimSimulator aimer;
@@ -90,9 +99,7 @@ public class RightAscensionSubsystem extends SubsystemBase {
               this));
 
   /** Creates a new RightAscension Subsystem. */
-  public RightAscensionSubsystem(AimSimulator aimer) {
-
-    this.aimer = aimer;
+  public RightAscensionSubsystem() {
 
     turretLocation = 0.0;
     turretOffset = 0.0;
@@ -113,8 +120,6 @@ public class RightAscensionSubsystem extends SubsystemBase {
     // Shuffleboard.getTab("Aimer").add("X Goal", getGoal().position);
     // Shuffleboard.getTab("Aimer").add("X Actual", rightAscensionMotor.getPosition());
   }
-
-  public void rightAscensionDefaultMethod(AimSimulator aimer) {}
 
   private boolean atZero() {
 

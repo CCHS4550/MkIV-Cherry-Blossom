@@ -4,11 +4,8 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,18 +26,19 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.robot.RobotState;
+import org.littletonrobotics.junction.Logger;
 
 /** Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and a gyro. */
 public class SwerveDrive extends SubsystemBase {
 
   public static SwerveDrive mInstance;
 
-	public static SwerveDrive getInstance() {
-		if (mInstance == null) {
-			mInstance = new SwerveDrive();
-		} 
-		return mInstance;
-	}
+  public static SwerveDrive getInstance() {
+    if (mInstance == null) {
+      mInstance = new SwerveDrive();
+    }
+    return mInstance;
+  }
 
   private boolean test = false;
 
@@ -228,7 +226,6 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
     RobotState.getInstance().updateModuleEncoders();
-
     RobotState.getInstance().updateModulePositions();
   }
 
@@ -271,7 +268,6 @@ public class SwerveDrive extends SubsystemBase {
         };
     return states;
   }
-
 
   /*
    * Used for Autobuilder in AutonomousScheme.java

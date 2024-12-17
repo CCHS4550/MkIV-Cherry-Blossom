@@ -34,17 +34,16 @@ import frc.maps.Constants;
 import java.util.function.DoubleSupplier;
 
 public class IndexingSubsystem extends SubsystemBase {
-  
+
   public static IndexingSubsystem mInstance;
 
-	public static IndexingSubsystem getInstance() {
-		if (mInstance == null) {
-			mInstance = new IndexingSubsystem();
-		} 
-		return mInstance;
-	}
+  public static IndexingSubsystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new IndexingSubsystem();
+    }
+    return mInstance;
+  }
 
-  
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
 
   SimpleMotorFeedforward indexFeedForward =
@@ -154,15 +153,15 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command indexShoot() {
-    return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
+    return new SequentialCommandGroup(indexOne(), PneumaticsSystem.getInstance().quickShoot());
   }
 
   public Command indexOne() {
     return new SequentialCommandGroup(
-            pneumatics.disablePressureSealCommand(),
+            PneumaticsSystem.getInstance().disablePressureSealCommand(),
             new WaitCommand(0.01),
             indexBarrel(),
-            pneumatics.enablePressureSealCommand(),
+            PneumaticsSystem.getInstance().enablePressureSealCommand(),
             new WaitCommand(0.3))
         .withTimeout(5);
   }

@@ -7,15 +7,15 @@ import java.text.DecimalFormat;
 
 public class AimSimulator extends SubsystemBase {
 
-  
   public static AimSimulator mInstance;
 
-	public static AimSimulator getInstance() {
-		if (mInstance == null) {
-			mInstance = new AimSimulator();
-		} 
-		return mInstance;
-	}
+  public static AimSimulator getInstance() {
+    if (mInstance == null) {
+      mInstance = new AimSimulator();
+    }
+    return mInstance;
+  }
+
   public double xPos;
   public double yPos;
   public double xAngle;

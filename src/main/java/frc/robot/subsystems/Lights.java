@@ -14,15 +14,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
 
-  
   public static Lights mInstance;
 
-	public static Lights getInstance() {
-		if (mInstance == null) {
-			mInstance = new Lights();
-		} 
-		return mInstance;
-	}
+  public static Lights getInstance() {
+    if (mInstance == null) {
+      mInstance = new Lights();
+    }
+    return mInstance;
+  }
 
   PneumaticsSystem pneumatics;
 
@@ -53,8 +52,6 @@ public class Lights extends SubsystemBase {
 
   /** Creates a new Lights. */
   public Lights() {
-
-    
 
     leds.setLength(ledBuffer.getLength());
     leds.start();

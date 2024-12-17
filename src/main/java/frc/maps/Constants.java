@@ -3,7 +3,6 @@ package frc.maps;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -289,11 +288,11 @@ public class Constants {
   // }
 
   public static class cameraOne {
-      public static final String CAMERA_ONE_NAME = "FrontCamera";
-      public static final Transform3d ROBOT_TO_CAM = new Transform3d(new
-        Translation3d(Inches.of(9.3418), Inches.of(0), Inches.of(14.157)),
-              new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)));
-
+    public static final String CAMERA_ONE_NAME = "FrontCamera";
+    public static final Transform3d ROBOT_TO_CAM =
+        new Transform3d(
+            new Translation3d(Inches.of(9.3418), Inches.of(0), Inches.of(14.157)),
+            new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)));
   }
 
   /**

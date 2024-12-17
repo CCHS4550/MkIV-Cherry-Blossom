@@ -27,22 +27,18 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.helpers.OI;
 import frc.maps.Constants;
-import frc.robot.subsystems.swervedrive.SwerveDrive;
-import frc.robot.subsystems.AimSimulator;
 
 public class DeclinationSubsystem extends SubsystemBase {
 
-  
   public static DeclinationSubsystem mInstance;
 
-	public static DeclinationSubsystem getInstance() {
-		if (mInstance == null) {
-			mInstance = new DeclinationSubsystem();
-		} 
-		return mInstance;
-	}
+  public static DeclinationSubsystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new DeclinationSubsystem();
+    }
+    return mInstance;
+  }
 
-  AimSimulator aimer;
   double declinationSpeedModifier = 0.1;
 
   ArmFeedforward declinationFeedForward =
@@ -120,8 +116,6 @@ public class DeclinationSubsystem extends SubsystemBase {
 
   /** Creates a new Declination. */
   public DeclinationSubsystem() {
-
-    AimSimulator.getInstance() = aimer;
 
     declination1.setPosition(0);
     declination2.setPosition(0);

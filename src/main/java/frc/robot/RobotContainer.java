@@ -11,6 +11,7 @@ import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.Superstructure;
@@ -33,6 +34,7 @@ public class RobotContainer {
   CommandXboxController controller2 = new CommandXboxController(1);
 
   AimSimulator aimer;
+  PhotonVision vision;
 
   SwerveDrive swerveDrive;
   RightAscensionSubsystem rightAscension;
@@ -55,6 +57,7 @@ public class RobotContainer {
         declination = DeclinationSubsystem.getInstance();
         pneumatics = PneumaticsSystem.getInstance();
         indexer = IndexingSubsystem.getInstance();
+        vision = PhotonVision.getInstance();
 
         lights = Lights.getInstance();
 
@@ -77,10 +80,8 @@ public class RobotContainer {
     }
 
     RobotState.getInstance();
-    RobotState.getInstance()
-        .dashboardInit();
-    RobotState.getInstance()
-        .poseInit();
+    RobotState.getInstance().dashboardInit();
+    RobotState.getInstance().poseInit();
 
     // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 

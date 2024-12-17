@@ -24,6 +24,15 @@ import org.littletonrobotics.junction.Logger;
 
 public class PneumaticsSystem extends SubsystemBase {
 
+  public static PneumaticsSystem mInstance;
+
+  public static PneumaticsSystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new PneumaticsSystem();
+    }
+    return mInstance;
+  }
+
   // SparkAnalogSensor transducer = getDriveAnalog();
 
   private boolean airCompressorStatus;

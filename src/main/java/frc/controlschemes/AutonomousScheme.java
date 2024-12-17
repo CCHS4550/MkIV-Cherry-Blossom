@@ -122,7 +122,8 @@ public class AutonomousScheme implements ControlScheme {
   /**
    * Main method called in RobotContainer INSTEAD of configurePathPlannerBuilder() to allow the
    * robot to follow .chor files in src\main\deploy. We do not use this method because Choreo
-   * currently does not support adding commands to an autonomous routine.
+   * currently does not support adding commands to an autonomous routine, which is why we don't use
+   * it.
    */
   public static void configureChoreoBuilder(
       SwerveDrive swerveDrive,
