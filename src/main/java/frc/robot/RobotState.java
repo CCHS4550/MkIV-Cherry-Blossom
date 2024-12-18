@@ -96,13 +96,10 @@ public class RobotState {
     /* Put all the subsystems on ShuffleBoard in their own "Subsystems" tab. */
     Shuffleboard.getTab("Subsystems").add("Swerve Drive", SwerveDrive.getInstance());
     Shuffleboard.getTab("Subsystems").add("Indexing Subsystem", IndexingSubsystem.getInstance());
-    Shuffleboard.getTab("Subsystems")
-        .add("Declination Subsystem", DeclinationSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Declination Subsystem", DeclinationSubsystem.getInstance());
     Shuffleboard.getTab("Subsystems").add("Pneumatics System", PneumaticsSystem.getInstance());
-    Shuffleboard.getTab("Subsystems")
-        .add("Right Ascension Subsystem", RightAscensionSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems").add("Right Ascension Subsystem", RightAscensionSubsystem.getInstance());
     Shuffleboard.getTab("Subsystems").add("Aim Simulator", AimSimulator.getInstance());
-
     Shuffleboard.getTab("Subsystems").add("Lights", Lights.getInstance());
 
     /* Put the Pose Estimators on Dashboards */
