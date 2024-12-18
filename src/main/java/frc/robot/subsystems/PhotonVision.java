@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -40,7 +41,7 @@ public class PhotonVision extends SubsystemBase implements Vision {
   /* Camera 1 PhotonPoseEstimator. */
   public PhotonPoseEstimator frontCamera_photonEstimator;
 
-  private Pose2d lastEstimate = new Pose2d();
+  
 
   /** Creates a new Photonvision. */
   private PhotonVision() {
@@ -68,7 +69,7 @@ public class PhotonVision extends SubsystemBase implements Vision {
    */
   @Override
   public void updateData(VisionData visionData, Pose2d currentEstimate) {
-    lastEstimate = currentEstimate;
+    
 
     /* Only an array in case we use multiple cameras. */
     PhotonPipelineResult[] results = new PhotonPipelineResult[] {frontCamera.getLatestResult()};

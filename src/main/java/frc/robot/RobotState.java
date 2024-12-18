@@ -111,9 +111,7 @@ public class RobotState {
 
     SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
-    SmartDashboard.putNumber(
-        "Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
-
+    SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
     SmartDashboard.putNumber("Angle", getRotation2d().getDegrees());
   }
 

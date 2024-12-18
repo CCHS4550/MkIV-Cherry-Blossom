@@ -227,7 +227,7 @@ public class SwerveDrive extends SubsystemBase {
                 Constants.SwerveConstants.TURN_RATE_LIMIT));
     turnPID.enableContinuousInput(-Math.PI, Math.PI);
 
-    RobotState.getInstance().moduleEncodersInit(this);
+    RobotState.getInstance().ShuffleboardEncodersInit();
   }
 
   /** Returns the nearest speaker pose for for alliance color */
@@ -239,7 +239,7 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
-    RobotState.getInstance().updateShuffleboardEncoders();();
+    RobotState.getInstance().updateShuffleboardEncoders();
     RobotState.getInstance().updateModulePositions();
   }
 
