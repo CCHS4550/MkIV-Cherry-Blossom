@@ -5,6 +5,8 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,6 +33,8 @@ public class FollowPathCommand extends Command {
   @Override
   public void initialize() {
 
+    RobotState.getInstance().setOdometry(new Pose2d(trajectory.getInitialState().positionMeters, trajectory.getInitialState().heading));
+
     timer.reset();
     timer.start();
 
@@ -48,6 +52,8 @@ public class FollowPathCommand extends Command {
     wantedState = trajectory.sample(currentTime);
 
     /** Add alliance transform! */
+
+    /** Create a ChassisSpeeds object to represent how the robot should be moving at this time. */
     ChassisSpeeds chassisSpeeds =
         SwerveDrive.getInstance()
             .swerveFollower

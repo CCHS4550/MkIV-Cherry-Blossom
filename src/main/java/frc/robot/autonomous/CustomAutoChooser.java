@@ -25,6 +25,7 @@ public class CustomAutoChooser {
     return mInstance;
   }
 
+  /** All the Auto Names. */
   private enum Autos {
     AUTO1,
     FOLLOW_ONE_METER,
@@ -33,6 +34,7 @@ public class CustomAutoChooser {
 
   // private final PathTrajectories trajectories;
 
+  /** This is what puts the options on Smart Dashboard, but instead of doing it by itself, we have to populate it manually. */
   private static final SendableChooser<Autos> autoChooser = new SendableChooser<>();
 
   private CustomAutoChooser() {

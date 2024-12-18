@@ -7,10 +7,12 @@ package frc.robot.autonomous;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +24,8 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
 public class TurnAlignCommand extends Command {
 
   PhotonTrackedTarget target;
+  Pose2d currentPose;
+  PathPlannerTrajectory.State targetState;
   
   /** Creates a new TurnAlign. */
   public TurnAlignCommand() {
@@ -35,17 +39,25 @@ public class TurnAlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    currentPose = new Pose2d(0, 0, RobotState.getInstance().getRotation2d());
+    targetState = new State();
+    targetState.positionMeters = new Translation2d();
+    targetState.heading = Rotation2d.fromDegrees(target.getYaw());
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    currentPose = new Pose2d(0, 0, RobotState.getInstance().getRotation2d());
+    
     
     ChassisSpeeds chassisSpeeds =
         SwerveDrive.getInstance()
             .swerveFollower
-            .calculateRobotRelativeSpeeds(new Pose2d(0, 0, RobotState.getInstance().getAngleBetweenCurrentAndTargetPose(new Pose2d(0, 0,Rotation2d.fromDegrees(target.getYaw())))), new State());
+            // .calculateRobotRelativeSpeeds(new Pose2d(0, 0, RobotState.getInstance().getAngleBetweenCurrentAndTargetPose(new Pose2d(0, 0,Rotation2d.fromDegrees(target.getYaw())))), new State());
+            .calculateRobotRelativeSpeeds(currentPose, targetState);
                 // Convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
