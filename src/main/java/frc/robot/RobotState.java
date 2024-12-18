@@ -49,8 +49,10 @@ public class RobotState {
 
   public final Field2d gameField = new Field2d();
 
-  public Pose2d lastEstimate = new Pose2d();
-  public Pose2d currentEstimate = new Pose2d();
+  /** Technically pose ESTIMATES */
+  public Pose2d lastPose = new Pose2d();
+
+  public Pose2d currentPose = new Pose2d();
 
   // SwerveDriveOdometry odometer;
   public SwerveDrivePoseEstimator poseEstimator;
@@ -72,7 +74,7 @@ public class RobotState {
 
     gameField.setRobotPose(getPose());
 
-    lastEstimate = currentEstimate;
+    lastPose = currentPose;
 
     /** Update the visionData to what the camera sees. */
     PhotonVision.getInstance().updateData(visionData, getPose());
@@ -83,9 +85,10 @@ public class RobotState {
     }
 
     /** Update the SwerveDrivePoseEstimator with the Drivetrain encoders and such */
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), getRotation2d(), SwerveDrive.getInstance().swerveModulePositions);
+    poseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(), getRotation2d(), SwerveDrive.getInstance().swerveModulePositions);
 
-    currentEstimate = getPose();
+    currentPose = getPose();
   }
 
   public void dashboardInit() {
@@ -96,9 +99,11 @@ public class RobotState {
     /* Put all the subsystems on ShuffleBoard in their own "Subsystems" tab. */
     Shuffleboard.getTab("Subsystems").add("Swerve Drive", SwerveDrive.getInstance());
     Shuffleboard.getTab("Subsystems").add("Indexing Subsystem", IndexingSubsystem.getInstance());
-    Shuffleboard.getTab("Subsystems").add("Declination Subsystem", DeclinationSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems")
+        .add("Declination Subsystem", DeclinationSubsystem.getInstance());
     Shuffleboard.getTab("Subsystems").add("Pneumatics System", PneumaticsSystem.getInstance());
-    Shuffleboard.getTab("Subsystems").add("Right Ascension Subsystem", RightAscensionSubsystem.getInstance());
+    Shuffleboard.getTab("Subsystems")
+        .add("Right Ascension Subsystem", RightAscensionSubsystem.getInstance());
     Shuffleboard.getTab("Subsystems").add("Aim Simulator", AimSimulator.getInstance());
     Shuffleboard.getTab("Subsystems").add("Lights", Lights.getInstance());
 
@@ -111,7 +116,8 @@ public class RobotState {
 
     SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
-    SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
+    SmartDashboard.putNumber(
+        "Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
     SmartDashboard.putNumber("Angle", getRotation2d().getDegrees());
   }
 
@@ -145,7 +151,7 @@ public class RobotState {
           .withSize(2, 2);
 
   public void ShuffleboardEncodersInit(
-    // SwerveDrive swerveDrive
+      // SwerveDrive swerveDrive
       // IndexingSubsystem indexer,
       // DeclinationSubsystem declination,
       // PneumaticsSystem pneumatics,
@@ -184,22 +190,30 @@ public class RobotState {
     enc_FR_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(SwerveDrive.getInstance().frontRight.getName(), SwerveDrive.getInstance().frontRight.getTurnPosition())
+            .add(
+                SwerveDrive.getInstance().frontRight.getName(),
+                SwerveDrive.getInstance().frontRight.getTurnPosition())
             .getEntry();
     enc_FL_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(SwerveDrive.getInstance().frontLeft.getName(), SwerveDrive.getInstance().frontLeft.getTurnPosition())
+            .add(
+                SwerveDrive.getInstance().frontLeft.getName(),
+                SwerveDrive.getInstance().frontLeft.getTurnPosition())
             .getEntry();
     enc_BR_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(SwerveDrive.getInstance().backRight.getName(), SwerveDrive.getInstance().backRight.getTurnPosition())
+            .add(
+                SwerveDrive.getInstance().backRight.getName(),
+                SwerveDrive.getInstance().backRight.getTurnPosition())
             .getEntry();
     enc_BL_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(SwerveDrive.getInstance().backLeft.getName(), SwerveDrive.getInstance().backLeft.getTurnPosition())
+            .add(
+                SwerveDrive.getInstance().backLeft.getName(),
+                SwerveDrive.getInstance().backLeft.getTurnPosition())
             .getEntry();
 
     abs_Enc_FR_Raw_Entry =
@@ -238,15 +252,21 @@ public class RobotState {
             .add("Y Actual", DeclinationSubsystem.getInstance().declination1.getPosition())
             .getEntry();
 
-    yGoal = Shuffleboard.getTab("Aimer").add("Y Goal", DeclinationSubsystem.getInstance().getGoal().position).getEntry();
+    yGoal =
+        Shuffleboard.getTab("Aimer")
+            .add("Y Goal", DeclinationSubsystem.getInstance().getGoal().position)
+            .getEntry();
 
     xActual =
         Shuffleboard.getTab("Aimer")
-            .add("X Actual", RightAscensionSubsystem.getInstance().rightAscensionMotor.getPosition())
+            .add(
+                "X Actual", RightAscensionSubsystem.getInstance().rightAscensionMotor.getPosition())
             .getEntry();
 
     xGoal =
-        Shuffleboard.getTab("Aimer").add("X Goal", RightAscensionSubsystem.getInstance().getGoal().position).getEntry();
+        Shuffleboard.getTab("Aimer")
+            .add("X Goal", RightAscensionSubsystem.getInstance().getGoal().position)
+            .getEntry();
 
     barrelActual =
         Shuffleboard.getTab("Aimer")
@@ -254,7 +274,9 @@ public class RobotState {
             .getEntry();
 
     barrelGoal =
-        Shuffleboard.getTab("Aimer").add("Goal Barrel Angle", AimSimulator.getInstance().barrelAngle).getEntry();
+        Shuffleboard.getTab("Aimer")
+            .add("Goal Barrel Angle", AimSimulator.getInstance().barrelAngle)
+            .getEntry();
   }
 
   public void updateShuffleboardEncoders() {
@@ -385,7 +407,7 @@ public class RobotState {
    * @return The facing direction of the gyro, between -360 and 360 degrees.
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getYaw() + 180, 360);
+    return Math.IEEEremainder(gyro.getYaw(), 360);
   }
 
   /**

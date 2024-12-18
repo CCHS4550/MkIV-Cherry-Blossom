@@ -16,7 +16,7 @@ package frc.robot;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.controlschemes.AutonomousScheme;
+import frc.controlschemes.AutoBuilderScheme;
 import frc.maps.Constants;
 import frc.robot.subsystems.Lights.LEDState;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -110,7 +110,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    AutonomousScheme.getAutoCommand().schedule();
+    AutoBuilderScheme.getPathPlannerAutoCommand().schedule();
+    // AutoBuilderScheme.configureCustomAuto();
     // m_robotContainer.getAutoCommand().schedule();
     System.out.println("Autonomous Routine Scheduled!");
   }

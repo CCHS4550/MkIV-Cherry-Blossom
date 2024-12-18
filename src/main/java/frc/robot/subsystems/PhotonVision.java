@@ -14,9 +14,7 @@ import frc.maps.Constants;
 import frc.robot.RobotState;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -40,8 +38,6 @@ public class PhotonVision extends SubsystemBase implements Vision {
   public PhotonCamera frontCamera;
   /* Camera 1 PhotonPoseEstimator. */
   public PhotonPoseEstimator frontCamera_photonEstimator;
-
-  
 
   /** Creates a new Photonvision. */
   private PhotonVision() {
@@ -69,7 +65,6 @@ public class PhotonVision extends SubsystemBase implements Vision {
    */
   @Override
   public void updateData(VisionData visionData, Pose2d currentEstimate) {
-    
 
     /* Only an array in case we use multiple cameras. */
     PhotonPipelineResult[] results = new PhotonPipelineResult[] {frontCamera.getLatestResult()};
@@ -101,8 +96,8 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
   /**
    * Only needed if there are multiple cameras, but used in this situation nonetheless.
-   * 
-   * Takes PhotonPipelineResults and a PhotonPoseEstimator object and pumps out an ArrayList with
+   *
+   * <p>Takes PhotonPipelineResults and a PhotonPoseEstimator object and pumps out an ArrayList with
    * the estimated Poses it can find with any targets it might have.
    *
    * @param results - Raw results gotten from the camera, through the getLatestResult() method.
@@ -118,18 +113,16 @@ public class PhotonVision extends SubsystemBase implements Vision {
     for (int i = 0; i < results.length; i++) {
 
       estimates.add(photonEstimator[i].update().get().estimatedPose.toPose2d());
-      
+
       estimates.removeIf(pose -> pose == null);
     }
 
     return estimates;
   }
 
-
-  public List<PhotonTrackedTarget> getTargetsList(PhotonPoseEstimator photonEstimator) { 
+  public List<PhotonTrackedTarget> getTargetsList(PhotonPoseEstimator photonEstimator) {
     return photonEstimator.update().get().targetsUsed;
   }
-
 
   public double estimateAverageTimestamp(PhotonPipelineResult[] results) {
     double latestTimestamp = 0;

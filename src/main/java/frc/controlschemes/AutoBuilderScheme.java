@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
 import frc.robot.RobotState;
+import frc.robot.autonomous.CustomAutoChooser;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -38,7 +39,7 @@ import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /** Add your docs here. */
-public class AutonomousScheme implements ControlScheme {
+public class AutoBuilderScheme implements ControlScheme {
 
   static SendableChooser<Command> autoChooser;
   // static Command autoCommand;
@@ -185,7 +186,7 @@ public class AutonomousScheme implements ControlScheme {
         aimer);
   }
 
-  public static Command getAutoCommand() {
+  public static Command getPathPlannerAutoCommand() {
 
     try {
       chosenAuto = autoChooser.getSelected().withName(autoChooser.getSelected().getName());
@@ -194,7 +195,10 @@ public class AutonomousScheme implements ControlScheme {
       return chosenAuto;
     }
     // System.out.println("Recieved Auto Command: " + autoCommand.getName());
+  }
 
+  public static Command configureCustomAuto() {
+    return CustomAutoChooser.getInstance().getSelectedCustomCommand();
   }
 
   public static void registerCommands(

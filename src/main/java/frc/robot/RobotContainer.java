@@ -101,23 +101,10 @@ public class RobotContainer {
         controller2,
         aimer);
 
-    AutonomousScheme.configurePathPlannerBuilder(
+    AutoBuilderScheme.configurePathPlannerBuilder(
         swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
 
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
   }
-
-  // public static Command getAutoCommand() {
-  //   // System.out.println("Recieved Auto Command: " + autoCommand.getName());
-  //   return autoChooser.getSelected();
-  // }
-
-  // public static Command getAutoCommand() {
-  //   System.out.println("Recieved Auto Command: " + autoCommand.getName());
-  //   return autoCommand;
-  // }
 }
