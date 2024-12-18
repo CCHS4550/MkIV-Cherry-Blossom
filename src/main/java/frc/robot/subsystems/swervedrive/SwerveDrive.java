@@ -153,7 +153,7 @@ public class SwerveDrive extends SubsystemBase {
   /* PID Controllers */
   public PIDController xPID, yPID;
   public PIDController turnPID;
-  ProfiledPIDController turnPIDProfiled;
+  public ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
 
   public final PPHolonomicDriveController swerveFollower =
