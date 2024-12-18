@@ -143,7 +143,9 @@ public class SwerveModule extends SubsystemBase {
    * @return The value of the absolute encoder in radians with the offset applied.
    */
   public double getAbsoluteEncoderRadiansOffset() {
-    return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffset;
+    return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition())
+        - absoluteEncoderOffset
+        + Math.PI;
   }
 
   /**

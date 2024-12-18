@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PIDConstants;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
@@ -154,6 +156,16 @@ public class SwerveDrive extends SubsystemBase {
   ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
 
+  public final PPHolonomicDriveController swerveFollower =
+      new PPHolonomicDriveController(
+          new PIDConstants(xPID.getP(), xPID.getI(), xPID.getD()),
+          new PIDConstants(turnPID.getP(), turnPID.getI(), turnPID.getD()),
+          Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND,
+          Constants.SwerveConstants.WHEEL_BASE);
+
+  // public final PPHolonomicDriveController swerveFollower1 = new PPHolonomicDriveController(xPID,
+  // yPID, turnPID);
+
   private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
 
   SysIdRoutine sysIdRoutine =
@@ -222,10 +234,12 @@ public class SwerveDrive extends SubsystemBase {
   @Override
   public void periodic() {
 
+    // getAbsoluteEncoderoffsets();
+
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
-    RobotState.getInstance().updateModuleEncoders();
+    RobotState.getInstance().updateShuffleboardEncoders();();
     RobotState.getInstance().updateModulePositions();
   }
 
@@ -275,6 +289,16 @@ public class SwerveDrive extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
 
     return ChassisSpeeds.fromRobotRelativeSpeeds(
+        Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
+        RobotState.getInstance().getRotation2d());
+  }
+
+  public ChassisSpeeds getFieldVelocity() {
+    // ChassisSpeeds has a method to convert from field-relative to robot-relative speeds,
+    // but not the reverse.  However, because this transform is a simple rotation, negating the
+    // angle
+    // given as the robot angle reverses the direction of rotation, and the conversion is reversed.
+    return ChassisSpeeds.fromFieldRelativeSpeeds(
         Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
         RobotState.getInstance().getRotation2d());
   }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.97533655166626,
-      "y": 5.352688312530518
+      "x": 1.5,
+      "y": 5.5
     },
-    "rotation": 9.710976662774509e-26
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "testPath.1"
+            "pathName": "TYLERPATHPATHPLANNER"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": true
+  "choreoAuto": false
 }
