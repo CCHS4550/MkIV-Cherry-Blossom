@@ -101,8 +101,8 @@ public class RobotContainer {
         controller2,
         aimer);
 
-    AutoBuilderScheme.configurePathPlannerBuilder(
-        swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
+    // AutoBuilderScheme.configurePathPlannerBuilder(
+    //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);

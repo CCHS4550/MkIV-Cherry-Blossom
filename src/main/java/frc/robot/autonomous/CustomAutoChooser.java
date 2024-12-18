@@ -5,8 +5,8 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerPath;
-// import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import frc.robot.RobotContainer;
@@ -16,33 +16,36 @@ import frc.robot.subsystems.swervedrive.SwerveDrive;
 /** Add your docs here. */
 public class CustomAutoChooser {
 
-  public static CustomAutoChooser mInstance;
+  //   public static CustomAutoChooser mInstance;
 
-  public static CustomAutoChooser getInstance() {
-    if (mInstance == null) {
-      mInstance = new CustomAutoChooser();
-    }
-    return mInstance;
-  }
+  //   public static CustomAutoChooser getInstance() {
+  //     if (mInstance == null) {
+  //       mInstance = new CustomAutoChooser();
+  //     }
+  //     return mInstance;
+  //   }
 
   /** All the Auto Names. */
   private enum Autos {
-    AUTO1,
     FOLLOW_ONE_METER,
-    AUTO3
+    EMPTY
   }
 
   // private final PathTrajectories trajectories;
 
-  /** This is what puts the options on Smart Dashboard, but instead of doing it by itself, we have to populate it manually. */
-  private static final SendableChooser<Autos> autoChooser = new SendableChooser<>();
+  /**
+   * This is what puts the options on Smart Dashboard, but instead of doing it by itself, we have to
+   * populate it manually.
+   */
+  private final SendableChooser<Autos> autoChooser = new SendableChooser<>();
 
-  private CustomAutoChooser() {
+  public CustomAutoChooser() {
     // this.trajectories = trajectories;
 
-    autoChooser.setDefaultOption("Auto 1 Name", Autos.AUTO1);
+    autoChooser.setDefaultOption("Auto 1 Name", Autos.EMPTY);
     autoChooser.addOption("Auto 2 Name", Autos.FOLLOW_ONE_METER);
-    autoChooser.addOption("Auto 3 Name", Autos.AUTO3);
+    SmartDashboard.putData("Custom AutoChooser", autoChooser);
+    // autoChooser.addOption("Auto 3 Name", Autos.AUTO3);
   }
 
   /**
@@ -64,9 +67,9 @@ public class CustomAutoChooser {
   //     return chargingStationCommand.alongWith(homeArmCommand);
   // }
 
-  public Command auto1Command() {
-    return follow("test1").andThen(new InstantCommand());
-  }
+  //   public Command auto1Command() {
+  //     return follow("test1").andThen(new InstantCommand());
+  //   }
 
   public Command followOneMeter() {
     return follow("TYLERPATH");
@@ -75,10 +78,12 @@ public class CustomAutoChooser {
   public Command getSelectedCustomCommand() {
 
     switch (autoChooser.getSelected()) {
-      case AUTO1:
-        return auto1Command();
+        //   case AUTO1:
+        //     return auto1Command();
       case FOLLOW_ONE_METER:
         return followOneMeter();
+      case EMPTY:
+        return new InstantCommand();
       default:
         return new InstantCommand();
     }

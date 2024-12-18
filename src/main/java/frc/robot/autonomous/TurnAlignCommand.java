@@ -4,12 +4,8 @@
 
 package frc.robot.autonomous;
 
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,13 +16,14 @@ import frc.maps.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class TurnAlignCommand extends Command {
 
   PhotonTrackedTarget target;
   Pose2d currentPose;
   PathPlannerTrajectory.State targetState;
-  
+
   /** Creates a new TurnAlign. */
   public TurnAlignCommand() {
 
@@ -43,7 +40,6 @@ public class TurnAlignCommand extends Command {
     targetState = new State();
     targetState.positionMeters = new Translation2d();
     targetState.heading = Rotation2d.fromDegrees(target.getYaw());
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,14 +47,15 @@ public class TurnAlignCommand extends Command {
   public void execute() {
 
     currentPose = new Pose2d(0, 0, RobotState.getInstance().getRotation2d());
-    
-    
+
     ChassisSpeeds chassisSpeeds =
         SwerveDrive.getInstance()
             .swerveFollower
-            // .calculateRobotRelativeSpeeds(new Pose2d(0, 0, RobotState.getInstance().getAngleBetweenCurrentAndTargetPose(new Pose2d(0, 0,Rotation2d.fromDegrees(target.getYaw())))), new State());
+            // .calculateRobotRelativeSpeeds(new Pose2d(0, 0,
+            // RobotState.getInstance().getAngleBetweenCurrentAndTargetPose(new Pose2d(0,
+            // 0,Rotation2d.fromDegrees(target.getYaw())))), new State());
             .calculateRobotRelativeSpeeds(currentPose, targetState);
-                // Convert chassis speeds to individual module states
+    // Convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
@@ -67,14 +64,16 @@ public class TurnAlignCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(RobotState.getInstance().getAngleBetweenCurrentAndTargetPose(new Pose2d()).getDegrees()) < 2) || target == null;
+    return (Math.abs(
+                RobotState.getInstance()
+                    .getAngleBetweenCurrentAndTargetPose(new Pose2d())
+                    .getDegrees())
+            < 2)
+        || target == null;
   }
 }

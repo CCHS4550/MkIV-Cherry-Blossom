@@ -5,7 +5,6 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -33,7 +32,10 @@ public class FollowPathCommand extends Command {
   @Override
   public void initialize() {
 
-    RobotState.getInstance().setOdometry(new Pose2d(trajectory.getInitialState().positionMeters, trajectory.getInitialState().heading));
+    RobotState.getInstance()
+        .setOdometry(
+            new Pose2d(
+                trajectory.getInitialState().positionMeters, trajectory.getInitialState().heading));
 
     timer.reset();
     timer.start();
@@ -97,6 +99,7 @@ public class FollowPathCommand extends Command {
     // && yError < 0.10
     // && rotationError < 0.10)
     // ||
-    return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    return false;
+    // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
   }
 }

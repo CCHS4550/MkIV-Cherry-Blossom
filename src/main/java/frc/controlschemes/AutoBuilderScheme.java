@@ -78,8 +78,7 @@ public class AutoBuilderScheme implements ControlScheme {
                 swerveDrive.turnPID.getD()), // Rotation PID constants
             // new PIDConstants(1, 0, 0), // Translation PID constants
             // new PIDConstants(1, 0, 0),
-            Constants.SwerveConstants
-                .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+            Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
             0.44, // Drive base radius in meters. Distance from robot center to furthest module.
             // (0.444522677)
             new ReplanningConfig() // Default path replanning config. See the API for the options
@@ -197,8 +196,8 @@ public class AutoBuilderScheme implements ControlScheme {
     // System.out.println("Recieved Auto Command: " + autoCommand.getName());
   }
 
-  public static Command configureCustomAuto() {
-    return CustomAutoChooser.getInstance().getSelectedCustomCommand();
+  public static Command getCustomAuto(CustomAutoChooser autoChooser) {
+    return autoChooser.getSelectedCustomCommand();
   }
 
   public static void registerCommands(

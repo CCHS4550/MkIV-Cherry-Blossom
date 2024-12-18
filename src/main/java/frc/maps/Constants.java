@@ -136,6 +136,7 @@ public class Constants {
     // Right to Left                                                            // 27
     public static final double TRACK_WITDTH = Units.inchesToMeters(24.750000);
 
+    public static final double RADIUS = Math.sqrt(2) * (WHEEL_BASE / 2);
     /** FR FL BR BL. Same as order of swerve module states */
     public static final SwerveDriveKinematics DRIVE_KINEMATICS =
         new SwerveDriveKinematics(

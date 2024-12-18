@@ -52,7 +52,7 @@ public class DeclinationSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController declinationFeedBack = new PIDController(12, 0, 0.00);
+  PIDController declinationFeedBack = new PIDController(10, 0, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 

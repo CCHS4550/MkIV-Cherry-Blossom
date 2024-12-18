@@ -156,12 +156,7 @@ public class SwerveDrive extends SubsystemBase {
   public ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
 
-  public final PPHolonomicDriveController swerveFollower =
-      new PPHolonomicDriveController(
-          new PIDConstants(xPID.getP(), xPID.getI(), xPID.getD()),
-          new PIDConstants(turnPID.getP(), turnPID.getI(), turnPID.getD()),
-          Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND,
-          Constants.SwerveConstants.WHEEL_BASE);
+  public final PPHolonomicDriveController swerveFollower;
 
   // public final PPHolonomicDriveController swerveFollower1 = new PPHolonomicDriveController(xPID,
   // yPID, turnPID);
@@ -208,15 +203,24 @@ public class SwerveDrive extends SubsystemBase {
     swerveModulePositions[3] =
         new SwerveModulePosition(0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
-    xPID = new PIDController(1, .1, 0);
-    yPID = new PIDController(1, .1, 0);
+    xPID = new PIDController(0, 0, 0);
+    yPID = new PIDController(0, 0, 0);
+
+    turnPID = new PIDController(0.3, 0, 0);
+
+    swerveFollower =
+        new PPHolonomicDriveController(
+            new PIDConstants(xPID.getP(), xPID.getI(), xPID.getD()),
+            new PIDConstants(turnPID.getP(), turnPID.getI(), turnPID.getD()),
+            Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL,
+            Constants.SwerveConstants.RADIUS);
     // xPID = new PIDController(1, 0, 0);
     // yPID = new PIDController(1, 0, 0);
 
     // *TODO: Possibly research profiled PID
     // turnPID = new ProfiledPIDController(0.5, 0, 0,
     // RobotMap.thetaControllConstraints);
-    turnPID = new PIDController(0.3, 0, 0);
+
     turnPIDProfiled =
         new ProfiledPIDController(
             .7,
@@ -227,7 +231,7 @@ public class SwerveDrive extends SubsystemBase {
                 Constants.SwerveConstants.TURN_RATE_LIMIT));
     turnPID.enableContinuousInput(-Math.PI, Math.PI);
 
-    RobotState.getInstance().ShuffleboardEncodersInit();
+    RobotState.getInstance().moduleEncodersInit(this);
   }
 
   /** Returns the nearest speaker pose for for alliance color */
@@ -239,8 +243,8 @@ public class SwerveDrive extends SubsystemBase {
     Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
     Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
 
-    RobotState.getInstance().updateShuffleboardEncoders();
     RobotState.getInstance().updateModulePositions();
+    RobotState.getInstance().updateModuleEncoders(this);
   }
 
   /** Sets all 4 modules' drive and turn speeds to 0. */

@@ -16,8 +16,8 @@ package frc.robot;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.controlschemes.AutoBuilderScheme;
 import frc.maps.Constants;
+import frc.robot.autonomous.CustomAutoChooser;
 import frc.robot.subsystems.Lights.LEDState;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -36,6 +36,7 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
 
   private RobotContainer robotContainer;
+  CustomAutoChooser autoChooser;
 
   public Robot() {}
 
@@ -45,6 +46,8 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+
+    autoChooser = new CustomAutoChooser();
 
     // // Set up data receivers & replay source
 
@@ -110,8 +113,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    AutoBuilderScheme.getPathPlannerAutoCommand().schedule();
-    // AutoBuilderScheme.configureCustomAuto();
+    // AutoBuilderScheme.getPathPlannerAutoCommand().schedule();
+    // AutoBuilderScheme.getCustomAuto().schedule();
+    autoChooser.getSelectedCustomCommand().schedule();
     // m_robotContainer.getAutoCommand().schedule();
     System.out.println("Autonomous Routine Scheduled!");
   }

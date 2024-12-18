@@ -150,153 +150,132 @@ public class RobotState {
           .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
           .withSize(2, 2);
 
-  public void ShuffleboardEncodersInit(
-      // SwerveDrive swerveDrive
-      // IndexingSubsystem indexer,
-      // DeclinationSubsystem declination,
-      // PneumaticsSystem pneumatics,
-      // RightAscensionSubsystem rightAscension,
-      // AimSimulator aimer
-      ) {
+  public void moduleEncodersInit(SwerveDrive swerveDrive) {
+
+    // IndexingSubsystem indexer,
+    // DeclinationSubsystem declination,
+    // PneumaticsSystem pneumatics,
+
     abs_Enc_FR_Offset_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().frontRight.getName(),
-                SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansOffset())
+                swerveDrive.frontRight.getName(),
+                swerveDrive.frontRight.getAbsoluteEncoderRadiansOffset())
             .getEntry();
     abs_Enc_FL_Offset_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().frontLeft.getName(),
-                SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansOffset())
+                swerveDrive.frontLeft.getName(),
+                swerveDrive.frontLeft.getAbsoluteEncoderRadiansOffset())
             .getEntry();
     abs_Enc_BR_Offset_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().backRight.getName(),
-                SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansOffset())
+                swerveDrive.backRight.getName(),
+                swerveDrive.backRight.getAbsoluteEncoderRadiansOffset())
             .getEntry();
     abs_Enc_BL_Offset_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().backLeft.getName(),
-                SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansOffset())
+                swerveDrive.backLeft.getName(),
+                swerveDrive.backLeft.getAbsoluteEncoderRadiansOffset())
             .getEntry();
 
     enc_FR_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(
-                SwerveDrive.getInstance().frontRight.getName(),
-                SwerveDrive.getInstance().frontRight.getTurnPosition())
+            .add(swerveDrive.frontRight.getName(), swerveDrive.frontRight.getTurnPosition())
             .getEntry();
     enc_FL_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(
-                SwerveDrive.getInstance().frontLeft.getName(),
-                SwerveDrive.getInstance().frontLeft.getTurnPosition())
+            .add(swerveDrive.frontLeft.getName(), swerveDrive.frontLeft.getTurnPosition())
             .getEntry();
     enc_BR_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(
-                SwerveDrive.getInstance().backRight.getName(),
-                SwerveDrive.getInstance().backRight.getTurnPosition())
+            .add(swerveDrive.backRight.getName(), swerveDrive.backRight.getTurnPosition())
             .getEntry();
     enc_BL_pos_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(turn_encoders_positions.getTitle())
-            .add(
-                SwerveDrive.getInstance().backLeft.getName(),
-                SwerveDrive.getInstance().backLeft.getTurnPosition())
+            .add(swerveDrive.backLeft.getName(), swerveDrive.backLeft.getTurnPosition())
             .getEntry();
 
     abs_Enc_FR_Raw_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_no_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().frontRight.getName(),
-                SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansNoOffset())
+                swerveDrive.frontRight.getName(),
+                swerveDrive.frontRight.getAbsoluteEncoderRadiansNoOffset())
             .getEntry();
     abs_Enc_FL_Raw_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_no_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().frontLeft.getName(),
-                SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansNoOffset())
+                swerveDrive.frontLeft.getName(),
+                swerveDrive.frontLeft.getAbsoluteEncoderRadiansNoOffset())
             .getEntry();
     abs_Enc_BR_Raw_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_no_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().backRight.getName(),
-                SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansNoOffset())
+                swerveDrive.backRight.getName(),
+                swerveDrive.backRight.getAbsoluteEncoderRadiansNoOffset())
             .getEntry();
     abs_Enc_BL_Raw_Entry =
         Shuffleboard.getTab("Encoders")
             .getLayout(absolute_encoders_no_offset_list.getTitle())
             .add(
-                SwerveDrive.getInstance().backLeft.getName(),
-                SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansNoOffset())
+                swerveDrive.backLeft.getName(),
+                swerveDrive.backLeft.getAbsoluteEncoderRadiansNoOffset())
             .getEntry();
   }
 
-  public void aimerShuffleBoardInit() {
+  public void aimerShuffleBoardInit(
+      IndexingSubsystem indexer,
+      DeclinationSubsystem declination,
+      PneumaticsSystem pneumatics,
+      RightAscensionSubsystem rightAscension,
+      AimSimulator aimer) {
     yActual =
         Shuffleboard.getTab("Aimer")
-            .add("Y Actual", DeclinationSubsystem.getInstance().declination1.getPosition())
+            .add("Y Actual", declination.declination1.getPosition())
             .getEntry();
 
-    yGoal =
-        Shuffleboard.getTab("Aimer")
-            .add("Y Goal", DeclinationSubsystem.getInstance().getGoal().position)
-            .getEntry();
+    yGoal = Shuffleboard.getTab("Aimer").add("Y Goal", declination.getGoal().position).getEntry();
 
     xActual =
         Shuffleboard.getTab("Aimer")
-            .add(
-                "X Actual", RightAscensionSubsystem.getInstance().rightAscensionMotor.getPosition())
+            .add("X Actual", rightAscension.rightAscensionMotor.getPosition())
             .getEntry();
 
     xGoal =
-        Shuffleboard.getTab("Aimer")
-            .add("X Goal", RightAscensionSubsystem.getInstance().getGoal().position)
-            .getEntry();
+        Shuffleboard.getTab("Aimer").add("X Goal", rightAscension.getGoal().position).getEntry();
 
     barrelActual =
         Shuffleboard.getTab("Aimer")
-            .add("Actual Barrel Angle", IndexingSubsystem.getInstance().indexMotor.getPosition())
+            .add("Actual Barrel Angle", indexer.indexMotor.getPosition())
             .getEntry();
 
     barrelGoal =
-        Shuffleboard.getTab("Aimer")
-            .add("Goal Barrel Angle", AimSimulator.getInstance().barrelAngle)
-            .getEntry();
+        Shuffleboard.getTab("Aimer").add("Goal Barrel Angle", aimer.barrelAngle).getEntry();
   }
 
-  public void updateShuffleboardEncoders() {
-    abs_Enc_FR_Offset_Entry.setDouble(
-        SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_FL_Offset_Entry.setDouble(
-        SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_BR_Offset_Entry.setDouble(
-        SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansOffset());
-    abs_Enc_BL_Offset_Entry.setDouble(
-        SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansOffset());
+  public void updateModuleEncoders(SwerveDrive swerveDrive) {
+    abs_Enc_FR_Offset_Entry.setDouble(swerveDrive.frontRight.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_FL_Offset_Entry.setDouble(swerveDrive.frontLeft.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_BR_Offset_Entry.setDouble(swerveDrive.backRight.getAbsoluteEncoderRadiansOffset());
+    abs_Enc_BL_Offset_Entry.setDouble(swerveDrive.backLeft.getAbsoluteEncoderRadiansOffset());
 
-    abs_Enc_FR_Raw_Entry.setDouble(
-        SwerveDrive.getInstance().frontRight.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_FL_Raw_Entry.setDouble(
-        SwerveDrive.getInstance().frontLeft.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_BR_Raw_Entry.setDouble(
-        SwerveDrive.getInstance().backRight.getAbsoluteEncoderRadiansNoOffset());
-    abs_Enc_BL_Raw_Entry.setDouble(
-        SwerveDrive.getInstance().backLeft.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_FR_Raw_Entry.setDouble(swerveDrive.frontRight.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_FL_Raw_Entry.setDouble(swerveDrive.frontLeft.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_BR_Raw_Entry.setDouble(swerveDrive.backRight.getAbsoluteEncoderRadiansNoOffset());
+    abs_Enc_BL_Raw_Entry.setDouble(swerveDrive.backLeft.getAbsoluteEncoderRadiansNoOffset());
 
     enc_FR_pos_Entry.setDouble(SwerveDrive.getInstance().frontRight.getTurnPosition());
     enc_FL_pos_Entry.setDouble(SwerveDrive.getInstance().frontLeft.getTurnPosition());
@@ -355,7 +334,7 @@ public class RobotState {
         new Rotation2d(0.0));
   }
 
-  // Returns the estimated robot position
+  // Returns the estimated robot position a tick from the current time (Theoretically?)
   private Pose2d getFutureTickPose() {
     return getPose().plus(getTickFutureTransform().inverse());
   }
