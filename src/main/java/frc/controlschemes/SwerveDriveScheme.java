@@ -5,6 +5,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -178,7 +179,18 @@ public class SwerveDriveScheme implements ControlScheme {
       //    int port
       CommandXboxController controller) {
 
-    controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
+    // controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
+    controller
+        .b()
+        .onTrue(
+            runOnce(
+                () ->
+                    RobotState.getInstance()
+                        .poseEstimator
+                        .resetPosition(
+                            RobotState.getInstance().getRotation2d(),
+                            SwerveDrive.getInstance().swerveModulePositions,
+                            new Pose2d())));
     controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
     // controller.a().onTrue(runOnce(() -> swerveDrive.);
     // controller.y().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),

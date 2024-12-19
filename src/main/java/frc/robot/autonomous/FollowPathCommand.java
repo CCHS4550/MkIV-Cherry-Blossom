@@ -5,6 +5,7 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -13,10 +14,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.maps.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
+import org.littletonrobotics.junction.Logger;
 
 public class FollowPathCommand extends Command {
   Timer timer = new Timer();
   PathPlannerTrajectory trajectory;
+
+  SwerveDrivePoseEstimator estimatedPose;
 
   PathPlannerTrajectory.State lastState, currentState, wantedState;
 
@@ -26,16 +30,16 @@ public class FollowPathCommand extends Command {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(SwerveDrive.getInstance());
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
 
     RobotState.getInstance()
         .setOdometry(
             new Pose2d(
                 trajectory.getInitialState().positionMeters, trajectory.getInitialState().heading));
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
 
     timer.reset();
     timer.start();
@@ -65,7 +69,9 @@ public class FollowPathCommand extends Command {
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-    SwerveDrive.getInstance().setModuleStates(moduleStates);
+    SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
+    // SwerveDrive.getInstance().setModuleStates(moduleStates);
+    Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
   }
 
   // Called once the command ends or is interrupted.
@@ -99,7 +105,7 @@ public class FollowPathCommand extends Command {
     // && yError < 0.10
     // && rotationError < 0.10)
     // ||
-    return false;
-    // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    // return false;
+    return timer.hasElapsed(trajectory.getTotalTimeSeconds());
   }
 }

@@ -203,17 +203,20 @@ public class SwerveDrive extends SubsystemBase {
     swerveModulePositions[3] =
         new SwerveModulePosition(0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
-    xPID = new PIDController(0, 0, 0);
-    yPID = new PIDController(0, 0, 0);
+    xPID = new PIDController(1, .1, 0);
+    yPID = new PIDController(1, .1, 0);
 
-    turnPID = new PIDController(0.3, 0, 0);
+    turnPID = new PIDController(.05, .1, 0);
 
     swerveFollower =
         new PPHolonomicDriveController(
-            new PIDConstants(xPID.getP(), xPID.getI(), xPID.getD()),
-            new PIDConstants(turnPID.getP(), turnPID.getI(), turnPID.getD()),
+            new PIDConstants(1, 0, 0),
+            new PIDConstants(1, 0, 0),
             Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL,
             Constants.SwerveConstants.RADIUS);
+    // swerveFollower = new PPHolonomicDriveController(xPID, yPID, turnPID);
+
+    // swerveFollower.setEnabled(true);
     // xPID = new PIDController(1, 0, 0);
     // yPID = new PIDController(1, 0, 0);
 

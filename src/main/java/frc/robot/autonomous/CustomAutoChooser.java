@@ -28,6 +28,9 @@ public class CustomAutoChooser {
   /** All the Auto Names. */
   private enum Autos {
     FOLLOW_ONE_METER,
+    FOLLOW_TWO_METER,
+    FOLLOW_ONE_METER_PP,
+    WORKSHOP_TEST,
     EMPTY
   }
 
@@ -44,6 +47,9 @@ public class CustomAutoChooser {
 
     autoChooser.setDefaultOption("Auto 1 Name", Autos.EMPTY);
     autoChooser.addOption("Auto 2 Name", Autos.FOLLOW_ONE_METER);
+    autoChooser.addOption("Auto 3 Name", Autos.FOLLOW_TWO_METER);
+    autoChooser.addOption("Auto 4 Name", Autos.FOLLOW_ONE_METER_PP);
+    autoChooser.addOption("Auto 5 Name", Autos.WORKSHOP_TEST);
     SmartDashboard.putData("Custom AutoChooser", autoChooser);
     // autoChooser.addOption("Auto 3 Name", Autos.AUTO3);
   }
@@ -72,7 +78,19 @@ public class CustomAutoChooser {
   //   }
 
   public Command followOneMeter() {
-    return follow("TYLERPATH");
+    return followChoreo("TYLERPATH");
+  }
+
+  public Command followTwoMeter() {
+    return followChoreo("SUHITPATH");
+  }
+
+  public Command followOneMeterPP() {
+    return followPathPlanner("1Meter");
+  }
+
+  public Command workshopTest() {
+    return followPathPlanner("Workshop Test");
   }
 
   public Command getSelectedCustomCommand() {
@@ -82,8 +100,14 @@ public class CustomAutoChooser {
         //     return auto1Command();
       case FOLLOW_ONE_METER:
         return followOneMeter();
+      case FOLLOW_TWO_METER:
+        return followTwoMeter();
       case EMPTY:
         return new InstantCommand();
+      case FOLLOW_ONE_METER_PP:
+        return followOneMeterPP();
+      case WORKSHOP_TEST:
+        return workshopTest();
       default:
         return new InstantCommand();
     }
@@ -96,10 +120,18 @@ public class CustomAutoChooser {
    * @param pathname - The path name, no extension.
    * @return - A follow Command!
    */
-  public Command follow(String pathname) {
+  public Command followChoreo(String pathname) {
 
     return new FollowPathCommand(
         PathPlannerPath.fromChoreoTrajectory(pathname)
+            .getTrajectory(
+                SwerveDrive.getInstance().getRobotRelativeSpeeds(),
+                RobotState.getInstance().getRotation2d()));
+  }
+
+  public Command followPathPlanner(String pathname) {
+    return new FollowPathCommand(
+        PathPlannerPath.fromPathFile(pathname)
             .getTrajectory(
                 SwerveDrive.getInstance().getRobotRelativeSpeeds(),
                 RobotState.getInstance().getRotation2d()));

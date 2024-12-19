@@ -30,6 +30,7 @@ import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
@@ -73,6 +74,7 @@ public class RobotState {
   public void updatePose() {
 
     gameField.setRobotPose(getPose());
+    Logger.recordOutput("REAL Pose", getPose());
 
     lastPose = currentPose;
 

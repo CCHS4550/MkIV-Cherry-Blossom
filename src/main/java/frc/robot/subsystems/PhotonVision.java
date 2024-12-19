@@ -14,7 +14,9 @@ import frc.maps.Constants;
 import frc.robot.RobotState;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -112,8 +114,10 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
     for (int i = 0; i < results.length; i++) {
 
-      estimates.add(photonEstimator[i].update().get().estimatedPose.toPose2d());
-
+      Optional<EstimatedRobotPose> estimatedPose = photonEstimator[i].update();
+      if (estimatedPose.isPresent()) {
+        estimates.add(estimatedPose.get().estimatedPose.toPose2d());
+      }
       estimates.removeIf(pose -> pose == null);
     }
 
