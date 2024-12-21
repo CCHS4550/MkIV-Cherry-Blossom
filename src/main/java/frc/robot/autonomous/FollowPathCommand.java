@@ -14,13 +14,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.maps.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
-import org.littletonrobotics.junction.Logger;
+// import org.littletonrobotics.junction.Logger;
 
 public class FollowPathCommand extends Command {
   Timer timer = new Timer();
   PathPlannerTrajectory trajectory;
 
-  SwerveDrivePoseEstimator estimatedPose;
+  // SwerveDrivePoseEstimator estimatedPose;
 
   PathPlannerTrajectory.State lastState, currentState, wantedState;
 
@@ -71,7 +71,7 @@ public class FollowPathCommand extends Command {
 
     SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
     // SwerveDrive.getInstance().setModuleStates(moduleStates);
-    Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
+    // Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
   }
 
   // Called once the command ends or is interrupted.
