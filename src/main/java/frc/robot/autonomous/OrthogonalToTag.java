@@ -55,9 +55,13 @@ public class OrthogonalToTag extends Command {
       So, subtracting 90 degrees and getting the complementary angle would get us the right angle. 
       Stick on a negative cause it should be negative according to that coordinate system 
       and I'm just going to assume that this is common for all cases. */
-      
+
     target = Optional.of(PhotonVision.getInstance().frontCamera.getLatestResult().getBestTarget());
-    targetAngle = (- (90 - (target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees()) - 90)) + target.get().getYaw();
+    targetAngle =  -target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees() - 180;
+
+    // This should just equal this.
+
+    targetAngle = target.get().getYaw() + target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees();
 
 
 
@@ -75,7 +79,7 @@ public class OrthogonalToTag extends Command {
       //If theres a problem, I suspect it's probably here or wherever else getYaw() is called to define the robots pose. 
       //It might be negative but theoretically it shouldn't based on the way that Photonvision creates a coordinate system from the Apriltag. 
       // I subtracted it from 90 because if you really really really think about it then you need the complementary angle?
-      new Pose2d(0, 0, Rotation2d.fromDegrees(target.get().getYaw())));
+      new Pose2d(0, 0, Rotation2d.fromDegrees(targetAngle)));
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(SwerveDrive.getInstance());
