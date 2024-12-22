@@ -5,13 +5,10 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.maps.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 // import org.littletonrobotics.junction.Logger;
@@ -64,10 +61,6 @@ public class FollowPathCommand extends Command {
         SwerveDrive.getInstance()
             .swerveFollower
             .calculateRobotRelativeSpeeds(RobotState.getInstance().currentPose, wantedState);
-
-    // Convert chassis speeds to individual module states
-    SwerveModuleState[] moduleStates =
-        Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
     SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
     // SwerveDrive.getInstance().setModuleStates(moduleStates);

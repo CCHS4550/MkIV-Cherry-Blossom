@@ -391,6 +391,11 @@ public class RobotState {
     return Math.IEEEremainder(gyro.getYaw(), 360);
   }
 
+  /** This might not be necessary, but I don't wanna change anything in case it messes things up. */
+  public Rotation2d getRotation2dNegative() {
+    return Rotation2d.fromDegrees(gyro.getAngle()).unaryMinus();
+  }
+
   /**
    * Gets the Rotation2d value of the facing direction of the robot.
    *
