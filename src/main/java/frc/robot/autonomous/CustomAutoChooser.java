@@ -11,22 +11,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import frc.robot.RobotContainer;
 import frc.robot.RobotState;
+import frc.robot.autonomous.PathWrapper.AutoFile;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 /** Add your docs here. */
 public class CustomAutoChooser {
 
-  //   public static CustomAutoChooser mInstance;
+    public static CustomAutoChooser mInstance;
 
-  //   public static CustomAutoChooser getInstance() {
-  //     if (mInstance == null) {
-  //       mInstance = new CustomAutoChooser();
-  //     }
-  //     return mInstance;
-  //   }
+    public static CustomAutoChooser getInstance() {
+      if (mInstance == null) {
+        mInstance = new CustomAutoChooser();
+      }
+      return mInstance;
+    }
 
   /** All the Auto Names. */
-  private enum Autos {
+
+
+
+  public enum AutoRoutine {
     FOLLOW_ONE_METER,
     FOLLOW_TWO_METER,
     FOLLOW_ONE_METER_PP,
@@ -34,24 +38,38 @@ public class CustomAutoChooser {
     EMPTY
   }
 
-  // private final PathTrajectories trajectories;
+
+  PathWrapper autoRoutine1 = new PathWrapper(
+    AutoRoutine.EMPTY,
+    new AutoFile("path1", false),
+    new AutoFile("path1", false),
+    new AutoFile("path1", false),
+    new AutoFile("path1", false),
+    new AutoFile("path1", false));
+
+
+
 
   /**
    * This is what puts the options on Smart Dashboard, but instead of doing it by itself, we have to
    * populate it manually.
    */
-  private final SendableChooser<Autos> autoChooser = new SendableChooser<>();
+  private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 
-  public CustomAutoChooser() {
+  private CustomAutoChooser() {
     // this.trajectories = trajectories;
+    
 
-    autoChooser.setDefaultOption("Auto 1 Name", Autos.EMPTY);
-    autoChooser.addOption("Auto 2 Name", Autos.FOLLOW_ONE_METER);
-    autoChooser.addOption("Auto 3 Name", Autos.FOLLOW_TWO_METER);
-    autoChooser.addOption("Auto 4 Name", Autos.FOLLOW_ONE_METER_PP);
-    autoChooser.addOption("Auto 5 Name", Autos.WORKSHOP_TEST);
+    autoChooser.setDefaultOption("Auto 1 Name", AutoRoutine.EMPTY);
+    autoChooser.addOption("Auto 2 Name", AutoRoutine.FOLLOW_ONE_METER);
+    autoChooser.addOption("Auto 3 Name", AutoRoutine.FOLLOW_TWO_METER);
+    autoChooser.addOption("Auto 4 Name", AutoRoutine.FOLLOW_ONE_METER_PP);
+    autoChooser.addOption("Auto 5 Name", AutoRoutine.WORKSHOP_TEST);
     SmartDashboard.putData("Custom AutoChooser", autoChooser);
     // autoChooser.addOption("Auto 3 Name", Autos.AUTO3);
+
+
+    
   }
 
   /**
@@ -78,19 +96,19 @@ public class CustomAutoChooser {
   //   }
 
   public Command followOneMeter() {
-    return followChoreo("TYLERPATH");
+    return PathWrapper.followChoreo("TYLERPATH");
   }
 
   public Command followTwoMeter() {
-    return followChoreo("SUHITPATH");
+    return PathWrapper.followChoreo("SUHITPATH");
   }
 
   public Command followOneMeterPP() {
-    return followPathPlanner("1Meter");
+    return PathWrapper.followPathPlanner("1Meter");
   }
 
   public Command workshopTest() {
-    return followPathPlanner("Workshop Test");
+    return PathWrapper.followPathPlanner("Workshop Test");
   }
 
   public Command getSelectedCustomCommand() {
@@ -113,27 +131,5 @@ public class CustomAutoChooser {
     }
   }
 
-  /**
-   * Creates a simpler follow helper method that simply requires the .traj file name from the
-   * deploy/choreo directory.
-   *
-   * @param pathname - The path name, no extension.
-   * @return - A follow Command!
-   */
-  public Command followChoreo(String pathname) {
 
-    return new FollowPathCommand(
-        PathPlannerPath.fromChoreoTrajectory(pathname)
-            .getTrajectory(
-                SwerveDrive.getInstance().getRobotRelativeSpeeds(),
-                RobotState.getInstance().getRotation2d()));
-  }
-
-  public Command followPathPlanner(String pathname) {
-    return new FollowPathCommand(
-        PathPlannerPath.fromPathFile(pathname)
-            .getTrajectory(
-                SwerveDrive.getInstance().getRobotRelativeSpeeds(),
-                RobotState.getInstance().getRotation2d()));
-  }
 }

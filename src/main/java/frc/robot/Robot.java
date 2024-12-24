@@ -47,7 +47,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    autoChooser = new CustomAutoChooser();
+    autoChooser = CustomAutoChooser.getInstance();
 
     // // Set up data receivers & replay source
 

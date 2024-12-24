@@ -25,7 +25,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class OrthogonalToTag extends Command {
 
   Optional<PhotonTrackedTarget> target;
-  double targetAngle;
+  Rotation2d targetAngle;
   Pose2d currentPose;
   PathPlannerTrajectory.State targetState;
 
@@ -56,8 +56,8 @@ public class OrthogonalToTag extends Command {
      * for all cases.
      */
     target = Optional.of(PhotonVision.getInstance().frontCamera.getLatestResult().getBestTarget());
-    targetAngle =
-        -target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees() - 180;
+    targetAngle = Rotation2d.fromDegrees(
+        -target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees() - 180);
 
     if (target.isPresent()) {
       /** Initialize a temporary PoseEstimator that lasts for this command's length. It will */
@@ -75,7 +75,7 @@ public class OrthogonalToTag extends Command {
               // Photonvision creates a coordinate system from the Apriltag.
               // I subtracted it from 90 because if you really really really think about it then you
               // need the complementary angle?
-              new Pose2d(0, 0, Rotation2d.fromDegrees(targetAngle)));
+              new Pose2d(0, 0, targetAngle));
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(SwerveDrive.getInstance());
