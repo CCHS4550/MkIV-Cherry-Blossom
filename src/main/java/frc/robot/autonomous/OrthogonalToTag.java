@@ -56,16 +56,17 @@ public class OrthogonalToTag extends Command {
      * for all cases.
      */
     target = Optional.of(PhotonVision.getInstance().frontCamera.getLatestResult().getBestTarget());
-    targetAngle = Rotation2d.fromDegrees(
-        -target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees() - 180);
+    targetAngle =
+        Rotation2d.fromDegrees(
+            -target.get().getBestCameraToTarget().getRotation().toRotation2d().getDegrees() - 180);
 
     if (target.isPresent()) {
       /** Initialize a temporary PoseEstimator that lasts for this command's length. It will */
       poseRelativeToTargetEstimator =
           new SwerveDrivePoseEstimator(
               Constants.SwerveConstants.DRIVE_KINEMATICS,
-              RobotState.getInstance().getRotation2dNegative(),
-              SwerveDrive.getInstance().swerveModulePositions,
+              RobotState.getInstance().getPoseRotation2d(),
+              SwerveDrive.getInstance().swerveModulePositionsReal,
               // This line below should set the initial pose to (0,0) with an angle of the angle of
               // the AprilTag.
 
@@ -122,8 +123,8 @@ public class OrthogonalToTag extends Command {
     // works, it works.
     poseRelativeToTargetEstimator.updateWithTime(
         currentTime,
-        RobotState.getInstance().getRotation2dNegative(),
-        SwerveDrive.getInstance().swerveModulePositions);
+        RobotState.getInstance().getPoseRotation2d(),
+        SwerveDrive.getInstance().swerveModulePositionsReal);
 
     // We only want the angle, not the translation because we only want to rotate, so we set the
     // pose to (0,0) with the angle of the AprilTag.

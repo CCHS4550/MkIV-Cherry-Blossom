@@ -5,31 +5,29 @@
 package frc.robot.autonomous;
 
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import frc.robot.RobotContainer;
 import frc.robot.RobotState;
-import frc.robot.autonomous.PathWrapper.AutoFile;
-import frc.robot.subsystems.swervedrive.SwerveDrive;
 
 /** Add your docs here. */
 public class CustomAutoChooser {
 
-    public static CustomAutoChooser mInstance;
+  public static CustomAutoChooser mInstance;
 
-    public static CustomAutoChooser getInstance() {
-      if (mInstance == null) {
-        mInstance = new CustomAutoChooser();
-      }
-      return mInstance;
+  public static CustomAutoChooser getInstance() {
+    if (mInstance == null) {
+      mInstance = new CustomAutoChooser();
     }
+    return mInstance;
+  }
 
   /** All the Auto Names. */
-
-
-
   public enum AutoRoutine {
     FOLLOW_ONE_METER,
     FOLLOW_TWO_METER,
@@ -38,17 +36,14 @@ public class CustomAutoChooser {
     EMPTY
   }
 
-
-  PathWrapper autoRoutine1 = new PathWrapper(
-    AutoRoutine.EMPTY,
-    new AutoFile("path1", false),
-    new AutoFile("path1", false),
-    new AutoFile("path1", false),
-    new AutoFile("path1", false),
-    new AutoFile("path1", false));
-
-
-
+  // PathWrapper autoRoutine1 =
+  //     new PathWrapper(
+  //         AutoRoutine.EMPTY,
+  //         new AutoFile("path1", false),
+  //         new AutoFile("path2", false),
+  //         new AutoFile("path3", false),
+  //         new AutoFile("path4", false),
+  //         new AutoFile("path5", false));
 
   /**
    * This is what puts the options on Smart Dashboard, but instead of doing it by itself, we have to
@@ -56,20 +51,18 @@ public class CustomAutoChooser {
    */
   private final SendableChooser<AutoRoutine> autoChooser = new SendableChooser<>();
 
-  private CustomAutoChooser() {
+  public CustomAutoChooser() {
     // this.trajectories = trajectories;
-    
 
-    autoChooser.setDefaultOption("Auto 1 Name", AutoRoutine.EMPTY);
-    autoChooser.addOption("Auto 2 Name", AutoRoutine.FOLLOW_ONE_METER);
-    autoChooser.addOption("Auto 3 Name", AutoRoutine.FOLLOW_TWO_METER);
-    autoChooser.addOption("Auto 4 Name", AutoRoutine.FOLLOW_ONE_METER_PP);
-    autoChooser.addOption("Auto 5 Name", AutoRoutine.WORKSHOP_TEST);
+    autoChooser.setDefaultOption("EMPTY", AutoRoutine.EMPTY);
+    autoChooser.addOption("Auto 1 Name", AutoRoutine.FOLLOW_ONE_METER);
+    autoChooser.addOption("Auto 2 Name", AutoRoutine.FOLLOW_TWO_METER);
+    autoChooser.addOption("Auto 3 Name", AutoRoutine.FOLLOW_ONE_METER_PP);
+    autoChooser.addOption("Auto 4 Name", AutoRoutine.WORKSHOP_TEST);
     SmartDashboard.putData("Custom AutoChooser", autoChooser);
+
     // autoChooser.addOption("Auto 3 Name", Autos.AUTO3);
 
-
-    
   }
 
   /**
@@ -96,19 +89,49 @@ public class CustomAutoChooser {
   //   }
 
   public Command followOneMeter() {
-    return PathWrapper.followChoreo("TYLERPATH");
+    return followChoreoTestCommand("TYLERPATH");
   }
 
   public Command followTwoMeter() {
-    return PathWrapper.followChoreo("SUHITPATH");
+    return followChoreoTestCommand("SUHITPATH");
   }
 
   public Command followOneMeterPP() {
-    return PathWrapper.followPathPlanner("1Meter");
+    return followPathPlannerTestCommand("1Meter");
   }
 
   public Command workshopTest() {
-    return PathWrapper.followPathPlanner("Workshop Test");
+    return followPathPlannerTestCommand("Workshop Test");
+  }
+
+  private Command intakeCommand() {
+    return new InstantCommand();
+  }
+
+  public Command autoRoutine1() {
+
+    SequentialCommandGroup c = new SequentialCommandGroup();
+    // Do not add file extensions!
+
+    c.addCommands(followChoreoTestCommand("traj1"));
+
+    c.addCommands(intakeCommand());
+
+    c.addCommands(followChoreoTestCommand("path2"));
+
+    return c;
+  }
+
+  public Command autoRoutine2() {
+    return new InstantCommand();
+  }
+
+  public Command autoRoutine3() {
+    return new InstantCommand();
+  }
+
+  public Command autoRoutine4() {
+    return new InstantCommand();
   }
 
   public Command getSelectedCustomCommand() {
@@ -131,5 +154,39 @@ public class CustomAutoChooser {
     }
   }
 
+  /**
+   * Creates a simpler follow helper method that simply requires the .traj file name from the
+   * deploy/choreo directory.
+   *
+   * @param pathname - The path name, no extension.
+   * @return - A follow Command!
+   */
+  public static Command followChoreoTestCommand(String pathname) {
 
+    PathPlannerTrajectory trajectory = PathWrapper.getChoreoTrajectory(pathname);
+    return new SequentialCommandGroup(
+        new InstantCommand(
+            () ->
+                RobotState.getInstance()
+                    .setOdometry(
+                        PathPlannerPath.fromChoreoTrajectory(pathname)
+                            .getPreviewStartingHolonomicPose())),
+        // new Pose2d(
+        //     PathWrapper.getChoreoTrajectory(pathname)
+        //         .getInitialState()
+        //         .positionMeters,
+        //     PathWrapper.getChoreoTrajectory(pathname).getInitialState().heading))),
+        new FollowPathCommand(PathWrapper.getChoreoTrajectory(pathname)));
+  }
+
+  public static Command followPathPlannerTestCommand(String pathname) {
+    return new SequentialCommandGroup(
+        new InstantCommand(
+            () ->
+                RobotState.getInstance()
+                    .setOdometry(
+                        PathPlannerPath.fromChoreoTrajectory(pathname)
+                            .getPreviewStartingHolonomicPose())),
+        new FollowPathCommand(PathWrapper.getPathPlannerTrajectory(pathname)));
+  }
 }

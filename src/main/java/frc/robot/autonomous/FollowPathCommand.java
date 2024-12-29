@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 // import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.Logger;
 
 public class FollowPathCommand extends Command {
   Timer timer = new Timer();
@@ -28,10 +29,11 @@ public class FollowPathCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(SwerveDrive.getInstance());
 
-    RobotState.getInstance()
-        .setOdometry(
-            new Pose2d(
-                trajectory.getInitialState().positionMeters, trajectory.getInitialState().heading));
+    // RobotState.getInstance()
+    //     .setOdometry(
+    //         new Pose2d(
+    //             trajectory.getInitialState().positionMeters,
+    // trajectory.getInitialState().heading));
   }
 
   // Called when the command is initially scheduled.
@@ -61,6 +63,9 @@ public class FollowPathCommand extends Command {
         SwerveDrive.getInstance()
             .swerveFollower
             .calculateRobotRelativeSpeeds(RobotState.getInstance().currentPose, wantedState);
+
+    Logger.recordOutput(
+        "wantedAutoPose", new Pose2d(wantedState.positionMeters, wantedState.heading));
 
     SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
     // SwerveDrive.getInstance().setModuleStates(moduleStates);

@@ -15,6 +15,8 @@ package frc.robot;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.maps.Constants;
 import frc.robot.autonomous.CustomAutoChooser;
@@ -38,6 +40,8 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
   CustomAutoChooser autoChooser;
 
+  private boolean browningOut = false;
+
   public Robot() {}
 
   /**
@@ -47,7 +51,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    autoChooser = CustomAutoChooser.getInstance();
+    autoChooser = new CustomAutoChooser();
+
+    Constants.getCurrentMode();
+
+    SmartDashboard.putBoolean("Browning Out?", browningOut);
 
     // // Set up data receivers & replay source
 
@@ -92,12 +100,29 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
 
-    // if (Robot.isSimulation()) {
-    DriverStation.silenceJoystickConnectionWarning(true);
-    // }
+    switch (Constants.currentMode) {
+      case REAL:
+        RobotState.getInstance().updateDashboard();
+        RobotState.getInstance().updateVisionPose();
 
-    RobotState.getInstance().updatePose();
-    RobotState.getInstance().updateDashboard();
+        if (RobotController.getBatteryVoltage() < 10) {
+          browningOut = true;
+        } else {
+          browningOut = false;
+        }
+
+        break;
+
+      case SIM:
+        DriverStation.silenceJoystickConnectionWarning(true);
+
+        break;
+
+      case REPLAY:
+        break;
+    }
+    RobotState.getInstance().updateOdometryPose();
+    RobotState.getInstance().updateModulePositions();
 
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
@@ -116,7 +141,7 @@ public class Robot extends LoggedRobot {
     // AutoBuilderScheme.getPathPlannerAutoCommand().schedule();
     // AutoBuilderScheme.getCustomAuto().schedule();
     autoChooser.getSelectedCustomCommand().schedule();
-    // m_robotContainer.getAutoCommand().schedule();
+
     System.out.println("Autonomous Routine Scheduled!");
   }
 

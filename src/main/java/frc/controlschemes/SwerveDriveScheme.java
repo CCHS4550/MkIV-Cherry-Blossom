@@ -7,7 +7,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -20,7 +19,6 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * Control scheme for swerve drive. Includes movement, the toggle between field centric and robot
@@ -98,7 +96,8 @@ public class SwerveDriveScheme implements ControlScheme {
                           * driveSpeedModifier.getAsDouble();
 
                   double ySpeed =
-                      MathUtil.applyDeadband(-controller.getLeftX(), 0.01)
+                      // MathUtil.applyDeadband(-controller.getLeftX(), 0.01)
+                      MathUtil.applyDeadband(0, 0.01)
                           * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND
                           * driveSpeedModifier.getAsDouble();
 
@@ -106,13 +105,14 @@ public class SwerveDriveScheme implements ControlScheme {
                   // || Math.abs(controller.getRightX()) > 0.15
 
                   if (!orientationLocked) {
-                    orientationLockAngle = RobotState.getInstance().getRotation2d().getRadians();
-                    turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
+                    orientationLockAngle = RobotState.getInstance().getPoseAngleRadians();
+                    // turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
+                    turnSpeed = MathUtil.applyDeadband(controller.getLeftX(), 0.05);
 
                   } else {
                     turnSpeed =
                         orientationLockPID.calculate(
-                                RobotState.getInstance().getRotation2d().getRadians(),
+                                RobotState.getInstance().getPoseAngleRadians(),
                                 orientationLockAngle)
                             * 2;
                   }
@@ -137,23 +137,31 @@ public class SwerveDriveScheme implements ControlScheme {
                     // Relative to field
                     chassisSpeeds =
                         ChassisSpeeds.fromFieldRelativeSpeeds(
-                            xSpeed, ySpeed, -turnSpeed, RobotState.getInstance().getRotation2d());
+                            xSpeed,
+                            ySpeed,
+                            -turnSpeed,
+                            RobotState.getInstance()
+                                .poseEstimator
+                                .getEstimatedPosition()
+                                .getRotation());
+                    // RobotState.getInstance().getRotation2d());
                   } else {
                     // Relative to robot
                     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, -turnSpeed);
                   }
+                  SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
                   // chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
-                  SwerveModuleState[] moduleStates;
-                  // Convert chassis speeds to individual module states
-                  moduleStates =
-                      Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
-                          chassisSpeeds);
+                  // SwerveModuleState[] moduleStates;
+                  // // Convert chassis speeds to individual module states
+                  // moduleStates =
+                  //     Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
+                  //         chassisSpeeds);
 
-                  Logger.recordOutput("Teleoperated set moduleStates", moduleStates);
+                  // // Logger.recordOutput("Teleoperated set moduleStates", moduleStates);
 
-                  // swerveDrive.setRawDriveVolts(1);
-                  swerveDrive.setModuleStates(moduleStates);
+                  // // swerveDrive.setRawDriveVolts(1);
+                  // swerveDrive.setModuleStates(moduleStates);
                 },
                 swerveDrive)
             .withName("Swerve Controller Command"));
@@ -189,7 +197,7 @@ public class SwerveDriveScheme implements ControlScheme {
                         .poseEstimator
                         .resetPosition(
                             RobotState.getInstance().getRotation2d(),
-                            SwerveDrive.getInstance().swerveModulePositions,
+                            SwerveDrive.getInstance().swerveModulePositionsReal,
                             new Pose2d())));
     controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
     // controller.a().onTrue(runOnce(() -> swerveDrive.);
@@ -229,7 +237,7 @@ public class SwerveDriveScheme implements ControlScheme {
 
     orientationLocked = !orientationLocked;
     if (orientationLocked) {
-      orientationLockAngle = RobotState.getInstance().getRotation2d().getRadians();
+      orientationLockAngle = RobotState.getInstance().getPoseAngleRadians();
     }
   }
 

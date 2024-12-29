@@ -147,8 +147,12 @@ public class SwerveDrive extends SubsystemBase {
   private SwerveModule[] swerveModules =
       new SwerveModule[] {frontRight, frontLeft, backRight, backLeft};
 
+  public SwerveModuleState[] desiredModuleStates;
+
   /** Module positions used for odometry */
-  public SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
+  public SwerveModulePosition[] swerveModulePositionsReal = new SwerveModulePosition[4];
+
+  public SwerveModulePosition[] swerveModulePositionsSim = new SwerveModulePosition[4];
 
   /* PID Controllers */
   public PIDController xPID, yPID;
@@ -160,22 +164,6 @@ public class SwerveDrive extends SubsystemBase {
 
   // public final PPHolonomicDriveController swerveFollower1 = new PPHolonomicDriveController(xPID,
   // yPID, turnPID);
-
-  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
-
-  SysIdRoutine sysIdRoutine =
-      new SysIdRoutine(
-          new SysIdRoutine.Config(
-              VoltsPerSecond.of(1),
-              Volts.of(3),
-              Seconds.of(3),
-              (state) ->
-                  org.littletonrobotics.junction.Logger.recordOutput(
-                      "SysIdTestState", state.toString())),
-          new SysIdRoutine.Mechanism(
-              (voltage) -> setDriveVoltages(voltage),
-              null, // No log consumer, since data is recorded by URCL
-              this));
 
   public Rotation2d initialAngle = new Rotation2d(0);
 
@@ -194,14 +182,26 @@ public class SwerveDrive extends SubsystemBase {
 
   /** Constructor for the Swerve Drive Subsystem. */
   private SwerveDrive() {
-    swerveModulePositions[0] =
+    swerveModulePositionsReal[0] =
         new SwerveModulePosition(0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[1] =
+    swerveModulePositionsReal[1] =
         new SwerveModulePosition(0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[2] =
+    swerveModulePositionsReal[2] =
         new SwerveModulePosition(0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[3] =
+    swerveModulePositionsReal[3] =
         new SwerveModulePosition(0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
+
+    swerveModulePositionsSim[0] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[1] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[2] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[3] = new SwerveModulePosition(0, new Rotation2d(0));
+
+    desiredModuleStates = new SwerveModuleState[4];
+
+    desiredModuleStates[0] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[1] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[2] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[3] = new SwerveModuleState(0, new Rotation2d());
 
     xPID = new PIDController(1, .1, 0);
     yPID = new PIDController(1, .1, 0);
@@ -243,10 +243,9 @@ public class SwerveDrive extends SubsystemBase {
 
     // getAbsoluteEncoderoffsets();
 
-    Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
-    Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
+    Logger.recordOutput("Actual moduleStates", getCurrentModuleStates());
+    // Logger.recordOutput("Actual-S Rotation2d", RobotState.getInstance().getRotation2d());
 
-    RobotState.getInstance().updateModulePositions();
     RobotState.getInstance().updateModuleEncoders(this);
   }
 
@@ -263,13 +262,16 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   /**
-   * Sets all 4 modules' drive and turn speeds with the SwerveModuleState format.
+   * Sets all 4 modules' drive and turn speeds with the SwerveModuleState format. Everytime you set
+   * the robot to move somewhere, it should pass through this method (theoretically).
    *
    * @param desiredStates The array of the states that each module will be set to in the
    *     SwerveModuleState format.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     // currentSwerveModuleStates = desiredStates;
+    desiredModuleStates = desiredStates;
+
     boolean openLoop = false;
     // SwerveDriveKinematics.desaturateWheelSpeeds(
     //     desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
@@ -278,7 +280,8 @@ public class SwerveDrive extends SubsystemBase {
     frontLeft.setDesiredState(desiredStates[1], openLoop);
     backRight.setDesiredState(desiredStates[2], openLoop);
     backLeft.setDesiredState(desiredStates[3], openLoop);
-    Logger.recordOutput("Desired States", desiredStates);
+
+    Logger.recordOutput("Desired moduleStates", desiredStates);
   }
 
   /* Returns the actual moduleStates */
@@ -307,7 +310,8 @@ public class SwerveDrive extends SubsystemBase {
     // given as the robot angle reverses the direction of rotation, and the conversion is reversed.
     return ChassisSpeeds.fromFieldRelativeSpeeds(
         Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
-        RobotState.getInstance().getRotation2d());
+        RobotState.getInstance().poseEstimator.getEstimatedPosition().getRotation());
+    // RobotState.getInstance().getRotation2d());
   }
 
   /*
@@ -316,9 +320,25 @@ public class SwerveDrive extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-    Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
+    // Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
     setModuleStates(moduleStates);
   }
+
+  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
+
+  SysIdRoutine sysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              VoltsPerSecond.of(1),
+              Volts.of(3),
+              Seconds.of(3),
+              (state) ->
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "SysIdTestState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (voltage) -> setDriveVoltages(voltage),
+              null, // No log consumer, since data is recorded by URCL
+              this));
 
   /* SysID Factory Methods */
   /**

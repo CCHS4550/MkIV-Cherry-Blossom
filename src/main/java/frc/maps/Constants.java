@@ -15,12 +15,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 // import frc.helpers.AllianceFlipUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class Constants {
 
   public static final double WHEEL_CIRCUMFRENCE = Units.inchesToMeters(4 * Math.PI);
 
-  public static final Mode currentMode = Mode.REAL;
+  public static Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -31,6 +32,16 @@ public class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static void getCurrentMode() {
+    if (RobotBase.isReal()) {
+      currentMode = Mode.REAL;
+    } else if (RobotBase.isSimulation()) {
+      currentMode = Mode.SIM;
+    }
+
+    // return currentMode;
   }
 
   public static class ConversionConstants {

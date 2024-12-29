@@ -7,6 +7,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.Vision;
@@ -20,6 +24,10 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.estimation.TargetModel;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -38,6 +46,9 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
   /* Create Camera */
   public PhotonCamera frontCamera;
+
+  VisionSystemSim visionSim;
+  
   /* Camera 1 PhotonPoseEstimator. */
   public PhotonPoseEstimator frontCamera_photonEstimator;
 
@@ -46,13 +57,51 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
     PortForwarder.add(5800, "limelight2.local", 5800);
 
-    frontCamera = new PhotonCamera(Constants.cameraOne.CAMERA_ONE_NAME);
-    frontCamera_photonEstimator =
+     frontCamera = new PhotonCamera(Constants.cameraOne.CAMERA_ONE_NAME);
+
+    switch (Constants.currentMode) {
+      case REAL:
+       
+
+        frontCamera_photonEstimator =
         new PhotonPoseEstimator(
             aprilTagFieldLayout,
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             frontCamera,
             Constants.cameraOne.ROBOT_TO_CAM);
+        break;
+
+      case SIM:
+        visionSim = new VisionSystemSim("main");
+        // TargetModel targetModel = TargetModel.kAprilTag36h11;
+        visionSim.addAprilTags(aprilTagFieldLayout);
+
+        SimCameraProperties cameraProp = new SimCameraProperties();
+        cameraProp.setCalibration(320, 240, Rotation2d.fromDegrees(62.5));
+        cameraProp.setFPS(40);
+
+        PhotonCameraSim cameraSim = new PhotonCameraSim(frontCamera, cameraProp);
+
+
+        // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot pose,
+        // (Robot pose is considered the center of rotation at the floor level, or Z = 0)
+        Translation3d robotToCameraTrl = new Translation3d(0.1, 0, 0.5);
+        // and pitched 15 degrees up.
+        Rotation3d robotToCameraRot = new Rotation3d(0, Math.toRadians(-35), 0);
+        Transform3d robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
+
+        visionSim.addCamera(cameraSim, robotToCamera);
+
+        break;
+
+        
+        
+
+      case REPLAY:
+        break;
+    }
+
+    
     frontCamera_photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 

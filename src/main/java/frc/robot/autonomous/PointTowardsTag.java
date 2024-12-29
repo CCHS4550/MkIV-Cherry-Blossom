@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+/** Unfinished! */
 public class PointTowardsTag extends Command {
 
   Optional<PhotonTrackedTarget> target;
@@ -41,8 +42,8 @@ public class PointTowardsTag extends Command {
       poseRelativeToTargetEstimator =
           new SwerveDrivePoseEstimator(
               Constants.SwerveConstants.DRIVE_KINEMATICS,
-              RobotState.getInstance().getRotation2dNegative(),
-              SwerveDrive.getInstance().swerveModulePositions,
+              RobotState.getInstance().getPoseRotation2d(),
+              SwerveDrive.getInstance().swerveModulePositionsReal,
               // This line below should set the initial pose to (0,0) with an angle of the angle of
               // the AprilTag.
 
@@ -95,8 +96,8 @@ public class PointTowardsTag extends Command {
     // works, it works.
     poseRelativeToTargetEstimator.updateWithTime(
         currentTime,
-        RobotState.getInstance().getRotation2dNegative(),
-        SwerveDrive.getInstance().swerveModulePositions);
+        RobotState.getInstance().getPoseRotation2d(),
+        SwerveDrive.getInstance().swerveModulePositionsReal);
 
     // We only want the angle, not the translation because we only want to rotate, so we set the
     // pose to (0,0) with the angle of the AprilTag.
