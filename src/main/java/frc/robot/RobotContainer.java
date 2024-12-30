@@ -71,7 +71,7 @@ public class RobotContainer {
         pneumatics = PneumaticsSystem.getInstance();
         indexer = IndexingSubsystem.getInstance();
 
-        vision = PhotonVision.getInstance();
+        // vision = PhotonVision.getInstance();
 
         lights = Lights.getInstance();
 

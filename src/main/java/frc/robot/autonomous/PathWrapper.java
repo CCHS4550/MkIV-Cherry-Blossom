@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /** Largely inspired of off */
 public class PathWrapper {
 
-  // This is what is input to the AutoWrapper
+  // This is what is input to the PathWrapper
   public record AutoFile(String fileName, boolean isChoreoTraj) {}
 
   // This is what is created.
@@ -30,50 +30,57 @@ public class PathWrapper {
   ArrayList<Command> followCommands = new ArrayList<>();
 
   PathPlannerTrajectory initialTraj;
+  PathPlannerPath initialPath;
   Pose2d initialPose;
 
   /**
    * Wraps all the paths associated with an Autonomous routine inside a container object.
    *
-   * @param pathFiles - All the file names of the .traj files, in order by use.
+   * @param autoRoutine The Auto Routine associated with these paths.
+   * @param initialHeading The very first heading of the autonomous routine, probably 3.14.
+   * @param files an AutoFiles array with all the auto files.
    */
-  public PathWrapper(CustomAutoChooser.AutoRoutine autoRoutine, AutoFile... files) {
+  public PathWrapper(
+      CustomAutoChooser.AutoRoutine autoRoutine, Rotation2d initialHeading, AutoFile... files) {
+
+    initialPath =
+        files[0].isChoreoTraj
+            ? PathPlannerPath.fromChoreoTrajectory(files[0].fileName)
+            : PathPlannerPath.fromPathFile(files[0].fileName);
 
     initialTraj =
         files[0].isChoreoTraj
-            ? getChoreoTrajectoryAutoRoutine(
-                files[0].fileName,
-                new ChassisSpeeds(),
-                PathPlannerPath.fromChoreoTrajectory(files[0].fileName)
-                    .getPreviewStartingHolonomicPose()
-                    .getRotation())
+            ? getChoreoTrajectoryAutoRoutine(files[0].fileName, new ChassisSpeeds(), initialHeading)
             : getPathPlannerTrajectoryAutoRoutine(
-                files[0].fileName,
-                new ChassisSpeeds(),
-                PathPlannerPath.fromPathFile(files[0].fileName)
-                    .getPreviewStartingHolonomicPose()
-                    .getRotation());
-    initialPose =
-        PathPlannerPath.fromChoreoTrajectory(files[0].fileName).getPreviewStartingHolonomicPose();
+                files[0].fileName, new ChassisSpeeds(), initialHeading);
 
-    followCommands.add(followTraj(initialTraj));
+    followCommands.add(followTrajectory(initialTraj));
+
+    initialPose = initialTraj.getInitialTargetHolonomicPose();
+    //  initialPath.getPreviewStartingHolonomicPose();
 
     for (int i = 1; i < files.length; i++) {
 
       if (files[i].isChoreoTraj) {
         followCommands.add(
             followChoreo(
+                // File name
                 files[i].fileName,
+                // Empty Chassis Speeds
                 new ChassisSpeeds(),
+                // Heading at the beginning of the path (End of the previous path)
                 PathPlannerPath.fromChoreoTrajectory(files[i - 1].fileName)
                     .getGoalEndState()
                     .getRotation()));
       } else {
         followCommands.add(
             followPathPlanner(
+                // File name
                 files[i].fileName,
+                // Empty Chassis Speeds
                 new ChassisSpeeds(),
-                PathPlannerPath.fromChoreoTrajectory(files[i - 1].fileName)
+                // Heading at the beginning of the path (End of the previous path)
+                PathPlannerPath.fromPathFile(files[i - 1].fileName)
                     .getGoalEndState()
                     .getRotation()));
       }
@@ -104,14 +111,7 @@ public class PathWrapper {
     return allCommands;
   }
 
-  /**
-   * Creates a simpler follow helper method that simply requires the .traj file name from the
-   * deploy/choreo directory.
-   *
-   * @param pathname - The path name, no extension.
-   * @return - A follow Command!
-   */
-  private Command followTraj(PathPlannerTrajectory traj) {
+  private Command followTrajectory(PathPlannerTrajectory traj) {
     return new FollowPathCommand(traj);
   }
 
@@ -121,9 +121,23 @@ public class PathWrapper {
   }
 
   public Command followPathPlanner(String filename, ChassisSpeeds speeds, Rotation2d heading) {
+
     return new FollowPathCommand(getPathPlannerTrajectoryAutoRoutine(filename, speeds, heading));
   }
 
+  private PathPlannerTrajectory getChoreoTrajectoryAutoRoutine(
+      String filename, ChassisSpeeds speeds, Rotation2d initialHeading) {
+
+    return PathPlannerPath.fromChoreoTrajectory(filename).getTrajectory(speeds, initialHeading);
+  }
+
+  private PathPlannerTrajectory getPathPlannerTrajectoryAutoRoutine(
+      String filename, ChassisSpeeds speeds, Rotation2d initialHeading) {
+
+    return PathPlannerPath.fromPathFile(filename).getTrajectory(speeds, initialHeading);
+  }
+
+  /** Helper Classes for general cases. */
   public static Command followChoreo(String filename) {
 
     return new FollowPathCommand(
@@ -156,15 +170,4 @@ public class PathWrapper {
             new ChassisSpeeds(0, 0, 0),
             PathPlannerPath.fromPathFile(filename).getPreviewStartingHolonomicPose().getRotation());
   }
-
-  private PathPlannerTrajectory getChoreoTrajectoryAutoRoutine(
-      String filename, ChassisSpeeds speeds, Rotation2d initialHeading) {
-    return PathPlannerPath.fromChoreoTrajectory(filename).getTrajectory(speeds, initialHeading);
-  }
-
-  private PathPlannerTrajectory getPathPlannerTrajectoryAutoRoutine(
-      String filename, ChassisSpeeds speeds, Rotation2d initialHeading) {
-    return PathPlannerPath.fromPathFile(filename).getTrajectory(speeds, initialHeading);
-  }
-  // initialTraj.getInitialState().heading
 }

@@ -7,6 +7,8 @@ package frc.robot.autonomous;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -89,19 +91,27 @@ public class CustomAutoChooser {
   //   }
 
   public Command followOneMeter() {
-    return followChoreoTestCommand("TYLERPATH");
+    SequentialCommandGroup c = new SequentialCommandGroup();
+    c.addCommands(followChoreoTestCommand("TYLERPATH", new Rotation2d()));
+    c.addCommands(
+        new FindAndFollowPathCommand(new Pose2d(new Translation2d(8, 4), new Rotation2d())));
+    return c;
   }
 
   public Command followTwoMeter() {
-    return followChoreoTestCommand("SUHITPATH");
+    SequentialCommandGroup c = new SequentialCommandGroup();
+    c.addCommands(followChoreoTestCommand("SUHITPATH", new Rotation2d()));
+    // c.addCommands(
+    //     new FindAndFollowPathCommand(new Pose2d(new Translation2d(8, 4), new Rotation2d())));
+    return c;
   }
 
   public Command followOneMeterPP() {
-    return followPathPlannerTestCommand("1Meter");
+    return followPathPlannerTestCommand("1Meter", new Rotation2d());
   }
 
   public Command workshopTest() {
-    return followPathPlannerTestCommand("Workshop Test");
+    return followPathPlannerTestCommand("Workshop Test", new Rotation2d());
   }
 
   private Command intakeCommand() {
@@ -113,11 +123,11 @@ public class CustomAutoChooser {
     SequentialCommandGroup c = new SequentialCommandGroup();
     // Do not add file extensions!
 
-    c.addCommands(followChoreoTestCommand("traj1"));
+    c.addCommands(followChoreoTestCommand("traj1", new Rotation2d()));
 
     c.addCommands(intakeCommand());
 
-    c.addCommands(followChoreoTestCommand("path2"));
+    c.addCommands(followChoreoTestCommand("path2", new Rotation2d()));
 
     return c;
   }
@@ -161,7 +171,7 @@ public class CustomAutoChooser {
    * @param pathname - The path name, no extension.
    * @return - A follow Command!
    */
-  public static Command followChoreoTestCommand(String pathname) {
+  public static Command followChoreoTestCommand(String pathname, Rotation2d initialHeading) {
 
     PathPlannerTrajectory trajectory = PathWrapper.getChoreoTrajectory(pathname);
     return new SequentialCommandGroup(
@@ -171,6 +181,7 @@ public class CustomAutoChooser {
                     .setOdometry(
                         PathPlannerPath.fromChoreoTrajectory(pathname)
                             .getPreviewStartingHolonomicPose())),
+        new InstantCommand(() -> RobotState.getInstance().setRotation2d(initialHeading)),
         // new Pose2d(
         //     PathWrapper.getChoreoTrajectory(pathname)
         //         .getInitialState()
@@ -179,7 +190,7 @@ public class CustomAutoChooser {
         new FollowPathCommand(PathWrapper.getChoreoTrajectory(pathname)));
   }
 
-  public static Command followPathPlannerTestCommand(String pathname) {
+  public static Command followPathPlannerTestCommand(String pathname, Rotation2d initialHeading) {
     return new SequentialCommandGroup(
         new InstantCommand(
             () ->
@@ -187,6 +198,7 @@ public class CustomAutoChooser {
                     .setOdometry(
                         PathPlannerPath.fromChoreoTrajectory(pathname)
                             .getPreviewStartingHolonomicPose())),
+        new InstantCommand(() -> RobotState.getInstance().setRotation2d(initialHeading)),
         new FollowPathCommand(PathWrapper.getPathPlannerTrajectory(pathname)));
   }
 }

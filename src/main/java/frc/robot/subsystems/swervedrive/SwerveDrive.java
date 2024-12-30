@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -273,9 +274,11 @@ public class SwerveDrive extends SubsystemBase {
     desiredModuleStates = desiredStates;
 
     boolean openLoop = false;
-    // SwerveDriveKinematics.desaturateWheelSpeeds(
-    //     desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
-    // Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
+    Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
+
     frontRight.setDesiredState(desiredStates[0], openLoop);
     frontLeft.setDesiredState(desiredStates[1], openLoop);
     backRight.setDesiredState(desiredStates[2], openLoop);
@@ -318,6 +321,7 @@ public class SwerveDrive extends SubsystemBase {
    * Used for Autobuilder in AutonomousScheme.java
    */
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
     // Logger.recordOutput("Autonomous Set moduleStates", moduleStates);

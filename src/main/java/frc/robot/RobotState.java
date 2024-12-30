@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.helpers.Vision;
 import frc.helpers.Vision.VisionData;
 import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
@@ -114,14 +113,13 @@ public class RobotState {
 
   public void updateVisionPose() {
     /** Update the visionData to what the camera sees. */
-
     if (Robot.isReal()) {
-    PhotonVision.getInstance().updateData(visionData, getPose());
+      PhotonVision.getInstance().updateData(visionData, getPose());
 
-    for (int i = 0; i < visionData.poseEstimates.size(); i++) {
-      /** Add the Photonvision pose estimates */
-      poseEstimator.addVisionMeasurement(visionData.poseEstimates.get(i), visionData.timestamp);
-    }
+      for (int i = 0; i < visionData.poseEstimates.size(); i++) {
+        /** Add the Photonvision pose estimates */
+        poseEstimator.addVisionMeasurement(visionData.poseEstimates.get(i), visionData.timestamp);
+      }
     } else if (Robot.isSimulation()) {
       PhotonVision.getInstance().visionSim.update(getPose());
     }
@@ -497,6 +495,7 @@ public class RobotState {
         // pos.getRotation(),
         SwerveDrive.getInstance().swerveModulePositionsReal,
         pos);
+
     if (RobotBase.isSimulation()) {
       poseEstimator.resetPosition(
           getRotation2d(),
@@ -596,6 +595,10 @@ public class RobotState {
     Logger.recordOutput("Gyro Rotation2d", gyro.getRotation2d());
     return gyro.getRotation2d();
     // .plus(Rotation2d.fromRadians(Math.PI));
+  }
+
+  public void setRotation2d(Rotation2d rotation2d) {
+    setOdometry(new Pose2d(getPose().getTranslation(), rotation2d));
   }
 
   private RobotState() {

@@ -24,7 +24,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -47,8 +46,8 @@ public class PhotonVision extends SubsystemBase implements Vision {
   /* Create Camera */
   public PhotonCamera frontCamera;
 
-  VisionSystemSim visionSim;
-  
+  public VisionSystemSim visionSim;
+
   /* Camera 1 PhotonPoseEstimator. */
   public PhotonPoseEstimator frontCamera_photonEstimator;
 
@@ -57,18 +56,16 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
     PortForwarder.add(5800, "limelight2.local", 5800);
 
-     frontCamera = new PhotonCamera(Constants.cameraOne.CAMERA_ONE_NAME);
+    frontCamera = new PhotonCamera(Constants.cameraOne.CAMERA_ONE_NAME);
 
     switch (Constants.currentMode) {
       case REAL:
-       
-
         frontCamera_photonEstimator =
-        new PhotonPoseEstimator(
-            aprilTagFieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            frontCamera,
-            Constants.cameraOne.ROBOT_TO_CAM);
+            new PhotonPoseEstimator(
+                aprilTagFieldLayout,
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                frontCamera,
+                Constants.cameraOne.ROBOT_TO_CAM);
         break;
 
       case SIM:
@@ -82,7 +79,6 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
         PhotonCameraSim cameraSim = new PhotonCameraSim(frontCamera, cameraProp);
 
-
         // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot pose,
         // (Robot pose is considered the center of rotation at the floor level, or Z = 0)
         Translation3d robotToCameraTrl = new Translation3d(0.1, 0, 0.5);
@@ -94,14 +90,10 @@ public class PhotonVision extends SubsystemBase implements Vision {
 
         break;
 
-        
-        
-
       case REPLAY:
         break;
     }
 
-    
     frontCamera_photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 

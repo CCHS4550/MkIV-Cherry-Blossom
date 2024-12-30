@@ -61,6 +61,7 @@ public class Constants {
     // horizontal distance travelled by one motor rotation
     public static final double HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION =
         WHEEL_CIRCUMFRENCE * DRIVE_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS;
+
     public static final double DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR =
         HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0;
   }

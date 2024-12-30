@@ -199,6 +199,7 @@ public class SwerveDriveScheme implements ControlScheme {
                             RobotState.getInstance().getRotation2d(),
                             SwerveDrive.getInstance().swerveModulePositionsReal,
                             new Pose2d())));
+
     controller.a().onTrue(runOnce(() -> RobotState.getInstance().zeroHeading()));
     // controller.a().onTrue(runOnce(() -> swerveDrive.);
     // controller.y().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
@@ -208,7 +209,7 @@ public class SwerveDriveScheme implements ControlScheme {
     // Pose2d(0, 0, new Rotation2d(0))),
     // runOnce(() -> OI.setRumble(0, 0.5)))));
 
-    controller.x().onTrue(swerveDrive.resetTurnEncoders());
+    // controller.x().onTrue(swerveDrive.resetTurnEncoders());
     // .onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
     // .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
     // controller.a().onTrue(runOnce(() -> swerveDrive.test2(12), swerveDrive));

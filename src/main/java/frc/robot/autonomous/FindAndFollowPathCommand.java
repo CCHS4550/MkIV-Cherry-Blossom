@@ -9,16 +9,19 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
-import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.maps.Constants;
 import frc.robot.RobotState;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 public class FindAndFollowPathCommand extends Command {
 
@@ -27,12 +30,15 @@ public class FindAndFollowPathCommand extends Command {
   PathConstraints pathConstraints = new PathConstraints(2, 1, .5, .5);
 
   Timer timer = new Timer();
-  
+  Optional<PathPlannerPath> path;
+  Optional<PathPlannerTrajectory> trajectory;
+  PathPlannerTrajectory.State lastState, currentState, wantedState;
+
   Pose2d targetPose = new Pose2d();
 
-  PathPlannerPath path;
-  PathPlannerTrajectory trajectory;
-  
+  List<Pair<Translation2d, Translation2d>> obstacleList =
+      new ArrayList<Pair<Translation2d, Translation2d>>();
+
   /** Creates a new FindAndFollowPathCommand. */
   public FindAndFollowPathCommand(Pose2d targetPose) {
     this.targetPose = targetPose;
@@ -48,31 +54,74 @@ public class FindAndFollowPathCommand extends Command {
 
     pathFinder.setStartPosition(RobotState.getInstance().getPose().getTranslation());
     pathFinder.setGoalPosition(targetPose.getTranslation());
-    
 
-    path = pathFinder.getCurrentPath(pathConstraints, new GoalEndState(0, targetPose.getRotation()));
+    Pair<Translation2d, Translation2d> stage =
+        new Pair<>(new Translation2d(3, 6), new Translation2d(6.5, 2.5));
 
-    trajectory = path.getTrajectory(
-      Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(SwerveDrive.getInstance().desiredModuleStates), 
-      RobotState.getInstance().getPoseRotation2d());
+    obstacleList.add(stage);
 
-    
+    pathFinder.setDynamicObstacles(
+        obstacleList, RobotState.getInstance().getPose().getTranslation());
 
+    path =
+        Optional.ofNullable(
+            pathFinder.getCurrentPath(
+                pathConstraints, new GoalEndState(0, targetPose.getRotation())));
+
+    if (path.isPresent()) {
+      trajectory =
+          Optional.ofNullable(
+              path.get()
+                  .getTrajectory(
+                      Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
+                          SwerveDrive.getInstance().desiredModuleStates),
+                      RobotState.getInstance().getPoseRotation2d()));
+    } else {
+      trajectory = Optional.empty();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
+    if (trajectory.isPresent()) {
+
+      /** The current time. */
+      double currentTime = timer.get();
+
+      /** Get the state of the robot at this current time in the path. */
+      wantedState = trajectory.get().sample(currentTime);
+
+      /** Add alliance transform! */
+
+      /** Create a ChassisSpeeds object to represent how the robot should be moving at this time. */
+      ChassisSpeeds chassisSpeeds =
+          SwerveDrive.getInstance()
+              .swerveFollower
+              .calculateRobotRelativeSpeeds(RobotState.getInstance().currentPose, wantedState);
+
+      Logger.recordOutput(
+          "wantedAutoPose", new Pose2d(wantedState.positionMeters, wantedState.heading));
+
+      SwerveDrive.getInstance().driveRobotRelative(chassisSpeeds);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+    this.timer.stop();
+    SwerveDrive.getInstance().stopModules();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+
+    if (path.isEmpty()) return true;
+
+    return timer.hasElapsed(trajectory.get().getTotalTimeSeconds());
   }
 }
