@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PIDConstants;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -30,6 +33,15 @@ import org.littletonrobotics.junction.Logger;
 
 /** Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and a gyro. */
 public class SwerveDrive extends SubsystemBase {
+
+  public static SwerveDrive mInstance;
+
+  public static SwerveDrive getInstance() {
+    if (mInstance == null) {
+      mInstance = new SwerveDrive();
+    }
+    return mInstance;
+  }
 
   private boolean test = false;
 
@@ -136,30 +148,23 @@ public class SwerveDrive extends SubsystemBase {
   private SwerveModule[] swerveModules =
       new SwerveModule[] {frontRight, frontLeft, backRight, backLeft};
 
+  public SwerveModuleState[] desiredModuleStates;
+
   /** Module positions used for odometry */
-  public static SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
+  public SwerveModulePosition[] swerveModulePositionsReal = new SwerveModulePosition[4];
+
+  public SwerveModulePosition[] swerveModulePositionsSim = new SwerveModulePosition[4];
 
   /* PID Controllers */
   public PIDController xPID, yPID;
   public PIDController turnPID;
-  ProfiledPIDController turnPIDProfiled;
+  public ProfiledPIDController turnPIDProfiled;
   // ProfiledPIDController turnPID;
 
-  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
+  public final PPHolonomicDriveController swerveFollower;
 
-  SysIdRoutine sysIdRoutine =
-      new SysIdRoutine(
-          new SysIdRoutine.Config(
-              VoltsPerSecond.of(1),
-              Volts.of(3),
-              Seconds.of(3),
-              (state) ->
-                  org.littletonrobotics.junction.Logger.recordOutput(
-                      "SysIdTestState", state.toString())),
-          new SysIdRoutine.Mechanism(
-              (voltage) -> setDriveVoltages(voltage),
-              null, // No log consumer, since data is recorded by URCL
-              this));
+  // public final PPHolonomicDriveController swerveFollower1 = new PPHolonomicDriveController(xPID,
+  // yPID, turnPID);
 
   public Rotation2d initialAngle = new Rotation2d(0);
 
@@ -177,25 +182,49 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   /** Constructor for the Swerve Drive Subsystem. */
-  public SwerveDrive() {
-    swerveModulePositions[0] =
+  private SwerveDrive() {
+    swerveModulePositionsReal[0] =
         new SwerveModulePosition(0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[1] =
+    swerveModulePositionsReal[1] =
         new SwerveModulePosition(0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[2] =
+    swerveModulePositionsReal[2] =
         new SwerveModulePosition(0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset()));
-    swerveModulePositions[3] =
+    swerveModulePositionsReal[3] =
         new SwerveModulePosition(0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
+
+    swerveModulePositionsSim[0] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[1] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[2] = new SwerveModulePosition(0, new Rotation2d(0));
+    swerveModulePositionsSim[3] = new SwerveModulePosition(0, new Rotation2d(0));
+
+    desiredModuleStates = new SwerveModuleState[4];
+
+    desiredModuleStates[0] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[1] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[2] = new SwerveModuleState(0, new Rotation2d());
+    desiredModuleStates[3] = new SwerveModuleState(0, new Rotation2d());
 
     xPID = new PIDController(1, .1, 0);
     yPID = new PIDController(1, .1, 0);
+
+    turnPID = new PIDController(.05, .1, 0);
+
+    swerveFollower =
+        new PPHolonomicDriveController(
+            new PIDConstants(1, 0, 0),
+            new PIDConstants(1, 0, 0),
+            Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL,
+            Constants.SwerveConstants.RADIUS);
+    // swerveFollower = new PPHolonomicDriveController(xPID, yPID, turnPID);
+
+    // swerveFollower.setEnabled(true);
     // xPID = new PIDController(1, 0, 0);
     // yPID = new PIDController(1, 0, 0);
 
     // *TODO: Possibly research profiled PID
     // turnPID = new ProfiledPIDController(0.5, 0, 0,
     // RobotMap.thetaControllConstraints);
-    turnPID = new PIDController(0.3, 0, 0);
+
     turnPIDProfiled =
         new ProfiledPIDController(
             .7,
@@ -213,12 +242,12 @@ public class SwerveDrive extends SubsystemBase {
   @Override
   public void periodic() {
 
-    Logger.recordOutput("Real moduleStates", getCurrentModuleStates());
-    Logger.recordOutput("Angle Rotation2d", RobotState.getInstance().getRotation2d());
+    // getAbsoluteEncoderoffsets();
+
+    Logger.recordOutput("Actual moduleStates", getCurrentModuleStates());
+    // Logger.recordOutput("Actual-S Rotation2d", RobotState.getInstance().getRotation2d());
 
     RobotState.getInstance().updateModuleEncoders(this);
-
-    updateModulePositions();
   }
 
   /** Sets all 4 modules' drive and turn speeds to 0. */
@@ -234,21 +263,28 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   /**
-   * Sets all 4 modules' drive and turn speeds with the SwerveModuleState format.
+   * Sets all 4 modules' drive and turn speeds with the SwerveModuleState format. Everytime you set
+   * the robot to move somewhere, it should pass through this method (theoretically).
    *
    * @param desiredStates The array of the states that each module will be set to in the
    *     SwerveModuleState format.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     // currentSwerveModuleStates = desiredStates;
+    desiredModuleStates = desiredStates;
+
     boolean openLoop = false;
-    // SwerveDriveKinematics.desaturateWheelSpeeds(
-    //     desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
-    // Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
+    Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
+
     frontRight.setDesiredState(desiredStates[0], openLoop);
     frontLeft.setDesiredState(desiredStates[1], openLoop);
     backRight.setDesiredState(desiredStates[2], openLoop);
     backLeft.setDesiredState(desiredStates[3], openLoop);
+
+    Logger.recordOutput("Desired moduleStates", desiredStates);
   }
 
   /* Returns the actual moduleStates */
@@ -258,21 +294,6 @@ public class SwerveDrive extends SubsystemBase {
           frontRight.getState(), frontLeft.getState(), backRight.getState(), backLeft.getState()
         };
     return states;
-  }
-
-  public void updateModulePositions() {
-    swerveModulePositions[0] =
-        new SwerveModulePosition(
-            frontRight.getDrivePosition(), new Rotation2d(frontRight.getTurnPosition()));
-    swerveModulePositions[1] =
-        new SwerveModulePosition(
-            frontLeft.getDrivePosition(), new Rotation2d(frontLeft.getTurnPosition()));
-    swerveModulePositions[2] =
-        new SwerveModulePosition(
-            backRight.getDrivePosition(), new Rotation2d(backRight.getTurnPosition()));
-    swerveModulePositions[3] =
-        new SwerveModulePosition(
-            backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurnPosition()));
   }
 
   /*
@@ -285,15 +306,43 @@ public class SwerveDrive extends SubsystemBase {
         RobotState.getInstance().getRotation2d());
   }
 
+  public ChassisSpeeds getFieldVelocity() {
+    // ChassisSpeeds has a method to convert from field-relative to robot-relative speeds,
+    // but not the reverse.  However, because this transform is a simple rotation, negating the
+    // angle
+    // given as the robot angle reverses the direction of rotation, and the conversion is reversed.
+    return ChassisSpeeds.fromFieldRelativeSpeeds(
+        Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
+        RobotState.getInstance().poseEstimator.getEstimatedPosition().getRotation());
+    // RobotState.getInstance().getRotation2d());
+  }
+
   /*
    * Used for Autobuilder in AutonomousScheme.java
    */
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+
     SwerveModuleState[] moduleStates =
         Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-    Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
+    // Logger.recordOutput("Autonomous Set moduleStates", moduleStates);
     setModuleStates(moduleStates);
   }
+
+  private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
+
+  SysIdRoutine sysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              VoltsPerSecond.of(1),
+              Volts.of(3),
+              Seconds.of(3),
+              (state) ->
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "SysIdTestState", state.toString())),
+          new SysIdRoutine.Mechanism(
+              (voltage) -> setDriveVoltages(voltage),
+              null, // No log consumer, since data is recorded by URCL
+              this));
 
   /* SysID Factory Methods */
   /**

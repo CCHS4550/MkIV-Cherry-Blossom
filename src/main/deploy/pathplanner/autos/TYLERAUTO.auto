@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 3.000000000000016,
-      "y": 1
+      "x": 1.5,
+      "y": 5.5
     },
     "rotation": 0.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 meter forward"
+            "pathName": "TYLERPATH"
           }
         }
       ]

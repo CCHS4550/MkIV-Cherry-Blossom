@@ -11,6 +11,7 @@ import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.Superstructure;
@@ -33,6 +34,7 @@ public class RobotContainer {
   CommandXboxController controller2 = new CommandXboxController(1);
 
   AimSimulator aimer;
+  PhotonVision vision;
 
   SwerveDrive swerveDrive;
   RightAscensionSubsystem rightAscension;
@@ -49,26 +51,29 @@ public class RobotContainer {
 
     switch (Constants.currentMode) {
       case REAL:
-        aimer = new AimSimulator();
-        swerveDrive = new SwerveDrive();
-        rightAscension = new RightAscensionSubsystem(aimer);
-        declination = new DeclinationSubsystem(aimer);
-        pneumatics = new PneumaticsSystem();
-        indexer = new IndexingSubsystem(pneumatics);
+        aimer = AimSimulator.getInstance();
+        swerveDrive = SwerveDrive.getInstance();
+        rightAscension = RightAscensionSubsystem.getInstance();
+        declination = DeclinationSubsystem.getInstance();
+        pneumatics = PneumaticsSystem.getInstance();
+        indexer = IndexingSubsystem.getInstance();
+        vision = PhotonVision.getInstance();
 
-        lights = new Lights(pneumatics);
+        lights = Lights.getInstance();
 
         break;
 
       case SIM:
-        aimer = new AimSimulator();
-        swerveDrive = new SwerveDrive();
-        rightAscension = new RightAscensionSubsystem(aimer);
-        declination = new DeclinationSubsystem(aimer);
-        pneumatics = new PneumaticsSystem();
-        indexer = new IndexingSubsystem(pneumatics);
+        aimer = AimSimulator.getInstance();
+        swerveDrive = SwerveDrive.getInstance();
+        rightAscension = RightAscensionSubsystem.getInstance();
+        declination = DeclinationSubsystem.getInstance();
+        pneumatics = PneumaticsSystem.getInstance();
+        indexer = IndexingSubsystem.getInstance();
 
-        lights = new Lights(pneumatics);
+        // vision = PhotonVision.getInstance();
+
+        lights = Lights.getInstance();
 
         break;
 
@@ -77,11 +82,8 @@ public class RobotContainer {
     }
 
     RobotState.getInstance();
-    RobotState.getInstance()
-        .dashboardInit(
-            swerveDrive, indexer, declination, pneumatics, rightAscension, aimer, lights);
-    RobotState.getInstance()
-        .poseInit(swerveDrive, indexer, declination, pneumatics, rightAscension, aimer);
+    RobotState.getInstance().dashboardInit();
+    RobotState.getInstance().poseInit();
 
     // superstructure = new Superstructure(declination, indexer, , pneumatics, rightAscension);
 
@@ -101,23 +103,10 @@ public class RobotContainer {
         controller2,
         aimer);
 
-    AutonomousScheme.configurePathPlannerBuilder(
-        swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
-
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Path Planner Auto Chooser", autoChooser);
+    // AutoBuilderScheme.configurePathPlannerBuilder(
+    //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
 
     // CharacterizingScheme.configure(
     //     swerveDrive, indexer, declination, pneumatics, rightAscension, controller1, aimer);
   }
-
-  // public static Command getAutoCommand() {
-  //   // System.out.println("Recieved Auto Command: " + autoCommand.getName());
-  //   return autoChooser.getSelected();
-  // }
-
-  // public static Command getAutoCommand() {
-  //   System.out.println("Recieved Auto Command: " + autoCommand.getName());
-  //   return autoCommand;
-  // }
 }

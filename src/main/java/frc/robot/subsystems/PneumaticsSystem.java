@@ -24,6 +24,15 @@ import org.littletonrobotics.junction.Logger;
 
 public class PneumaticsSystem extends SubsystemBase {
 
+  public static PneumaticsSystem mInstance;
+
+  public static PneumaticsSystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new PneumaticsSystem();
+    }
+    return mInstance;
+  }
+
   // SparkAnalogSensor transducer = getDriveAnalog();
 
   private boolean airCompressorStatus;
@@ -60,7 +69,7 @@ public class PneumaticsSystem extends SubsystemBase {
   LinearFilter filter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
   /** Creates a new Pneumatics. */
-  public PneumaticsSystem() {
+  private PneumaticsSystem() {
     pressureSeal.set(Value.kReverse);
     shootingValve.set(false);
     airCompressorStatus = false;

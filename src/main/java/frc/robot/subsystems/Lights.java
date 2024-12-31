@@ -14,6 +14,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
 
+  public static Lights mInstance;
+
+  public static Lights getInstance() {
+    if (mInstance == null) {
+      mInstance = new Lights();
+    }
+    return mInstance;
+  }
+
   PneumaticsSystem pneumatics;
 
   // "slope" is the ratio of the PSI to the Hue.
@@ -42,9 +51,7 @@ public class Lights extends SubsystemBase {
   int pressureRedtoGreenGradientFirstPixelSaturation = 1;
 
   /** Creates a new Lights. */
-  public Lights(PneumaticsSystem pneumatics) {
-
-    this.pneumatics = pneumatics;
+  private Lights() {
 
     leds.setLength(ledBuffer.getLength());
     leds.start();
@@ -185,11 +192,6 @@ public class Lights extends SubsystemBase {
     while (g > 0) {}
   }
 
-  private void spread(int mainPoint) {
-
-    for (int i = 0; i < 5; i++) {}
-  }
-
   public Command multipleLightCommands(LEDState one, LEDState two) {
     return new RunCommand(
         () -> {
@@ -199,7 +201,7 @@ public class Lights extends SubsystemBase {
   }
 
   private void convertHSV() {
-    inputPSI = pneumatics.psi;
+    inputPSI = PneumaticsSystem.getInstance().psi;
     // SmartDashboard.putNumber("Pressure Proportional Input", inputPSI);
     outputHue = Math.round(((0 + slope) * (inputPSI - 3)));
     if (outputHue < 0) {

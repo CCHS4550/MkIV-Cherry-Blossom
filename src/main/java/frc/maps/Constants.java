@@ -1,25 +1,27 @@
 package frc.maps;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 // import frc.helpers.AllianceFlipUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class Constants {
 
   public static final double WHEEL_CIRCUMFRENCE = Units.inchesToMeters(4 * Math.PI);
 
-  public static final Mode currentMode = Mode.REAL;
+  public static Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -30,6 +32,16 @@ public class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static void getCurrentMode() {
+    if (RobotBase.isReal()) {
+      currentMode = Mode.REAL;
+    } else if (RobotBase.isSimulation()) {
+      currentMode = Mode.SIM;
+    }
+
+    // return currentMode;
   }
 
   public static class ConversionConstants {
@@ -49,6 +61,7 @@ public class Constants {
     // horizontal distance travelled by one motor rotation
     public static final double HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION =
         WHEEL_CIRCUMFRENCE * DRIVE_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS;
+
     public static final double DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR =
         HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0;
   }
@@ -97,10 +110,10 @@ public class Constants {
     public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 0;
     public static final int BACK_LEFT_ABSOLUTE_ENCODER = 2;
 
-    public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.488;
-    public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.508;
-    public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 4.973;
-    public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.780;
+    public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 2.348;
+    public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 5.6393;
+    public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 1.7729;
+    public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 5.965215;
 
     // Robot Constants (change with SysId)
     // max speed in free sprint: used in getting velocities of swerve modules
@@ -135,6 +148,7 @@ public class Constants {
     // Right to Left                                                            // 27
     public static final double TRACK_WITDTH = Units.inchesToMeters(24.750000);
 
+    public static final double RADIUS = Math.sqrt(2) * (WHEEL_BASE / 2);
     /** FR FL BR BL. Same as order of swerve module states */
     public static final SwerveDriveKinematics DRIVE_KINEMATICS =
         new SwerveDriveKinematics(
@@ -272,28 +286,27 @@ public class Constants {
     public static final double ZERO = 0.15;
   }
 
-  public static class Vision {
-    public static final String CAMERA_NAME = "FrontCamera";
-    // Cam mounted facing forward, half a meter forward of center, half a meter up
-    // from center.
+  // public static class Vision {
+  //   public static final String CAMERA_NAME = "FrontCamera";
+  //   // Cam mounted facing forward, half a meter forward of center, half a meter up
+  //   // from center.
 
-    // The layout of the AprilTags on the field
+  //   // The layout of the AprilTags on the field
 
-    // The standard deviations of our vision estimated poses, which affect
-    // correction rate
-    // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-  }
-
-  // public static class cameraOne {
-  //     public static final String CAMERA_ONE_NAME = "FrontCamera";
-  //     public static final Transform3d ROBOT_TO_CAM = new Transform3d(new
-  // Translation3d(Inches.of(-50.989), Inches.of(0), Inches.of(14.6)),
-  //             new Rotation3d(0, Units.degreesToRadians(35.0), Units.degreesToRadians(180)));
-  //     public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME,
-  // ROBOT_TO_CAM);
+  //   // The standard deviations of our vision estimated poses, which affect
+  //   // correction rate
+  //   // (Fake values. Experiment and determine estimation noise on an actual robot.)
+  //   public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+  //   public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   // }
+
+  public static class cameraOne {
+    public static final String CAMERA_ONE_NAME = "FrontCamera";
+    public static final Transform3d ROBOT_TO_CAM =
+        new Transform3d(
+            new Translation3d(Inches.of(9.3418), Inches.of(0), Inches.of(14.157)),
+            new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)));
+  }
 
   /**
    * Gotten from here

@@ -30,7 +30,15 @@ import frc.maps.Constants;
 
 public class DeclinationSubsystem extends SubsystemBase {
 
-  AimSimulator aimer;
+  public static DeclinationSubsystem mInstance;
+
+  public static DeclinationSubsystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new DeclinationSubsystem();
+    }
+    return mInstance;
+  }
+
   double declinationSpeedModifier = 0.1;
 
   ArmFeedforward declinationFeedForward =
@@ -44,7 +52,7 @@ public class DeclinationSubsystem extends SubsystemBase {
    * This is the controller that actually brings the mechanism to the point.
    * Very important to test manually! Google PID tuning to find out how to tune PID constants.
    */
-  PIDController declinationFeedBack = new PIDController(12, 0, 0.00);
+  PIDController declinationFeedBack = new PIDController(10, 0, 0.00);
 
   private TrapezoidProfile.Constraints constraints;
 
@@ -107,9 +115,7 @@ public class DeclinationSubsystem extends SubsystemBase {
               this));
 
   /** Creates a new Declination. */
-  public DeclinationSubsystem(AimSimulator aimer) {
-
-    this.aimer = aimer;
+  private DeclinationSubsystem() {
 
     declination1.setPosition(0);
     declination2.setPosition(0);

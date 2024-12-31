@@ -35,7 +35,15 @@ import java.util.function.DoubleSupplier;
 
 public class IndexingSubsystem extends SubsystemBase {
 
-  PneumaticsSystem pneumatics;
+  public static IndexingSubsystem mInstance;
+
+  public static IndexingSubsystem getInstance() {
+    if (mInstance == null) {
+      mInstance = new IndexingSubsystem();
+    }
+    return mInstance;
+  }
+
   DoubleSupplier barrelRotationSpeedModifier = () -> 1;
 
   SimpleMotorFeedforward indexFeedForward =
@@ -107,8 +115,7 @@ public class IndexingSubsystem extends SubsystemBase {
    *
    * @param pneumatics - Needs information about the pneumatics system to work well.
    */
-  public IndexingSubsystem(PneumaticsSystem pneumatics) {
-    this.pneumatics = pneumatics;
+  private IndexingSubsystem() {
 
     // indexMotor.setSmartCurrentLimit(5);
 
@@ -126,8 +133,8 @@ public class IndexingSubsystem extends SubsystemBase {
   public Command shootAll() {
     return new SequentialCommandGroup(
         // Shoot current round
-        pneumatics.enablePressureSealCommand(),
-        pneumatics.quickShoot(),
+        PneumaticsSystem.getInstance().enablePressureSealCommand(),
+        PneumaticsSystem.getInstance().quickShoot(),
         // Shoot 2nd round
         indexShoot(),
         // Shoot 3rd round
@@ -146,15 +153,15 @@ public class IndexingSubsystem extends SubsystemBase {
   }
 
   public Command indexShoot() {
-    return new SequentialCommandGroup(indexOne(), pneumatics.quickShoot());
+    return new SequentialCommandGroup(indexOne(), PneumaticsSystem.getInstance().quickShoot());
   }
 
   public Command indexOne() {
     return new SequentialCommandGroup(
-            pneumatics.disablePressureSealCommand(),
+            PneumaticsSystem.getInstance().disablePressureSealCommand(),
             new WaitCommand(0.01),
             indexBarrel(),
-            pneumatics.enablePressureSealCommand(),
+            PneumaticsSystem.getInstance().enablePressureSealCommand(),
             new WaitCommand(0.3))
         .withTimeout(5);
   }

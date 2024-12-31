@@ -6,6 +6,16 @@ import frc.helpers.OI;
 import java.text.DecimalFormat;
 
 public class AimSimulator extends SubsystemBase {
+
+  public static AimSimulator mInstance;
+
+  public static AimSimulator getInstance() {
+    if (mInstance == null) {
+      mInstance = new AimSimulator();
+    }
+    return mInstance;
+  }
+
   public double xPos;
   public double yPos;
   public double xAngle;
@@ -13,7 +23,7 @@ public class AimSimulator extends SubsystemBase {
 
   public double barrelAngle;
 
-  public AimSimulator() {
+  private AimSimulator() {
     xPos = 0;
     yPos = 0;
     xAngle = 0;

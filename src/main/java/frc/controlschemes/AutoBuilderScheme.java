@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
 import frc.robot.RobotState;
+import frc.robot.autonomous.CustomAutoChooser;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -38,7 +39,7 @@ import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /** Add your docs here. */
-public class AutonomousScheme implements ControlScheme {
+public class AutoBuilderScheme implements ControlScheme {
 
   static SendableChooser<Command> autoChooser;
   // static Command autoCommand;
@@ -77,8 +78,7 @@ public class AutonomousScheme implements ControlScheme {
                 swerveDrive.turnPID.getD()), // Rotation PID constants
             // new PIDConstants(1, 0, 0), // Translation PID constants
             // new PIDConstants(1, 0, 0),
-            Constants.SwerveConstants
-                .MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+            Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
             0.44, // Drive base radius in meters. Distance from robot center to furthest module.
             // (0.444522677)
             new ReplanningConfig() // Default path replanning config. See the API for the options
@@ -122,7 +122,8 @@ public class AutonomousScheme implements ControlScheme {
   /**
    * Main method called in RobotContainer INSTEAD of configurePathPlannerBuilder() to allow the
    * robot to follow .chor files in src\main\deploy. We do not use this method because Choreo
-   * currently does not support adding commands to an autonomous routine.
+   * currently does not support adding commands to an autonomous routine, which is why we don't use
+   * it.
    */
   public static void configureChoreoBuilder(
       SwerveDrive swerveDrive,
@@ -184,7 +185,7 @@ public class AutonomousScheme implements ControlScheme {
         aimer);
   }
 
-  public static Command getAutoCommand() {
+  public static Command getPathPlannerAutoCommand() {
 
     try {
       chosenAuto = autoChooser.getSelected().withName(autoChooser.getSelected().getName());
@@ -193,7 +194,10 @@ public class AutonomousScheme implements ControlScheme {
       return chosenAuto;
     }
     // System.out.println("Recieved Auto Command: " + autoCommand.getName());
+  }
 
+  public static Command getCustomAuto(CustomAutoChooser autoChooser) {
+    return autoChooser.getSelectedCustomCommand();
   }
 
   public static void registerCommands(

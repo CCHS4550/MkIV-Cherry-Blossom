@@ -143,7 +143,9 @@ public class SwerveModule extends SubsystemBase {
    * @return The value of the absolute encoder in radians with the offset applied.
    */
   public double getAbsoluteEncoderRadiansOffset() {
-    return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffset;
+    return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition())
+        - absoluteEncoderOffset
+        + Math.PI;
   }
 
   /**
@@ -205,13 +207,13 @@ public class SwerveModule extends SubsystemBase {
     // These are both in m/s
     double driveOutput =
         drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
-    Logger.recordOutput("drivePID Output", driveOutput);
+    Logger.recordOutput("desired drivePID Output", driveOutput);
     // Feed forward
     double driveFF = driveFeedforward.calculate(velocity);
-    Logger.recordOutput("driveFF Output", driveFF);
+    Logger.recordOutput("desired driveFF Output", driveFF);
 
     driveMotor.setVoltage(driveOutput + driveFF);
-    Logger.recordOutput("drivePID + driveFF Output", driveOutput + driveFF);
+    Logger.recordOutput("desired drivePID + driveFF Output", driveOutput + driveFF);
   }
 
   public void setTurnPosition(DoubleSupplier angle) {
