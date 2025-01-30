@@ -22,13 +22,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.helpers.Vision.VisionData;
 import frc.maps.Constants;
 import frc.robot.subsystems.AimSimulator;
 import frc.robot.subsystems.DeclinationSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PneumaticsSystem;
 import frc.robot.subsystems.RightAscensionSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveDrive;
@@ -63,8 +61,6 @@ public class RobotState {
   // SwerveDriveOdometry odometer;
   public SwerveDrivePoseEstimator poseEstimator;
   public PhotonPoseEstimator photonPoseEstimator;
-
-  public final VisionData visionData = new VisionData();
 
   public void poseInit() {
 
@@ -109,20 +105,6 @@ public class RobotState {
     currentPose = getPose();
     Logger.recordOutput("Estimated Pose", getPose());
     Logger.recordOutput("Estimated Angle", getPose().getRotation().getDegrees());
-  }
-
-  public void updateVisionPose() {
-    /** Update the visionData to what the camera sees. */
-    if (Robot.isReal()) {
-      PhotonVision.getInstance().updateData(visionData, getPose());
-
-      for (int i = 0; i < visionData.poseEstimates.size(); i++) {
-        /** Add the Photonvision pose estimates */
-        poseEstimator.addVisionMeasurement(visionData.poseEstimates.get(i), visionData.timestamp);
-      }
-    } else if (Robot.isSimulation()) {
-      PhotonVision.getInstance().visionSim.update(getPose());
-    }
   }
 
   public synchronized void dashboardInit() {

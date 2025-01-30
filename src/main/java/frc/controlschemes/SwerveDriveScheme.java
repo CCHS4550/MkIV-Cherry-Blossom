@@ -91,23 +91,21 @@ public class SwerveDriveScheme implements ControlScheme {
 
                   // Set x, y, and turn speed based on joystick inputs
                   double xSpeed =
-                      MathUtil.applyDeadband(-controller.getLeftY(), 0.01)
+                      MathUtil.applyDeadband(-controller.getLeftX(), 0.01)
                           * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND
                           * driveSpeedModifier.getAsDouble();
 
                   double ySpeed =
-                      // MathUtil.applyDeadband(-controller.getLeftX(), 0.01)
-                      MathUtil.applyDeadband(0, 0.01)
+                      MathUtil.applyDeadband(-controller.getLeftY(), 0.01)
                           * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND
                           * driveSpeedModifier.getAsDouble();
 
-                  double turnSpeed = 0;
-                  // || Math.abs(controller.getRightX()) > 0.15
+                  double turnSpeed = Math.abs(controller.getRightX());
 
                   if (!orientationLocked) {
                     orientationLockAngle = RobotState.getInstance().getPoseAngleRadians();
-                    // turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
-                    turnSpeed = MathUtil.applyDeadband(controller.getLeftX(), 0.05);
+                    turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.05);
+                    // turnSpeed = MathUtil.applyDeadband(controller.getLeftX(), 0.05);
 
                   } else {
                     turnSpeed =
@@ -251,6 +249,6 @@ public class SwerveDriveScheme implements ControlScheme {
   }
 
   private static void setSlowMode() {
-    driveSpeedModifier = () -> 0.3;
+    driveSpeedModifier = () -> 0.1;
   }
 }

@@ -103,7 +103,6 @@ public class Robot extends LoggedRobot {
     switch (Constants.currentMode) {
       case REAL:
         RobotState.getInstance().updateDashboard();
-        RobotState.getInstance().updateVisionPose();
 
         if (RobotController.getBatteryVoltage() < 10) {
           browningOut = true;
